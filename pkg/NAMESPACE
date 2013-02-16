@@ -1,0 +1,18 @@
+import(stats,Matrix,memisc)
+export(
+      mclogit,
+      mclogit.control,
+      getSummary.mclogit#,
+      #mclogit.fit,
+      #mclogit.fit.random
+)
+S3method(print,mclogit)
+S3method(vcov,mclogit)
+S3method(deviance,mclogit)
+S3method(logLik,mclogit)
+S3method(summary,mclogit)
+S3method(print,summary.mclogit)
+S3method(fitted,mclogit)
+S3method(predict,mclogit)
+#S3method(getSummary,mclogit)
+
