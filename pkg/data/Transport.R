@@ -1,6 +1,5 @@
 Transport <- local({
 
-  require(stats)
   set.seed(1)
 
   # Spatial positions of suburbs are

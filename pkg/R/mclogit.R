@@ -1,6 +1,3 @@
-# require(methods)
-# if(!require(Matrix)) warning("mclogit with random effects won't work without Matrix package")
-
 quickInteraction <- function(by){
   if(is.list(by)){
     n.arg <- length(by)
@@ -123,8 +120,6 @@ mclogit <- function(
         mfr$drop.unused.levels <- TRUE
         mfr[[1]] <- as.name("model.frame")
         mfr <- eval(mfr, parent.frame())
-        if(!require(Matrix))
-          stop("need Matrix package installed")
         Z <- reDesignMatrix(random,mfr,use=good)
         fit <- mclogit.fit.random(Y,s,w,X,Z,
                               start=fit$coef,
@@ -294,8 +289,6 @@ mclogit.fit.random <- function(
       start.theta=NULL,
       control=mclogit.control()
       ){
-    if(!require(Matrix))
-      stop("need Matrix package installed")
     #crossprod <- Matrix:::crossprod
     nvar <- ncol(X)
     deviance <- Inf

@@ -10,7 +10,7 @@
   Conditional logit models without random effects are fitted by
   Fisher-scoring/IWLS.
   The implementation of mixed conditional logit currently is limited
-  to PQL and random slopes.
+  to PQL and random intercepts.
 }
 \usage{
 

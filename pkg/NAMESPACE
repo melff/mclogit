@@ -1,4 +1,6 @@
-import(stats,Matrix,memisc)
+import(stats,Matrix)
+importFrom(memisc,setSummaryTemplate)
+#,memisc)
 export(
       mclogit,
       mclogit.control,
@@ -15,4 +17,7 @@ S3method(print,summary.mclogit)
 S3method(fitted,mclogit)
 S3method(predict,mclogit)
 #S3method(getSummary,mclogit)
+S3method(AIC,mclogit)
+S3method(BIC,mclogit)
+
 

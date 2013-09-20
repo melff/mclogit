@@ -1,6 +1,5 @@
 electors <- local({
 
-  require(stats)
   set.seed(1)
 
   unit.len=.5
