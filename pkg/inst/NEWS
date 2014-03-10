@@ -1,0 +1,6 @@
+2014-03-10:
+  Refactored code -- algorithms should be more transparent and robust now (hopefully!).
+  mclogit without and with random effects can handle missing values now.
+  Fixed predict method -- use of napredict; handles single indep-variable situation now.
+  Fixed embarassing typo -- prior weights do work now (again?). 
+  Included AIC and BIC methods contributed by Nic Elliot <nic_elliot@yahoo.co.uk>

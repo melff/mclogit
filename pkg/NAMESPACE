@@ -1,5 +1,5 @@
 import(stats,Matrix)
-importFrom(memisc,setSummaryTemplate)
+import(memisc)
 #,memisc)
 export(
       mclogit,
@@ -7,6 +7,7 @@ export(
       getSummary.mclogit#,
       #mclogit.fit,
       #mclogit.fit.random
+      #mclogit.fit.rePQL
 )
 S3method(print,mclogit)
 S3method(vcov,mclogit)
@@ -16,6 +17,7 @@ S3method(summary,mclogit)
 S3method(print,summary.mclogit)
 S3method(fitted,mclogit)
 S3method(predict,mclogit)
+S3method(residuals,mclogit)
 #S3method(getSummary,mclogit)
 S3method(AIC,mclogit)
 S3method(BIC,mclogit)
