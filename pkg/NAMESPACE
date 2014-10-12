@@ -6,7 +6,6 @@ export(
       mclogit.control,
       getSummary.mclogit#,
       #mclogit.fit,
-      #mclogit.fit.random
       #mclogit.fit.rePQL
 )
 S3method(print,mclogit)
@@ -21,5 +20,6 @@ S3method(residuals,mclogit)
 #S3method(getSummary,mclogit)
 S3method(AIC,mclogit)
 S3method(BIC,mclogit)
+S3method(anova,mclogit)
 
 

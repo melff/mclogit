@@ -212,7 +212,8 @@ mclogit.fit <- function(
         crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
         if(crit < control$eps){
           converged <- TRUE
-          cat("\nconverged\n")
+          if(control$trace)
+            cat("\nconverged\n")
           break
         }
     }
@@ -716,6 +717,7 @@ print.summary.mclogit <-
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher Scoring iterations: ", x$iter,
+        "\nNumber of observations: ",x$N,
         "\n")
     correl <- x$correlation
     if(!is.null(correl)) {
@@ -856,7 +858,6 @@ getSummary.mclogit <- function(obj,
 
    phi <- smry$phi
    LR <- smry$null.deviance - smry$deviance
-#   df <- smry$df.null - smry$df.residual
   df <- obj$model.df
   deviance <- deviance(obj)
 
@@ -908,12 +909,19 @@ getSummary.mclogit <- function(obj,
 fitted.mclogit <- function(object,type=c("probabilities","counts"),...){
   weights <- object$weights
   nobs <- length(weights)
-  res <- rep(NA,nobs)
-  res[weights>0] <- object$fitted.values
+  res <- object$fitted.values
   type <- match.arg(type)
-  switch(type,
-    probabilities=res,
-    counts=weights*res)
+  
+  na.act <- object$na.action
+  
+  res <- switch(type,
+          probabilities=res,
+          counts=weights*res)
+          
+  if(is.null(na.act))
+    res
+  else 
+    napredict(na.act,res)
 }
 
 predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FALSE,...){

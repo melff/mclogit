@@ -1,3 +1,6 @@
+2014-08-23:
+  Added 'anova' methods
+
 2014-03-10:
   Refactored code -- algorithms should be more transparent and robust now (hopefully!).
   mclogit without and with random effects can handle missing values now.
