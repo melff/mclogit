@@ -1,5 +1,4 @@
 import(stats,Matrix)
-import(memisc)
 #,memisc)
 export(
       mclogit,

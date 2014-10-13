@@ -1,3 +1,7 @@
+2014-10-13: 
+  Simplified some namespace dependencies. Eliminated useless pseudo-R-squared statistics 
+  form getSummary.mclogit
+
 2014-08-23:
   Added 'anova' methods
 

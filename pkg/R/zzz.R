@@ -1,29 +1,25 @@
 .onLoad <- function(lib,pkg){
-    setSummaryTemplate(
+  if(requireNamespace("memisc",quietly = TRUE)){
+    memisc::setSummaryTemplate(
       mclogit = c(
-              "McFadden R-sq." = "($McFadden:f#)",
-              "Cox-Snell R-sq." = "($Cox.Snell:f#)",
-              "Nagelkerke R-sq."  = "($Nagelkerke:f#)",
-              "Likelihood-ratio" = "($LR:f1#)",
-              #p             = "($p:#)",
-              "Log-likelihood" = "($logLik:f1#)",
-              Deviance      = "($deviance:f1#)",
-              AIC           = "($AIC:f1#)",
-              BIC           = "($BIC:f1#)",
-              N             = "($N:d)"
+        "Likelihood-ratio" = "($LR:f1#)",
+        #p             = "($p:#)",
+        "Log-likelihood" = "($logLik:f1#)",
+        Deviance      = "($deviance:f1#)",
+        AIC           = "($AIC:f1#)",
+        BIC           = "($BIC:f1#)",
+        N             = "($N:d)"
       ),
       mclogitRandeff = c(
-              #"McFadden R-sq." = "($McFadden:f#)",
-              #"Cox-Snell R-sq." = "($Cox.Snell:f#)",
-              #"Nagelkerke R-sq."  = "($Nagelkerke:f#)",
-              #"Likelihood-ratio" = "($LR:f1#)",
-              #p             = "($p:#)",
-              #"Log-likelihood" = "($logLik:f1#)",
-              Deviance      = "($deviance:f1#)",
-              #AIC           = "($AIC:f1#)",
-              #BIC           = "($BIC:f1#)",
-              N             = "($N:d)"
+        #"Likelihood-ratio" = "($LR:f1#)",
+        #p             = "($p:#)",
+        #"Log-likelihood" = "($logLik:f1#)",
+        Deviance      = "($deviance:f1#)",
+        #AIC           = "($AIC:f1#)",
+        #BIC           = "($BIC:f1#)",
+        N             = "($N:d)"
       )
-    )
+    )  
+  }
 }
 
