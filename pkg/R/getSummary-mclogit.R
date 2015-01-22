@@ -1,7 +1,6 @@
 getSummary.mclogit <- function(obj,
                                alpha=.05,
                                rearrange=NULL,
-                               #as.columns=NULL,
                                ...){
   
   smry <- summary(obj)
@@ -98,8 +97,5 @@ getSummary.mclogit <- function(obj,
     N             = N
   )
   
-  #coef <- apply(coef,1,applyTemplate,template=coef.template)
-  
-  #sumstat <- drop(applyTemplate(sumstat,template=sumstat.template))
-  list(coef=coef,sumstat=sumstat)
+  list(call=obj$call,coef=coef,sumstat=sumstat)
 }

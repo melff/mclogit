@@ -1,16 +1,14 @@
 Package: mclogit
 Type: Package
-Title: Mixed Conditional Logit
-Version: 0.3-1
-Date: 2014-10-13
+Title: Mixed Conditional Logit Models
+Version: 0.3-2
+Date: 2015-01-18
 Author: Martin Elff
 Maintainer: Martin Elff <elff@gmx.com>
-Description: This packages provides a function to estimate parameters for 
-  the conditional logit model (also with multinomial counts), and for the
-  mixed conditional logit model, or conditional logit with random effects
-  (random intercepts only, no random slopes yet).
-  The current implementation of random effects is limited to
-  the PQL technique, which requires large cluster sizes.
+Description: This packages provides allows to estimate conditional logit models of binary responses and multinomial counts,
+  with or without alternative-specific random effects (random intercepts only, no random slopes yet).
+  The current implementation of the estimator for random effects variants of the model uses a Laplace approximation (or PQL) 
+  approach and thus should be used only if groups sizes are large.
 License: GPL-2
 Depends: stats, Matrix
 Enhances: memisc

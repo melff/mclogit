@@ -1,5 +1,19 @@
 \name{mclogit}
 \alias{mclogit}
+\alias{predict.mclogit}
+\alias{anova.mclogit}
+\alias{print.mclogit}
+\alias{vcov.mclogit}
+\alias{deviance.mclogit}
+\alias{logLik.mclogit}
+\alias{summary.mclogit}
+\alias{print.summary.mclogit}
+\alias{fitted.mclogit}
+\alias{predict.mclogit}
+\alias{residuals.mclogit}
+\alias{AIC.mclogit}
+\alias{BIC.mclogit}
+\alias{anova.mclogit}
 
 \title{Conditional Logit Models and Mixed Conditional Logit Models}
 \description{

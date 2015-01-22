@@ -854,3 +854,14 @@ mclogit.dev.resids <- function(obj){
  r <- 2*(f*log(f/pi))
  r - ave(r,s)
 }
+
+
+nobs.mclogit <- function(object,...) object$N
+
+extractAIC.mclogit <- function(fit, scale = 0, k = 2, ...) 
+{
+  N <- fit$N
+  edf <- N - fit$residual.df
+  aic <- AIC(fit)
+  c(edf, aic + (k - 2) * edf)
+}

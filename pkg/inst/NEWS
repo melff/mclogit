@@ -1,6 +1,16 @@
+2015-01-21:
+  Added `nobs` and `extractAIC` methods for `mclogit` objects, so that `drop1.default` should work with these.
+
+2015-01-19:
+  Added call to result of `getSummary.mclogit`. 
+
+2015-01-18: 
+  - Cleanup of NAMESPACE file; added aliases to methods for `mclogit` objects so that users can see that they are present.
+  - Export `mclogit.fit`, and `mclogit.fit.rePQL` to enable use by other packages.
+
 2014-10-13: 
   Simplified some namespace dependencies. Eliminated useless pseudo-R-squared statistics 
-  form getSummary.mclogit
+  from getSummary.mclogit
 
 2014-08-23:
   Added 'anova' methods
