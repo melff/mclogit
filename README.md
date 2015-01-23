@@ -1,4 +1,4 @@
-# mclogit
+
 Repository for R package `mclogit`
 ==================================
 
