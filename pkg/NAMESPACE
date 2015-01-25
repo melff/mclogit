@@ -1,10 +1,13 @@
 import(stats,Matrix)
+importFrom(memisc,getSummary)
 export(
       mclogit,
       mclogit.fit,
       mclogit.fit.rePQL,
       mclogit.control,
-      getSummary.mclogit
+      getSummary.mclogit,
+      mblogit,
+      getSummary.mblogit
 )
 S3method(print,mclogit)
 S3method(vcov,mclogit)
@@ -17,6 +20,12 @@ S3method(predict,mclogit)
 S3method(residuals,mclogit)
 S3method(AIC,mclogit)
 S3method(BIC,mclogit)
+S3method(nobs,mclogit)
+S3method(extractAIC,mclogit)
 S3method(anova,mclogit)
+
+S3method(print,mblogit)
+S3method(summary,mblogit)
+S3method(print,summary.mblogit)
 
 
