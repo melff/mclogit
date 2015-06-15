@@ -97,5 +97,9 @@ getSummary.mclogit <- function(obj,
     N             = N
   )
   
-  list(call=obj$call,coef=coef,sumstat=sumstat)
+  list(call=obj$call,
+       coef=coef,
+       contrasts = obj$contrasts,
+       xlevels = obj$xlevels,
+       sumstat=sumstat)
 }
