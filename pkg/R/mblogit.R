@@ -192,3 +192,91 @@ print.summary.mblogit <-
     else cat("\n")
     invisible(x)
   }
+
+
+fitted.mblogit <- function(object,type=c("probabilities","counts"),...){
+  weights <- object$weights
+  nobs <- length(weights)
+  res <- object$fitted.values
+  type <- match.arg(type)
+  
+  na.act <- object$na.action
+  
+  longfit <- switch(type,
+                probabilities=res,
+                counts=weights*res)
+  
+  if(!is.null(na.act))
+    longfit <- napredict(na.act,longfit)
+  
+  ncat <- nrow(object$D)
+  fit <- t(matrix(longfit,nrow=ncat))
+  fit
+}
+
+
+predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se=FALSE,...){
+  
+  type <- match.arg(type)
+  rhs <- object$formula[-2]
+  if(missing(newdata))
+    m <- model.frame(rhs,data=object$model)
+  else
+    m <- model.frame(rhs,data=newdata)
+  X <- model.matrix(rhs,m,
+                    contasts.arg=object$contrasts,
+                    xlev=object$xlevels
+  )
+  D <- object$D
+  XD <- X%x%D
+  rspmat <- function(x){
+    t(matrix(x,nrow=nrow(D)))
+  }
+  
+  eta <- c(XD %*% coef(object))
+  eta <- rspmat(eta)
+  if(se){
+    V <- vcov(object)
+    stopifnot(ncol(XD)==ncol(V))
+  }
+  
+  na.act <- object$na.action
+  
+  if(type=="response") {
+    exp.eta <- exp(eta)
+    sum.exp.eta <- rowSums(exp.eta)
+    p <- exp.eta/sum.exp.eta
+    
+    if(se){
+      p.long <- as.vector(t(p))
+      s <- rep(1:nrow(X),each=nrow(D))
+      
+      wX <- XD - rowsum(p.long*XD,s)[s,,drop=FALSE]
+      se.p.long <- p * sqrt(rowSums(wX * (wX %*% V)))
+      se.p <- rspmat(se.p.long)
+      
+      if(is.null(na.act))
+        list(pred=p,se.pred=se.p)
+      else
+        list(pred=napredict(na.act,p),
+             se.pred=napredict(na.act,se.p))
+    }
+    else {
+      if(is.null(na.act)) p
+      else napredict(na.act,p)
+    }
+  }
+  else if(se) {
+    se.eta <- sqrt(rowSums(XD * (XD %*% V)))
+    se.eta <- rspmat(se.eta)
+    if(is.null(na.act))
+      list(pred=eta,se.pred=se.eta) 
+    else
+      list(pred=napredict(na.act,eta),
+           se.pred=napredict(na.act,se.eta))
+  }
+  else {
+    if(is.null(na.act)) eta
+    else napredict(na.act,eta)
+  }
+}

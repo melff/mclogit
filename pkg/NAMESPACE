@@ -27,5 +27,7 @@ S3method(anova,mclogit)
 S3method(print,mblogit)
 S3method(summary,mblogit)
 S3method(print,summary.mblogit)
+S3method(fitted,mblogit)
+S3method(predict,mblogit)
 
 
