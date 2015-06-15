@@ -774,10 +774,10 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FA
           )
   drop <- match("(Intercept)",colnames(X))
   X <- X[,-drop,drop=FALSE]
-  eta <- c(X %*% object$coef)
+  eta <- c(X %*% coef(object))
   if(se){
-    stopifnot(dim(X) == dim(X %*% vcov(object)))
-    se.eta <- sqrt(rowSums(X * (X %*% vcov(object))))
+    V <- vcov(object)
+    stopifnot(ncol(X)==ncol(V))
   }
 
   na.act <- object$na.action
@@ -791,11 +791,13 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FA
     sum.exp.eta <- rowsum(exp.eta,set)
     p <- exp.eta/sum.exp.eta[set]
     if(se){
+      wX <- X - rowsum(p*X,s)[s,,drop=FALSE]
+      se.p <- p * sqrt(rowSums(wX * (wX %*% V)))
       if(is.null(na.act))
-        list(pred=p,se.pred=p*(1-p)*se.eta)
+        list(pred=p,se.pred=se.p)
       else
         list(pred=napredict(na.act,p),
-             se.pred=napredict(na.act,p*(1-p)*se.eta))
+             se.pred=napredict(na.act,se.p))
     }
     else {
       if(is.null(na.act)) p
@@ -803,6 +805,7 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FA
     }
   }
   else if(se) {
+    se.eta <- sqrt(rowSums(X * (X %*% V)))
     if(is.null(na.act))
       list(pred=eta,se.pred=se.eta) 
     else
