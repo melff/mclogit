@@ -30,10 +30,11 @@ mblogit <- function(formula,
   X <- model.matrix(mt,mf,contrasts)
   contrasts <- attr(X, "contrasts")
   xlevels <- .getXlevels(mt,mf)
-  prior.weights <- weights
+  
   if(is.null(weights))
     weights <- rep(1,nrow(X))
   N <- sum(weights)
+  prior.weights <- weights
   
   if(is.factor(y)){
     
@@ -54,8 +55,6 @@ mblogit <- function(formula,
       rownames(D) <- 1:ncol(y)
       colnames(D) <- 2:ncol(y)
     }
-      
-    
     
     w <- rowSums(y)
     yy <- c(t(y/w))
@@ -215,14 +214,18 @@ fitted.mblogit <- function(object,type=c("probabilities","counts"),...){
 }
 
 
-predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se=FALSE,...){
+predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
   
   type <- match.arg(type)
   rhs <- object$formula[-2]
-  if(missing(newdata))
+  if(missing(newdata)){
     m <- model.frame(rhs,data=object$model)
-  else
+    na.act <- object$na.action
+  }
+  else{
     m <- model.frame(rhs,data=newdata)
+    na.act <- NULL
+  }
   X <- model.matrix(rhs,m,
                     contasts.arg=object$contrasts,
                     xlev=object$xlevels
@@ -230,53 +233,64 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se=FA
   D <- object$D
   XD <- X%x%D
   rspmat <- function(x){
-    t(matrix(x,nrow=nrow(D)))
+    y <- t(matrix(x,nrow=nrow(D)))
+    colnames(y) <- rownames(D)
+    y
   }
   
   eta <- c(XD %*% coef(object))
   eta <- rspmat(eta)
-  if(se){
+  if(se.fit){
     V <- vcov(object)
     stopifnot(ncol(XD)==ncol(V))
   }
   
-  na.act <- object$na.action
+  
   
   if(type=="response") {
     exp.eta <- exp(eta)
     sum.exp.eta <- rowSums(exp.eta)
     p <- exp.eta/sum.exp.eta
     
-    if(se){
+    if(se.fit){
       p.long <- as.vector(t(p))
       s <- rep(1:nrow(X),each=nrow(D))
       
-      wX <- XD - rowsum(p.long*XD,s)[s,,drop=FALSE]
-      se.p.long <- p * sqrt(rowSums(wX * (wX %*% V)))
+      wX <- p.long*(XD - rowsum(p.long*XD,s)[s,,drop=FALSE])
+      se.p.long <- sqrt(rowSums(wX * (wX %*% V)))
       se.p <- rspmat(se.p.long)
       
       if(is.null(na.act))
-        list(pred=p,se.pred=se.p)
+        list(fit=p,se.fit=se.p)
       else
-        list(pred=napredict(na.act,p),
-             se.pred=napredict(na.act,se.p))
+        list(fit=napredict(na.act,p),
+             se.fit=napredict(na.act,se.p))
     }
     else {
       if(is.null(na.act)) p
       else napredict(na.act,p)
     }
   }
-  else if(se) {
+  else if(se.fit) {
     se.eta <- sqrt(rowSums(XD * (XD %*% V)))
     se.eta <- rspmat(se.eta)
     if(is.null(na.act))
-      list(pred=eta,se.pred=se.eta) 
+      list(fit=eta,se.fit=se.eta) 
     else
-      list(pred=napredict(na.act,eta),
-           se.pred=napredict(na.act,se.eta))
+      list(fit=napredict(na.act,eta),
+           se.fit=napredict(na.act,se.eta))
   }
   else {
     if(is.null(na.act)) eta
     else napredict(na.act,eta)
   }
+}
+
+
+weights.mblogit <- function (object, ...) 
+{
+  res <- object$prior.weights
+  if (is.null(object$na.action)) 
+    res
+  else naresid(object$na.action, res)
 }

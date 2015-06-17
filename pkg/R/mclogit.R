@@ -760,14 +760,18 @@ fitted.mclogit <- function(object,type=c("probabilities","counts"),...){
     napredict(na.act,res)
 }
 
-predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FALSE,...){
+predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
 
   type <- match.arg(type)
   rhs <- object$formula[-2]
-  if(missing(newdata))
+  if(missing(newdata)){
     m <- model.frame(rhs,data=object$model)
-  else
+    na.act <- object$na.action
+  }
+  else{
     m <- model.frame(rhs,data=newdata)
+    na.act <- NULL
+  }
   X <- model.matrix(rhs,m,
           contasts.arg=object$contrasts,
           xlev=object$xlevels
@@ -775,12 +779,11 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FA
   drop <- match("(Intercept)",colnames(X))
   X <- X[,-drop,drop=FALSE]
   eta <- c(X %*% coef(object))
-  if(se){
+  if(se.fit){
     V <- vcov(object)
     stopifnot(ncol(X)==ncol(V))
   }
 
-  na.act <- object$na.action
   
   if(type=="response") {
     lhs <- object$formula[[2]]
@@ -790,27 +793,27 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se=FA
     exp.eta <- exp(eta)
     sum.exp.eta <- rowsum(exp.eta,set)
     p <- exp.eta/sum.exp.eta[set]
-    if(se){
-      wX <- X - rowsum(p*X,s)[s,,drop=FALSE]
-      se.p <- p * sqrt(rowSums(wX * (wX %*% V)))
+    if(se.fit){
+      wX <- p*(X - rowsum(p*X,s)[s,,drop=FALSE])
+      se.p <- sqrt(rowSums(wX * (wX %*% V)))
       if(is.null(na.act))
-        list(pred=p,se.pred=se.p)
+        list(fit=p,se.fit=se.p)
       else
-        list(pred=napredict(na.act,p),
-             se.pred=napredict(na.act,se.p))
+        list(fit=napredict(na.act,p),
+             se.fit=napredict(na.act,se.p))
     }
     else {
       if(is.null(na.act)) p
       else napredict(na.act,p)
     }
   }
-  else if(se) {
+  else if(se.fit) {
     se.eta <- sqrt(rowSums(X * (X %*% V)))
     if(is.null(na.act))
-      list(pred=eta,se.pred=se.eta) 
+      list(fit=eta,se.fit=se.eta) 
     else
-      list(pred=napredict(na.act,eta),
-           se.pred=napredict(na.act,se.eta))
+      list(fit=napredict(na.act,eta),
+           se.fit=napredict(na.act,se.eta))
     }
   else {
     if(is.null(na.act)) eta
@@ -867,4 +870,14 @@ extractAIC.mclogit <- function(fit, scale = 0, k = 2, ...)
   edf <- N - fit$residual.df
   aic <- AIC(fit)
   c(edf, aic + (k - 2) * edf)
+}
+
+weights.mclogit <- function(object, type = c("prior", "working"),...) {
+  type <- match.arg(type)
+  res <- if (type == "prior") 
+    object$prior.weights
+  else object$weights
+  if (is.null(object$na.action)) 
+    res
+  else naresid(object$na.action, res)
 }
