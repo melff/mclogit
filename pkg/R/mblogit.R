@@ -227,7 +227,7 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     na.act <- NULL
   }
   X <- model.matrix(rhs,m,
-                    contasts.arg=object$contrasts,
+                    contrasts.arg=object$contrasts,
                     xlev=object$xlevels
   )
   D <- object$D
