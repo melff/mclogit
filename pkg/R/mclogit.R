@@ -769,8 +769,8 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     na.act <- object$na.action
   }
   else{
-    m <- model.frame(rhs,data=newdata)
-    na.act <- NULL
+    m <- model.frame(rhs,data=newdata,na.action=na.exclude)
+    na.act <- attr(m,"na.action")
   }
   X <- model.matrix(rhs,m,
           contasts.arg=object$contrasts,
