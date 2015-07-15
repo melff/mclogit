@@ -44,6 +44,7 @@ mclogit <- function(
                 na.action = getOption("na.action"),
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
+                start=NULL,
                 start.theta=NULL,
                 control=mclogit.control(...),
                 ...
@@ -102,6 +103,7 @@ mclogit <- function(
     }
     fit <- mclogit.fit(Y,sets,weights,X,
                         control=control,
+                        start = start,
                         offset = offset)
     null.dev <- fit$null.deviance
     if(length(random)){ ## random effects
@@ -159,13 +161,20 @@ mclogit.fit <- function(
       control=mclogit.control()
       ){
     nvar <- ncol(X)
-    deviance <- Inf
-    eta <- mclogitLinkInv(y,s,w)
-    nobs <- length(eta)
-    if (is.null(offset))
-        offset <- rep.int(0, nobs)
-
+    nobs <- length(y)
+    if(!length(offset))
+      offset <- rep.int(0, nobs)
+    if(length(start)){
+      stopifnot(length(start)==ncol(X))
+      eta <- c(X%*%start) + offset
+    }
+    else
+      eta <- mclogitLinkInv(y,s,w)
     pi <- mclogitP(eta,s)
+    dev.resids <- ifelse(y>0,
+                         2*w*y*(log(y)-log(pi)),
+                         0)
+    deviance <- sum(dev.resids)
     if(length(start))
       last.coef <- start
     else last.coef <- NULL
@@ -769,8 +778,8 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     na.act <- object$na.action
   }
   else{
-    m <- model.frame(rhs,data=newdata,na.action=na.exclude)
-    na.act <- attr(m,"na.action")
+    m <- model.frame(rhs,data=newdata)
+    na.act <- NULL
   }
   X <- model.matrix(rhs,m,
           contasts.arg=object$contrasts,
