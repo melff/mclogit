@@ -1,17 +1,21 @@
-\name{getSummary.mclogit}
+\name{getSummary-methods}
 \alias{getSummary.mclogit}
-\title{getSummary.mclogit}
+\alias{getSummary.mblogit}
+\title{`getSummary` Methods}
 \description{
-  A \code{\link[memisc]{getSummary}} method for use by \code{\link[memisc]{mtable}}
+  \code{\link[memisc]{getSummary}} methods for use by \code{\link[memisc]{mtable}}
 }
 \usage{
+\method{getSummary}{mblogit}(obj,
+            alpha=.05,
+            \dots)
 \method{getSummary}{mclogit}(obj,
             alpha=.05,
             rearrange=NULL,
             \dots)
 }
 \arguments{
-  \item{obj}{an object returned by \code{\link{mclogit}}}
+  \item{obj}{an object returned by \code{\link{mblogit}} or \code{\link{mclogit}}}
   \item{alpha}{level of the confidence intervals; their coverage should
     be 1-alpha/2 }
   \item{rearrange}{an optional named list of character vectors.
