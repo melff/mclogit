@@ -1,3 +1,48 @@
+#' Multinomial (Baseline) Logit Models for Categorical and Multinommial Responses
+#'
+#' The function \code{mblogit} fits multinomial logit models for categorical
+#' and multinomial count responses with fixed alternatives, where the logits are
+#' relative to a baseline category. 
+#'
+#' @param formula the model formula. The response must be a factor or a matrix
+#' of counts.
+#' @param data an optional data frame, list or environment (or object 
+#' coercible by \code{\link{as.data.frame}} to a data frame) containing 
+#' the variables in the model.  If not found in \code{data}, the 
+#' variables are taken from \code{environment(formula)}, 
+#' typically the environment from which \code{glm} is called. 
+#' @param subset an optional vector specifying a subset of observations to be 
+#' used in the fitting process.
+#' @param weights an optional vector of weights to be used in the fitting
+#' process.  Should be \code{NULL} or a numeric vector.
+#' @param na.action a function which indicates what should happen 
+#' when the data contain \code{NA}s.  The default is set by 
+#' the \code{na.action} setting of \code{\link{options}}, and is
+#' \code{\link{na.fail}} if that is unset.  The \sQuote{factory-fresh}
+#' default is \code{\link{na.omit}}.  Another possible value is
+#' \code{NULL}, no action.  Value \code{\link{na.exclude}} can be useful.
+#' @param model a logical value indicating whether \emph{model frame}
+#' should be included as a component of the returned value.
+#' @param x,y logical values indicating whether the response vector and model
+#' matrix used in the fitting process should be returned as components
+#' of the returned value.
+#' @param contrasts an optional list. See the \code{contrasts.arg}
+#' of \code{model.matrix.default}.
+#' @param control a list of parameters for the fitting process.
+#' See \code{\link{mclogit.control}}
+#' @param \dots arguments to be passed to \code{mclogit.control}
+#'
+#' @return   \code{mblogit} returns an object of class "mblogit", which has almost the
+#' same structure as an object of class "\link[stats]{glm}". The difference are
+#' the components \code{coefficients}, \code{residuals}, \code{fitted.values},
+#' \code{linear.predictors}, and \code{y}, which are matrices with
+#' number of columns equal to the number of response categories minus one.
+#' 
+#' @details The function \code{mblogit} internally rearranges the data
+#' into a 'long' format and uses \code{\link{mclogit.fit}} to compute
+#' estimates. Nevertheless, the 'user data' is unaffected.
+#' 
+#' @aliases predict.mblogit print.mblogit summary.mblogit print.summary.mblogit fitted.mblogit 
 mblogit <- function(formula,
                     data=parent.frame(),
                     subset,
@@ -5,7 +50,6 @@ mblogit <- function(formula,
                     na.action = getOption("na.action"),
                     model = TRUE, x = FALSE, y = TRUE,
                     contrasts=NULL,
-                    start.theta=NULL,
                     control=mclogit.control(...),
                     ...){
   
@@ -60,6 +104,8 @@ mblogit <- function(formula,
     yy <- c(t(y/w))
     weights <- rep(w*weights,each=ncol(y))
   }
+  else stop("response must either be a factor or a matrix of counts")
+    
   s <- rep(seq_len(nrow(X)),each=nrow(D))
   
   XD <- X%x%D
