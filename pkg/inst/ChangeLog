@@ -1,8 +1,29 @@
+2015-07-15:
+  - mclogit, mclogit.fit: Added support for starting values.
+
+2015-07-03:
+  - predict.mblogit: 'contrasts.arg' not 'contast.arg' ...
+  - predict-methods now should handle NAs in newdata arguments better.
+
+2015-06-17: 
+  - Corrected handling of weights, and standard errors of prediction.
+
+2015-06-15:
+  - 'getSummary' methods now return "contrasts" and "xlevels" components.
+  - Fixed prediction method for 'mclogit' results.
+  - Added 'fitted' and 'predict' methods for 'mblogit' results.
+
+2015-01-25: 
+  - Added support for multinomial baseline logit models in form of 'mblogit' as a frontend to 'mclogit.fit'
+
+2015-01-23:
+  - Added URLs to DESCRIPTION file
+
 2015-01-21:
-  Added `nobs` and `extractAIC` methods for `mclogit` objects, so that `drop1.default` should work with these.
+  - Added `nobs` and `extractAIC` methods for `mclogit` objects, so that `drop1.default` should work with these.
 
 2015-01-19:
-  Added call to result of `getSummary.mclogit`. 
+  - Added call to result of `getSummary.mclogit`. 
 
 2015-01-18: 
   - Cleanup of NAMESPACE file; added aliases to methods for `mclogit` objects so that users can see that they are present.
