@@ -1,8 +1,8 @@
 Package: mclogit
 Type: Package
 Title: Mixed Conditional Logit Models
-Version: 0.4-0
-Date: 2015-01-25
+Version: 0.4-1
+Date: 2015-07-19
 Author: Martin Elff
 Maintainer: Martin Elff <elff@gmx.com>
 Description: This packages provides allows to estimate conditional logit models of binary responses and multinomial counts,
@@ -11,6 +11,6 @@ Description: This packages provides allows to estimate conditional logit models 
   approach and thus should be used only if groups sizes are large.
 License: GPL-2
 Depends: stats, Matrix
-Enhances: memisc
+Imports: memisc
 LazyLoad: Yes
 URL: http://www.martin-elff.net/software/mclogit/,http://github.com/melff/mclogit/releases
