@@ -29,9 +29,9 @@
 \usage{
 
 mclogit(formula, data=parent.frame(), random=NULL,
-        subset, weights, offset=NULL, na.action = getOption("na.action"),
+        subset, weights = NULL, offset=NULL, na.action = getOption("na.action"),
         model = TRUE, x = FALSE, y = TRUE, contrasts=NULL,
-        start.theta=NULL,
+        start=NULL,start.theta=NULL,
         control=mclogit.control(\dots), \dots)
 }
 \arguments{
@@ -76,6 +76,10 @@ mclogit(formula, data=parent.frame(), random=NULL,
     default is \code{\link{na.omit}}.  Another possible value is
     \code{NULL}, no action.  Value \code{\link{na.exclude}} can be useful.}
 
+  \item{start}{an optional numerical vector of starting values
+    for the conditional logit parameters.
+  }
+
   \item{start.theta}{an optional numerical vector of starting values
     for the variance parameters.
   }
@@ -101,14 +105,14 @@ mclogit(formula, data=parent.frame(), random=NULL,
 
 }
 \value{
-  \code{mlogit} returns an object of class "mlogit", which has almost the
+  \code{mclogit} returns an object of class "mclogit", which has almost the
   same structure as an object of class "\link[stats]{glm}". The difference are
   the components \code{coefficients}, \code{residuals}, \code{fitted.values},
   \code{linear.predictors}, and \code{y}, which are matrices with
   number of columns equal to the number of response categories minus one.
 }
 \details{
-  \code{mlogit} tries first to fit the model using the IRLS algorithm of
+  \code{mclogit} tries first to fit the model using the IRLS algorithm of
   \code{\link[stats]{glm.fit}}, which has the advantage that
   starting values are not needed in most cases. If convergence
   cannot achieved, it tries to minimize the deviance using
