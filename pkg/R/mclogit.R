@@ -803,7 +803,7 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     sum.exp.eta <- rowsum(exp.eta,set)
     p <- exp.eta/sum.exp.eta[set]
     if(se.fit){
-      wX <- p*(X - rowsum(p*X,s)[s,,drop=FALSE])
+      wX <- p*(X - rowsum(p*X,set)[set,,drop=FALSE])
       se.p <- sqrt(rowSums(wX * (wX %*% V)))
       if(is.null(na.act))
         list(fit=p,se.fit=se.p)
