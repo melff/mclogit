@@ -7,8 +7,8 @@ Transport <- local({
 
   N <- 10
   unit.len <- 10
-  suburbs <- cbind(x=rnorm(n=N),y=rnorm(n=N))
-  workpop.suburb <- rpois(n=N,lambda=200)
+  suburbs <- cbind(x=stats::rnorm(n=N),y=stats::rnorm(n=N))
+  workpop.suburb <- stats::rpois(n=N,lambda=200)
 
 
   # There are a couple of large firms in the area
@@ -25,14 +25,14 @@ Transport <- local({
   # There are also some bus stations scattered in
   # the area ...
   n.bus.stations <- as.integer(N/1.3)
-  bus.stations <- cbind(  x=rnorm(n=n.bus.stations),
-                          y=rnorm(n=n.bus.stations))
+  bus.stations <- cbind(  x=stats::rnorm(n=n.bus.stations),
+                          y=stats::rnorm(n=n.bus.stations))
 
   # and some train stations
 
   n.train.stations <- as.integer(N/1.4)
-  train.stations <- cbind(x=rnorm(n=n.train.stations),
-                          y=rnorm(n=n.train.stations))
+  train.stations <- cbind(x=stats::rnorm(n=n.train.stations),
+                          y=stats::rnorm(n=n.train.stations))
 
   # Oil is expensive these days (2020!).
   # Cars and car maintenance costs are high, too.
@@ -88,7 +88,7 @@ Transport <- local({
                           split(data.frame(prop.true,working),
                                   suburb
                           ),
-                  function(x) rmultinom(n=1,
+                  function(x) stats::rmultinom(n=1,
                                   size=unique(x$working),
                                   prob=x$prop.true)
                   ))

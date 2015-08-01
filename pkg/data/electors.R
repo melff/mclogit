@@ -97,7 +97,7 @@ electors <- local({
 
   utils <- util.econ+util.auth+util.welfare
 
-  rand <- matrix(rnorm(n=ncol(utils)*T,sd=1),nrow=T,ncol=ncol(utils))
+  rand <- matrix(stats::rnorm(n=ncol(utils)*T,sd=1),nrow=T,ncol=ncol(utils))
   rand <- rand[rep(seq_len(nrow(rand)),each=nrow(classes)),]
 
 
@@ -116,7 +116,7 @@ electors <- local({
           )
 
   the.tab <- structure(t(sapply(rownames(probs),
-          function(nm) rmultinom(
+          function(nm) stats::rmultinom(
                   n=1,
                   size=the.sample[nm],
                   prob=probs[nm,]
