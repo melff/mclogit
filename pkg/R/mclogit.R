@@ -489,7 +489,9 @@ mclogit.fit.rePQL <- function(
       covmat.theta <- solve(Info1.theta)
     }
 
-   
+   coef <- drop(coef)
+   covmat <- as.matrix(covmat)
+   colnames(covmat) <- rownames(covmat) <- names(coef)
 
    names(theta) <- names(lev.ics)
    colnames(covmat.theta) <- rownames(covmat.theta) <- names(theta)
@@ -499,7 +501,7 @@ mclogit.fit.rePQL <- function(
    model.df <- ncol(X) + length(theta)
    resid.df <- resid.df-model.df
    return(list(
-      coefficients = drop(coef),
+      coefficients = coef,
       varPar = theta,
       chisq.theta = chisq.theta,
       random.effects = reff,
@@ -636,7 +638,18 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     invisible(x)
 }
 
-vcov.mclogit <- function(object,...){
+vcov.mclogit <- function(object,varPar=TRUE,...){
+  if(varPar && length(object$varPar)){
+    cm <- object$covmat
+    cmv <- object$covmat.varPar
+    nms <- colnames(cm)
+    nmsv <- paste0("Var(",colnames(cmv),")")
+    
+    v <- as.matrix(bdiag(cm,cmv))
+    colnames(v) <- rownames(v) <- c(nms,nmsv)
+    return(v)
+  }
+  else
     return(object$covmat)
 }
 
