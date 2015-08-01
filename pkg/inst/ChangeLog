@@ -1,3 +1,7 @@
+2015-08-01:
+  - Added row and column names to estimator result of `vcov()`
+  - Make sure that scripts run with "mclogit" loaded by `devtools::load_all()`
+
 2015-07-15:
   - mclogit, mclogit.fit: Added support for starting values.
 
