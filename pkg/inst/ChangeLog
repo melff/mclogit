@@ -1,3 +1,7 @@
+2015-10-08:
+  - Fix display of number of observations
+  - Drop redundant coefficients
+
 2015-08-01:
   - Added row and column names to estimator result of `vcov()`
   - Make sure that scripts run with "mclogit" loaded by `devtools::load_all()`

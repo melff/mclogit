@@ -101,6 +101,16 @@ mclogit <- function(
         warning("removing ",paste(names(const),collapse=",")," from model")
         X <- X[,-const,drop=FALSE]
     }
+    if(!length(start)){
+      drop.coefs <- check.mclogit.drop.coefs(Y,sets,weights,X,
+                                             offset = offset)
+      if(any(drop.coefs)){
+        warning("removing ",paste(colnames(X)[drop.coefs],collapse=",")," from model")
+        X <- X[,!drop.coefs,drop=FALSE]
+      }
+    }
+    
+    
     fit <- mclogit.fit(Y,sets,weights,X,
                         control=control,
                         start = start,
@@ -149,6 +159,27 @@ mclogit <- function(
     else
         class(fit) <- c("mclogit","lm")
     fit
+}
+
+
+check.mclogit.drop.coefs <- function(y,
+                                     s,
+                                     w,
+                                     X,
+                                     offset){
+  nvar <- ncol(X)
+  nobs <- length(y)
+  if(!length(offset))
+    offset <- rep.int(0, nobs)
+  eta <- mclogitLinkInv(y,s,w)
+  pi <- mclogitP(eta,s)
+  y.star <- eta - offset + (y-pi)/pi
+  yP.star <- y.star - rowsum(pi*y.star,s)[s]
+  XP <- X - rowsum(pi*X,s)[s,,drop=FALSE]
+  ww <- w*pi
+  good <- ww > 0
+  wlsFit <- lm.wfit(x=XP[good,,drop=FALSE],y=yP.star[good],w=ww[good])  
+  is.na(wlsFit$coef)
 }
 
 mclogit.fit <- function(
@@ -288,7 +319,7 @@ mclogit.fit.rePQL <- function(
     nvar <- ncol(X)
     deviance <- Inf
     eta <- mclogitLinkInv(y,s,w)
-    nobs <- length(eta)
+    
     if (is.null(offset))
       offset <- rep.int(0, nobs)
     lev.ics <- attr(Z,"col.indices")
@@ -700,8 +731,8 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
       varPar.table[,4] <- pvalue.vp
     } else varPar.table <- NULL
 
-    ans <- c(object[c("call","terms","baseline","deviance","contrasts",
-                       "null.deviance","iter","na.action","model.df","residual.df")],
+    ans <- c(object[c("call","terms","deviance","contrasts",
+                       "null.deviance","iter","na.action","model.df","residual.df","N")],
               list(coefficients = coef.table,
                     varPar = varPar.table,
                     cov.coef=object$covmat,
@@ -766,7 +797,7 @@ print.summary.mclogit <-
 
 fitted.mclogit <- function(object,type=c("probabilities","counts"),...){
   weights <- object$weights
-  nobs <- length(weights)
+  
   res <- object$fitted.values
   type <- match.arg(type)
   
