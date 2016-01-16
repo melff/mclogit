@@ -317,11 +317,13 @@ mclogit.fit.rePQL <- function(
       ){
     #crossprod <- Matrix:::crossprod
     nvar <- ncol(X)
+    nobs <- length(y)
+    if(!length(offset))
+      offset <- rep.int(0, nobs)
+    
     deviance <- Inf
     eta <- mclogitLinkInv(y,s,w)
     
-    if (is.null(offset))
-      offset <- rep.int(0, nobs)
     lev.ics <- attr(Z,"col.indices")
     nlev <- length(lev.ics)
     sw <- c(tapply(w,s,"[",1))
