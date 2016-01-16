@@ -1,0 +1,47 @@
+*.Rcheck
+*.tar.gz
+*.zip
+*.Rproj
+*.Rproj.user
+*~
+/exampledata.csv
+/mclogit, strange standard errors?.mbox
+/sim_clogitforMartin.R
+/sim_clogitforMartin.R~
+/sim-clogit.log
+.Rproj.user
+/AIC-mclogit.R
+/binomial-family.R
+/bugreports/cremer-schulte/mclogit weights.mbox
+/bugreports/feralli/mclogit package_little (but very annoying) bug with predict after mclogit command.mbox
+/bugreports/feralli/RE_mclogit package_little (but very annoying) bug with predict after mclogit command.mbox
+/bugreports/killeen/examplecode.txt
+/bugreports/killeen/exampledata.txt
+/bugreports/killeen/killeen-new.R
+/bugreports/killeen/killeen.R
+/bugreports/killeen/residuals_output.txt
+/Conflicting imports in CRAN package mclogit.mbox
+/Dupke.R
+/mclogit-00check.html
+/Mclogit-AIC.mbox
+/mclogit-Ex.pdf
+/mclogit-random-old.R
+/predict-glm.R
+/residuals-glm.R
+/S.RData
+/testAIC.R
+/test-package.R
+/pkg.pdf
+electors-n.R
+examine-varpar.R
+test-anova-mclogit.R
+CRAN-submission-email-template.txt
+test-electors-mtable.R
+theory
+test-mclogit.R
+test-vcov.R
+sync-r-forge
+.RData
+.Rhistory
+.stfolder
+.stignore
