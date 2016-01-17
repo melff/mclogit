@@ -11,6 +11,6 @@ Description: Specification and estimation of conditional logit models of binary 
   approach and thus should be used only if groups sizes are large.
 License: GPL-2
 Depends: stats, Matrix
-Imports: memisc
+Imports: memisc, methods
 LazyLoad: Yes
 URL: http://www.elff.eu/software/mclogit/,http://github.com/melff/mclogit/releases
