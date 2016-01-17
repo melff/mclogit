@@ -1,5 +1,6 @@
 import(stats,Matrix)
 importFrom(memisc,getSummary,"%nin%")
+importFrom(methods,as)
 export(
       mclogit,
       mclogit.fit,
