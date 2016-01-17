@@ -45,3 +45,7 @@ sync-r-forge
 .Rhistory
 .stfolder
 .stignore
+gitlog
+gitlog.out
+tmp.txt
+release.txt

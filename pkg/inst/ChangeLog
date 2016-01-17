@@ -1,3 +1,11 @@
+2016-01-17:
+  - Import `as` from package "methods".
+  - Make sure `nobs` is defined in `mclogit.fit.rePQL`.
+
+2016-01-16: 
+  - Updated `DESCRIPTION` file: Maintainer email address changed and no "This package" 
+    at start of package discriptions.
+
 2015-10-08:
   - Fix display of number of observations
   - Drop redundant coefficients
