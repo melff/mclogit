@@ -49,3 +49,5 @@ gitlog
 gitlog.out
 tmp.txt
 release.txt
+test-mblogit-housing.R
+.gitignore
