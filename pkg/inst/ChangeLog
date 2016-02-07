@@ -22,7 +22,7 @@
   - predict-methods now should handle NAs in newdata arguments better.
 
 2015-06-17: 
-  - Corrected handling of weights, and standard errors of prediction.
+  - Corrected handling of weights and standard errors of prediction.
 
 2015-06-15:
   - 'getSummary' methods now return "contrasts" and "xlevels" components.
