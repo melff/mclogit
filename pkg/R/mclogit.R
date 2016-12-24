@@ -213,7 +213,7 @@ mclogit.fit <- function(
     for(iter in 1:control$maxit){
         y.star <- eta - offset + (y-pi)/pi
         yP.star <- y.star - rowsum(pi*y.star,s)[s]
-        XP <- X - rowsum(pi*X,s)[s,,drop=FALSE]
+        XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
         ww <- w*pi
         good <- ww > 0
         wlsFit <- lm.wfit(x=XP[good,,drop=FALSE],y=yP.star[good],w=ww[good])
@@ -259,11 +259,11 @@ mclogit.fit <- function(
     }
     if (!converged) warning("algorithm did not converge")
     if (boundary) warning("algorithm stopped at boundary value")
-    eps <- 10*.Machine$double.eps
-    if (any(pi < eps) || any(1-pi < eps))
-        warning("fitted probabilities numerically 0 occurred")
+    #eps <- 10*.Machine$double.eps
+    #if (any(pi < eps) || any(1-pi < eps))
+    #    warning("fitted probabilities numerically 0 occurred")
 
-    XP <- X - rowsum(pi*X,s)[s,,drop=FALSE]
+    XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
     ww <- w*pi
     Information <- crossprod(XP,ww*XP)
         
@@ -825,7 +825,7 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
   }
   else{
     m <- model.frame(rhs,data=newdata)
-    na.act <- NULL
+    na.act <- attr(m,"na.action")
   }
   X <- model.matrix(rhs,m,
           contasts.arg=object$contrasts,
@@ -844,6 +844,8 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     lhs <- object$formula[[2]]
     set <- lhs[[3]]
     set <- eval(set,newdata,parent.frame())
+    if(length(na.act))
+        set <- set[-na.act]
     set <- match(set,unique(set))
     exp.eta <- exp(eta)
     sum.exp.eta <- rowsum(exp.eta,set)
