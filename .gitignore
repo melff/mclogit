@@ -51,3 +51,4 @@ tmp.txt
 release.txt
 test-mblogit-housing.R
 .gitignore
+/mclogit.org
