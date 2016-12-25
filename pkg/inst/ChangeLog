@@ -1,3 +1,9 @@
+2016-09-01:
+  - Fixed `mclogit.fit()` and `predict.mclogit()` to work better without covariates.
+
+2016-02-07:
+  - Explicitely import package "methods"
+
 2016-01-17:
   - Import `as` from package "methods".
   - Make sure `nobs` is defined in `mclogit.fit.rePQL`.
