@@ -45,7 +45,6 @@ mclogit <- function(
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
                 start=NULL,
-                start.theta=NULL,
                 control=mclogit.control(...),
                 ...
             ){
@@ -56,17 +55,23 @@ mclogit <- function(
 
     call <- match.call(expand.dots = TRUE)
 
-    if(length(random))
-        random <- setupRandomFormula(random)
-
     if(missing(data)) data <- environment(formula)
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "weights", "offset", "na.action"), names(mf), 0)
     mf <- mf[c(1, m)]
     mf$drop.unused.levels <- TRUE
     mf[[1]] <- as.name("model.frame")
+
+    if(length(random)){
+        rf <- paste(c(".~.",all.vars(random)),collapse="+")
+        rf <- as.formula(rf)
+        mff <- structure(mf$formula,class="formula")
+        mf$formula <- update(mff,rf)
+    }
+    
     mf <- eval(mf, parent.frame())
-    mt <- attr(mf, "terms")
+    mt <- terms(formula)
+    
     na.action <- attr(mf,"na.action")
     weights <- as.vector(model.weights(mf))
     offset <- as.vector(model.offset(mf))
@@ -117,25 +122,35 @@ mclogit <- function(
                         offset = offset)
     null.dev <- fit$null.deviance
     if(length(random)){ ## random effects
-        if(length(all.vars(random$covariates))){
-          warning("random slopes not yet implemented, ignoring covariates")
-          random$covarates <- ~1
+        
+        random <- setupRandomFormula(random)
+        rt <- terms(random$formula)
+        
+        groups <- random$groups
+        rX <- model.matrix(rt,mf,contrasts)
+        
+        groups <- mf[groups]
+        
+        nlev <- length(groups)
+        groups[[1]] <- quickInteraction(groups[1])
+
+        if(nlev > 1){
+            for(i in 2:nlev)
+                groups[[i]] <- quickInteraction(groups[c(i-1,i)])
         }
-        mfr <- match.call(expand.dots = FALSE)
-        mr <- match(c("formula", "data", "subset", "weights", "na.action"), names(mfr), 0)
-        mfr <- mfr[c(1, mr)]
-        environment(random$all.vars) <-environment(formula)
-        mfr$formula <- random$all.vars
-        mfr$drop.unused.levels <- TRUE
-        mfr[[1]] <- as.name("model.frame")
-        mfr <- eval(mfr, parent.frame())
-        Z <- reDesignMatrix(random,mfr,use=if(length(na.action))-na.action else NULL)
-        fit <- mclogit.fit.rePQL(Y,sets,weights,X,Z,
-                              start=fit$coef,
-                              start.theta=start.theta,
-                              control=control,
-                              offset = offset)
-     }
+        
+        Z <- lapply(groups,mkZ,rX=rX)
+        G <- mkG(ncol(rX))
+        G <- rep(list(G),length(groups))
+        names(Z) <- names(groups)
+        names(G) <- names(groups)
+        
+        fit <- mclogit.fit.rePQL(Y,sets,weights,
+                                 X,Z,G,groups,
+                                 start=fit$coef,
+                                 control=control,
+                                 offset = offset)
+    }
     if(x) fit$x <- X
     if(x && length(random)) fit$z <- Z
     if(!y) {
@@ -299,10 +314,6 @@ mclogit.fit <- function(
         ))
 }
 
-tr <- function(x) sum(diag(x))
-
-
-
 
 mclogit.fit.rePQL <- function(
       y,
@@ -310,25 +321,21 @@ mclogit.fit.rePQL <- function(
       w,
       X,
       Z,
-      start=NULL,
-      start.theta=NULL,
+      G,
+      groups,
+      start,
       offset=NULL,
       control=mclogit.control()
       ){
     #crossprod <- Matrix:::crossprod
+
     nvar <- ncol(X)
     nobs <- length(y)
+    nsets <- length(unique(s))
+    
     if(!length(offset))
       offset <- rep.int(0, nobs)
     
-    deviance <- Inf
-    eta <- mclogitLinkInv(y,s,w)
-    
-    lev.ics <- attr(Z,"col.indices")
-    nlev <- length(lev.ics)
-    sw <- c(tapply(w,s,"[",1))
-    sqrt.sw <- sqrt(sw)
-    nvalid <- length(s)
     coef <- start
     eta <- c(X%*%coef) + offset
     pi <- mclogitP(eta,s)
@@ -336,184 +343,281 @@ mclogit.fit.rePQL <- function(
     dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
     deviance <- sum(dev.resids)
     converged <- FALSE
-    lev.seq <- seq(length(lev.ics))
 
-    ## Score Test for Variance Parameters
-        
-      ww <- w*pi
-      P.sw <- sqrt(w)*pi*t(fac2sparse(s))
-      Zw <- crossprod(P.sw,Z)
-      ZWZ <- crossprod(Z,ww*Z) - crossprod(Zw)
-      u <- crossprod(Z,w*(y-pi)) 
-      l <- numeric(nlev)
-      K <- matrix(nrow=nlev,ncol=nlev)
-      for(i in lev.seq){
-        ii <- lev.ics[[i]]
-        ZWZ.i <- ZWZ[ii,ii]
-        l[i] <- crossprod(u[ii]) - tr(ZWZ.i)
-        K[i,i] <- sum(ZWZ.i*ZWZ.i)
-        for(j in lev.seq[lev.seq > i]){
-          jj <- lev.ics[[j]]
-          ZWZ.ij <- ZWZ[ii,jj]
-          K[i,j] <- K[j,i] <- sum(ZWZ.ij*ZWZ.ij)
-        }
-      }
-    chisq.theta <- l^2/diag(K)
-   ## Starting values for variance parameters
-    if(length(start.theta)){
-      if(length(start.theta)<length(lev.ics))
-        stop("insufficient starting values for variance parameters")
-      if(length(start.theta)>length(lev.ics))
-        stop("to many starting values for variance parameters")
-      last.theta <- theta <- start.theta
-    }
-    else{
-      if(all(l < 0)) stop("insufficient residual variance; set some variance parameters to zero")
-      theta <- solve(K,l)
-      if(any(theta<0)){
-        warning("Negative initial estimates found; correcting",call.=FALSE)
-        cat("\ntheta=",theta)
-        l[l < 0] <- 0
-        cat("\nl=",l)
-        ii <- 0
-        bb <- 1
-        I <- diag(x=diag(K))
-        while(any(theta<0)){
-          ii <- ii + 1
-          cat("\nTrial ",ii)
-          bb <- bb/2
-          aa <- 1 - bb
-#           if(ii > control$maxit)
-#               stop("insufficient residual variance; set some variance parameters to zero")
-          theta <- solve(aa*I+bb*K,l)
-          cat("\ntheta=",theta)
-        }
-      }
-      last.theta <- theta
-    }
-    if(control$trace)
-      cat("\nInitial estimate of theta: ",theta)
-    b <- rep(0,ncol(Z))
-    rept <- sapply(lev.ics,length)
-    iSigma <- as(Diagonal(x=rep(1/theta,rept)),"sparseMatrix")
+    #
+    mk <- lapply(groups,lunq)
+    I.mk <- lapply(mk,Diagonal)
+    G.star <- Map(G.star1,I.mk,G)
     
+    ## Starting values for variance parameters
+
+    priW <- Diagonal(x=w)
+
+    Pi <- Matrix(0,nrow=nobs,ncol=nsets)
+    i <- 1:nobs
+    Pi[cbind(i,s)] <- pi
+    Pi <- Diagonal(x=pi)-tcrossprod(Pi)
+    W <- priW%*%Pi
+
+    y.star <- eta + (y-pi)/pi
+
+    Wy <- W%*%y.star
+    WX <- W%*%X
+    XWX <- crossprod(X,WX)
+    iXWX <- solve(XWX)
+
+    XWy <- crossprod(X,Wy)
+
+    WZ <- lapply(Z,`%*%`,x=W)
+    ZWX <- lapply(Z,crossprod,y=WX)
+    ZWy <- lapply(Z,crossprod,y=Wy)
+
+    nlevs <- length(G)
+    nvpar <- sapply(G,length)
+    vpar.selector <- rep(1:nlevs,nvpar)
+    
+    u <- list()
+    S <- matrix(list(),nlevs,nlevs)
+
+    for(k in 1:nlevs){
+        ZWX.iXWX <- ZWX[[k]]%*%iXWX
+        v.k <- ZWy[[k]] - ZWX.iXWX%*%XWy
+        A.kk <- tcrossprod(ZWX.iXWX,ZWX[[k]])
+
+        G.star.k <- G.star[[k]]
+        u1 <- sapply(G.star.k,quadform,x=v.k)
+        u2 <- sapply(G.star.k,tr.crossprod,B=A.kk)
+        u[[k]] <- u1 - u2
+
+        G.star.A.kk <- lapply(G.star.k,`%*%`,y=A.kk)
+        
+        hh.k <- length(G[[k]])
+        S.kk <- matrix(0,hh.k,hh.k)
+
+        lwrTri <- lower.tri(S.kk,diag=TRUE)
+        h1 <- row(S.kk)[lwrTri]
+        h2 <- col(S.kk)[lwrTri]
+        tmp <- mapply(tr.crossprod,G.star.A.kk[h1],G.star.A.kk[h2])
+        S.kk[lwrTri] <- tmp
+        S.kk <- lwr2sym(S.kk)
+        S[[k,k]] <- S.kk
+        
+        if(k<nlevs){
+            for(r in (k+1):nlevs){
+                A.kr <- tcrossprod(ZWX.iXWX,ZWX[[r]])
+                A.rk <- t(A.kr)
+
+                G.star.A.kr <- lapply(G.star.k,`%*%`,y=A.kr)
+                G.star.A.rk <- lapply(G.star.k,`%*%`,y=A.rk)
+
+                p.r <- ncol(Z[[r]])
+                S.kr <- matrix(0,p.k,p.r)
+                h1 <- rows(S.kr)
+                h2 <- cols(S.kr)
+                S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.rk[h2])
+                S[[k,r]] <- S.kr
+                S[[k,r]] <- t(S.kr)                
+            }
+        }
+    }
+    u <- unlist(u)
+    S <- fuseMat(S)
+    
+    theta <- solve(S,u)
+    theta <- split(theta,vpar.selector)
+    Phi <- list()
+    for(k in 1:nlevs)
+        Phi[[k]] <- fillG(G[[k]],theta[[k]])
+
+    iPhi <- lapply(Phi,solve)
+
+    Sigma <- Map(`%x%`,I.mk,Phi)
+    Sigma <- do.call(bdiag,unname(Sigma))
+
+    iSigma <- Map(`%x%`,I.mk,iPhi)
+    iSigma <- do.call(bdiag,unname(iSigma))
+
+    ##:ess-bp-start::browser@nil:##
+browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
+    
+    b.split <- rep(1:nlevs,sapply(Z,ncol))
+
     ## Extended IWLS and Fisher-scoring for variance parameters
     converged <- FALSE
-    for(iter in 1:control$maxit){
-
-      y.star <- eta - offset + (y-pi)/pi
-      P.sw <- sqrt(w)*pi*t(fac2sparse(s))
-      Py.star <- crossprod(P.sw,y.star)
-      ww <- w*pi
-      wX <- ww*X
-      wZ <- ww*Z
-      PX <- crossprod(P.sw,X)
-      PZ <- crossprod(P.sw,Z)
-      XWX <- crossprod(X,wX) - crossprod(PX)
-      wZ <- crossprod(P.sw,Z)
-      ZWZ <- crossprod(Z,ww*Z) - crossprod(PZ)    
-      iZWZiSigma <- solve(ZWZ + iSigma)
-      ZWX <- crossprod(Z,wX) - crossprod(PZ,PX)
-      
-      w.y.star <- ww*y.star
-      XWy<- crossprod(X,w.y.star) - crossprod(PX,Py.star)
-      ZWy<- crossprod(Z,w.y.star) - crossprod(PZ,Py.star)
-      
-      
-      
-      XiVX <- XWX - crossprod(ZWX,iZWZiSigma%*%ZWX)
-      XiVy <- XWy - crossprod(ZWX,iZWZiSigma%*%ZWy)
-      
-      last.coef <- coef
-      coef <- as.matrix(solve(XiVX,XiVy))
-      
-      last.b <- b
-      b <- iZWZiSigma%*%(ZWy - ZWX%*%coef)
-      #print(range(b))
-      
-      eta <- as.vector(X%*%coef) + as.vector(Z%*%b)
-      pi <- mclogitP(eta,s)
-      
-      dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
-      last.deviance <- deviance
-      deviance <- sum(dev.resids)
-
-      ## Fisher-scoring step for variance parameters
-      grad.theta <- numeric(nlev)
-      Info1.theta <- H2.theta <- matrix(0,ncol=nlev,nrow=nlev)
-      for(i in lev.seq){
-        ii <- lev.ics[[i]]
-        m.i <- length(ii)
-        A.i <- as.matrix(iZWZiSigma[ii,ii])
-        grad.theta[i] <- (crossprod(b[ii]) -theta[i]*m.i + tr(A.i))/theta[i]^2
-        Info1.theta[i,i] <- m.i/theta[i]^2 
-        H2.theta[i,i] <- sum((A.i)^2)/theta[i]^4
-        for(j in lev.seq[lev.seq > i]){
-          jj <- lev.ics[[j]]
-          A.ij <- as.matrix(iZWZiSigma[ii,jj])
-          H2.theta[i,j] <- H2.theta[j,i] <- sum((A.ij)^2)/theta[i]^2/theta[j]^2
+    ZWZ <- matrix(list(),nlevs,nlevs)
+    for(k in 1:nlevs){
+        Z.k <- Z[[k]]
+        ZWZ[[k,k]] <- crossprod(Z.k,W%*%Z.k)
+        if(k<nlevs){
+            for(r in (k+1):nlevs){
+                Z.r <- Z[[r]]                    
+                ZWZ.kr <- crossprod(Z.k,W%*%Z.r)
+                ZWZ[[k,r]] <- ZWZ.kr
+                ZWZ[[r,k]] <- t(ZWZ.kr)
+            }
         }
-      }
-      Info.theta <- Info1.theta - H2.theta
-      #print(grad.theta)
-      #print(Info.theta)
-      if(all(eigen(Info.theta)$values>0))
-        diff.theta <- solve(Info.theta,grad.theta)
-      else
-        diff.theta <- solve(Info1.theta,grad.theta)
-      theta <- theta + diff.theta
-      #message("theta=",theta)
-      if(any(theta<0)){
-        ## Handle negative variances
-        warning("negative values of variance parameters occured",call.=FALSE)
-      }
- 
-      crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
-      ## Checking convergence
-      #crit <- (control$eps)^(-2) *max(abs(delta.theta/(theta+.1)),abs(delta.coef1/(coef1+.1)))
-      #crit.theta <- max(abs(delta.theta/(theta+.1)))
-      if(control$trace)
-          cat("\nIteration",iter,"- Deviance =",deviance,#"theta =",theta,
-          "criterion = ",abs(deviance-last.deviance)/abs(0.1+deviance)#,
-          #"criterion[2] = ",max(abs(theta - last.theta))
-          )
-
-      if(crit < control$eps){
-        converged <- TRUE
-        if(control$trace) cat("\nconverged\n")
-        break
-      }
-   }
-   if (!converged) warning("algorithm did not converge")
-    
-    P.sw <- sqrt(w)*pi*t(fac2sparse(s))
-    ww <- w*pi
-    wX <- ww*X
-    wZ <- ww*Z
-    PX <- crossprod(P.sw,X)
-    PZ <- crossprod(P.sw,Z)
-    XWX <- crossprod(X,wX) - crossprod(PX)
-    wZ <- crossprod(P.sw,Z)
-    ZWZ <- crossprod(Z,ww*Z) - crossprod(PZ)    
-    iZWZiSigma <- solve(ZWZ + iSigma)
-    ZWX <- crossprod(Z,wX) - crossprod(PZ,PX)
-
-    XiVX <- XWX - crossprod(ZWX,iZWZiSigma%*%ZWX)
-    covmat <- solve(XiVX)
-    
-    Info1.theta <- H2.theta <- matrix(0,ncol=nlev,nrow=nlev)
-    for(i in lev.seq){
-      ii <- lev.ics[[i]]
-      m.i <- length(ii)
-      A.i <- as.matrix(iZWZiSigma[ii,ii])
-      Info1.theta[i,i] <- m.i/theta[i]^2 
-      H2.theta[i,i] <- sum((A.i)^2)/theta[i]^4
-      for(j in lev.seq[lev.seq > i]){
-        jj <- lev.ics[[j]]
-        A.ij <- as.matrix(iZWZiSigma[ii,jj])
-        H2.theta[i,j] <- H2.theta[j,i] <- sum((A.ij)^2)/theta[i]^2/theta[j]^2
-      }
     }
+    ZWX <- fuseMat(ZWX)
+    ZWy <- fuseMat(ZWy)
+    ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
+    
+    for(iter in 1:control$maxit){
+        
+        K <- solve(ZWZ.iSigma)
+        XiVW <- XWX - crossprod(ZWX,K%*%ZWX)
+        XiVy <- XWX - crossprod(ZWX,K%*%ZWy)
+        coef <- solve(XiVX,XiVy)
+
+        b <- K%*%(ZWy-ZWX%*%coef)
+
+        b. <- split(b,b.split)
+        Zb <- Map(`%*%`,Z,b.)
+        Zb <- do.call(rbind,Zb)
+
+        eta <- c(X%*%coef + Zb) + offset
+        pi <- mclogitP(eta,s)
+
+        dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
+
+        Pi[cbind(i,s)] <- pi
+        Pi <- Diagonal(x=pi)-tcrossprod(Pi)
+        W <- priW%*%Pi
+
+        y.star <- eta + (y-pi)/pi
+
+        Wy <- W%*%y.star
+        WX <- W%*%X
+        XWX <- crossprod(X,WX)
+        iXWX <- solve(XWX)
+
+        XWy <- crossprod(X,Wy)
+
+        WZ <- lapply(Z,`%*%`,x=W)
+        ZWX <- lapply(Z,crossprod,y=WX)
+        ZWy <- lapply(Z,crossprod,y=Wy)
+
+        for(k in 1:nlevs){
+            Z.k <- Z[[k]]
+            ZWZ[[k,k]] <- crossprod(Z.k,W%*%Z.k)
+            if(k<nlevs){
+                for(r in (k+1):nlevs){
+                    Z.r <- Z[[r]]                    
+                    ZWZ.kr <- crossprod(Z.k,W%*%Z.r)
+                    ZWZ[[k,r]] <- ZWZ.kr
+                    ZWZ[[r,k]] <- t(ZWZ.kr)
+                }
+            }
+        }
+
+        ## Fisher-scoring step for variance parameters
+        ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
+        ZWX <- fuseMat(ZWX)
+        ZWy <- fuseMat(ZWy)
+        K <- solve(ZWZ.iSigma)
+        resid <- priW%*%(y-pi)
+
+        for(k in 1:nlevs){
+            ZWZ. <- do.call(rbind,ZWZ[,k])
+        }
+        
+        u <- list()
+        S <- matrix(list(),nlevs,nlevs)
+        
+        for(k in 1:nlevs){
+
+            G.star.k <- G.star[[k]]
+            Zres.k <- crossprod(Z[[k]],resid)
+            u[[k]] <- sapply(G.star.k,quadform,x=Zres.k)
+
+            ZWZ.kk <- ZWZ[[k,k]]
+            ZWZ.k <- ZWZ.[[k]]
+            
+            A.kk <- ZWZ.kk - crossprod(ZWZ.k,K%*%ZWZ.k)
+            G.star.A.kk <- lapply(G.star.k,`%*%`,y=A.kk)
+            
+            hh.k <- length(G[[k]])
+            S.kk <- matrix(0,hh.k,hh.k)
+
+            lwrTri <- lower.tri(S.kk,diag=TRUE)
+            h1 <- row(S.kk)[lwrTri]
+            h2 <- col(S.kk)[lwrTri]
+            tmp <- mapply(tr.crossprod,G.star.A.kk[h1],G.star.A.kk[h2])
+            S.kk[lwrTri] <- tmp
+            S.kk <- lwr2sym(S.kk)
+            S[[k,k]] <- S.kk
+
+            if(k<nlevs){
+
+                for(r in (k+1):nlevs){
+                    
+                    ZWZ.kr <- ZWZ[[k,r]]
+                    ZWZ.r <- ZWZ.[[r]]
+
+                    A.kr <- ZWZ.kr - crossprod(ZWZ.k,K%*%ZWZ.r)
+                    A.rk <- t(A.kr)
+
+                    G.star.A.kr <- lapply(G.star.k,`%*%`,y=A.kr)
+                    G.star.A.rk <- lapply(G.star.k,`%*%`,y=A.rk)
+
+                    p.r <- ncol(Z[[r]])
+                    S.kr <- matrix(0,p.k,p.r)
+                    h1 <- rows(S.kr)
+                    h2 <- cols(S.kr)
+                    S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.rk[h2])
+                    S[[k,r]] <- S.kr
+                    S[[k,r]] <- t(S.kr)
+                }
+            }
+        }
+
+        u <- unlist(u)
+        Info.theta <- fuseMat(S)
+        
+        theta <- solve(Info.theta,u)
+        theta <- split(theta,vpar.selector)
+        Phi <- list()
+        for(k in 1:nlevs)
+            Phi[[k]] <- fillG(G[[k]],theta[[k]])
+
+        logDetPhi <- lapply(Phi,log.Det)
+        logDetSigma <- Map(`*`,logDetPhi,mk)
+        logDetSigma <- sum(unlist(logDetSigma))
+        
+        iPhi <- lapply(Phi,solve)
+
+        Sigma <- Map(`%x%`,I.mk,Phi)
+        Sigma <- do.call(bdiag,unname(Sigma))
+
+        iSigma <- Map(`%x%`,I.mk,iPhi)
+        iSigma <- do.call(bdiag,unname(iSigma))
+
+        ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
+
+        logDet.ZWZ.iSigma <- log.Det(ZWZ.iSigma)
+
+        last.deviance <- deviance
+        deviance <- sum(dev.resids) + logDetSigma + logDet.ZWZ.iSigma
+
+        crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
+
+        if(control$trace)
+            cat("\nIteration",iter,"- Deviance =",deviance,#"theta =",theta,
+                "criterion = ",abs(deviance-last.deviance)/abs(0.1+deviance)#,
+                                        #"criterion[2] = ",max(abs(theta - last.theta))
+                )
+
+        if(crit < control$eps){
+            converged <- TRUE
+            if(control$trace) cat("\nconverged\n")
+            break
+        }
+    }
+    if (!converged) warning("algorithm did not converge")
+
+    K <- solve(ZWZ.iSigma)
+    XiVW <- XWX - crossprod(ZWX,K%*%ZWX)
+    covmat.coef <- solve(XiVX)
+    
   
     if(all(eigen(Info.theta)$values>0))
       covmat.theta <- solve(Info.theta)
@@ -528,16 +632,13 @@ mclogit.fit.rePQL <- function(
 
    names(theta) <- names(lev.ics)
    colnames(covmat.theta) <- rownames(covmat.theta) <- names(theta)
-   reff <- b
-   reff <- lapply(lev.ics,function(ii)reff[ii])
+
    resid.df <- length(y)#-length(unique(s))
    model.df <- ncol(X) + length(theta)
    resid.df <- resid.df-model.df
    return(list(
       coefficients = coef,
       varPar = theta,
-      chisq.theta = chisq.theta,
-      random.effects = reff,
       linear.predictors = eta,
       fitted.values = pi,
       ll=NA,
@@ -560,56 +661,23 @@ mclogit.fit.rePQL <- function(
 
 
 setupRandomFormula <- function(formula){
-  fo <- delete.response(terms(formula))
-  attributes(fo) <- NULL
-  if(length(fo[[2]]) < 2 || as.character(fo[[2]][1])!="|")
-    stop("missing '|' operator")
-  covariates <- fo
-  groups <- fo
-  covariates[2] <- fo[[2]][2]
-  groups[2] <- fo[[2]][3]
-  list(
-    covariates=covariates,
-    groups=groups,
-    all.vars=reformulate(all.vars(fo))
+
+    trms <- terms(formula)
+    fo <- delete.response(trms)
+    
+    attributes(fo) <- NULL
+    if(length(fo[[2]]) < 2 || as.character(fo[[2]][1])!="|")
+        stop("missing '|' operator")
+
+    groups <- fo
+    fo[2] <- fo[[2]][2]
+    groups[2] <- groups[[2]][3]
+    list(
+        formula=structure(fo,class="formula"),
+        groups=all.vars(groups)
     )
 }
 
-reDesignMatrix <- function(random,data,use=NULL){
-  covariates <- all.vars(random$covariates)
-  if(length(covariates)) warning("covariates not yet implemented")
-  if(!length(use)) use <- TRUE
-  groups <- data[use,all.vars(random$groups),drop=FALSE]
-  gnames <- names(groups)
-  n <- length(groups[[1]])
-  nlev <- length(groups)
-  groups[[1]] <- quickInteraction(groups[[1]])
-  if(nlev>1)
-    for(i in 2:nlev)
-      groups[[i]] <- quickInteraction(groups[c(i-1,i)])
-  un <- length(attr(groups[[1]],"unique"))
-  Z <- Matrix(0,nrow=n,ncol=un,dimnames=list(NULL,paste(gnames[1],seq(un),sep="")))
-  ij <- cbind(1:n,groups[[1]])
-  Z[ij] <- 1
-  lev.ics <- list()
-  lev.ics[[1]] <- seq.int(un)
-  if(nlev>1)
-    for(i in 2:nlev){
-      un.i <- length(attr(groups[[i]],"unique"))
-      Z.i <- Matrix(0,nrow=n,ncol=un.i,dimnames=list(NULL,paste(gnames[i],seq(un.i),sep="")))
-      ij <- cbind(1:n,groups[[i]])
-      Z.i[ij] <- 1
-      Z <- cbind2(Z,Z.i)
-      lev.ics.i <- seq.int(un.i) + max(lev.ics[[i-1]])
-      lev.ics <- c(lev.ics,list(lev.ics.i))
-    }
-  rand.names <- all.vars(random$groups)
-  if(length(rand.names) > 1)
-    for(i in 2:length(rand.names))
-      rand.names[i] <- paste(rand.names[i-1],rand.names[i],sep=":")
-  names(lev.ics) <- rand.names
-  structure(Z,col.indices=lev.ics)
-}
 
 mclogit.control <- function(
                             epsilon = 1e-08,
@@ -937,4 +1005,81 @@ weights.mclogit <- function(object, type = c("prior", "working"),...) {
   if (is.null(object$na.action)) 
     res
   else naresid(object$na.action, res)
+}
+
+
+tr <- function(x) sum(diag(x))
+
+mkZ <- function(groups,rX){
+
+    n <- length(groups)
+    ug <- unique(groups)
+    m <- length(ug)
+    p <- ncol(rX)
+    n.j <- tabulate(groups,m)
+    
+    Z <- Matrix(0,nrow=n,ncol=m*p)
+
+    i <- 1:n
+    k <- 1:p
+    j <- groups
+    
+    i <- rep(i,p)
+    jk <- rep((j-1)*p,p)+rep(k,each=n)
+    i.jk <- cbind(i,jk)
+
+    Z[i.jk] <- rX
+    Z
+}
+
+mkG <- function(p){
+    
+    G <- matrix(0,p,p)
+    ltT <- lower.tri(G,diag=TRUE)
+    ltF <- lower.tri(G,diag=FALSE)
+
+    n <- p*(p+1)/2
+    m <- p*(p-1)/2
+    
+    diag(G) <- 1:p
+    G[ltF] <- p + 1:m
+    G <- lwr2sym(G)
+    
+    lapply(1:n,mkG1,G)
+}
+
+mkG1 <- function(i,G) Matrix(array(as.integer(i==G),dim=dim(G)))
+
+fillG <- function(G,theta){
+
+    Phi <- Map(`*`,theta,G)
+
+    if(length(Phi)>1){
+        for(i in 2:length(Phi))
+            Phi[[1]] <- Phi[[1]] + Phi[[i]]
+    }
+    Phi[[1]]
+}
+
+
+lunq <- function(x)length(attr(x,"unique"))
+
+G.star1 <- function(I,G)Map(`%x%`,list(I),G)
+quadform <- function(A,x) as.numeric(crossprod(x,A%*%x))
+tr.crossprod <- function(A,B) sum(A*B)
+
+lwr2sym <- function(X){
+
+    lwrX <- lower.tri(X)
+    x.lwr <- X[lwrX]
+    Y <- t(X)
+    Y[lwrX] <- x.lwr
+    Y
+}
+
+
+fuseMat <- function(X){
+    if(ncol(X)>1)
+        X <- apply(X,1,cbindList)
+    do.call(rbind,X)
 }
