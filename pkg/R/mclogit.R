@@ -333,6 +333,10 @@ mclogit.fit.rePQL <- function(
     nobs <- length(y)
     nsets <- length(unique(s))
     
+    nlevs <- length(G)
+    nvpar <- sapply(G,length)
+    vpar.selector <- rep(1:nlevs,nvpar)
+
     if(!length(offset))
       offset <- rep.int(0, nobs)
     
@@ -348,7 +352,7 @@ mclogit.fit.rePQL <- function(
     mk <- lapply(groups,lunq)
     I.mk <- lapply(mk,Diagonal)
     G.star <- Map(G.star1,I.mk,G)
-    
+
     ## Starting values for variance parameters
 
     priW <- Diagonal(x=w)
@@ -371,10 +375,8 @@ mclogit.fit.rePQL <- function(
     WZ <- lapply(Z,`%*%`,x=W)
     ZWX <- lapply(Z,crossprod,y=WX)
     ZWy <- lapply(Z,crossprod,y=Wy)
-
-    nlevs <- length(G)
-    nvpar <- sapply(G,length)
-    vpar.selector <- rep(1:nlevs,nvpar)
+    dim(ZWX) <- c(nlevs,1)
+    dim(ZWy) <- c(nlevs,1)
     
     u <- list()
     S <- matrix(list(),nlevs,nlevs)
@@ -404,17 +406,15 @@ mclogit.fit.rePQL <- function(
         
         if(k<nlevs){
             for(r in (k+1):nlevs){
-                A.kr <- tcrossprod(ZWX.iXWX,ZWX[[r]])
-                A.rk <- t(A.kr)
 
+                A.kr <- tcrossprod(ZWX.iXWX,ZWX[[r]])
                 G.star.A.kr <- lapply(G.star.k,`%*%`,y=A.kr)
-                G.star.A.rk <- lapply(G.star.k,`%*%`,y=A.rk)
 
                 p.r <- ncol(Z[[r]])
                 S.kr <- matrix(0,p.k,p.r)
                 h1 <- rows(S.kr)
                 h2 <- cols(S.kr)
-                S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.rk[h2])
+                S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.kr[h2])
                 S[[k,r]] <- S.kr
                 S[[k,r]] <- t(S.kr)                
             }
@@ -437,9 +437,6 @@ mclogit.fit.rePQL <- function(
     iSigma <- Map(`%x%`,I.mk,iPhi)
     iSigma <- do.call(bdiag,unname(iSigma))
 
-    ##:ess-bp-start::browser@nil:##
-browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
-    
     b.split <- rep(1:nlevs,sapply(Z,ncol))
 
     ## Extended IWLS and Fisher-scoring for variance parameters
@@ -457,6 +454,7 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
             }
         }
     }
+    
     ZWX <- fuseMat(ZWX)
     ZWy <- fuseMat(ZWy)
     ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
@@ -464,8 +462,8 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
     for(iter in 1:control$maxit){
         
         K <- solve(ZWZ.iSigma)
-        XiVW <- XWX - crossprod(ZWX,K%*%ZWX)
-        XiVy <- XWX - crossprod(ZWX,K%*%ZWy)
+        XiVX <- XWX - crossprod(ZWX,K%*%ZWX)
+        XiVy <- XWy - crossprod(ZWX,K%*%ZWy)
         coef <- solve(XiVX,XiVy)
 
         b <- K%*%(ZWy-ZWX%*%coef)
@@ -474,7 +472,7 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
         Zb <- Map(`%*%`,Z,b.)
         Zb <- do.call(rbind,Zb)
 
-        eta <- c(X%*%coef + Zb) + offset
+        eta <- as.vector(X%*%coef) + as.vector(Zb) + offset
         pi <- mclogitP(eta,s)
 
         dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
@@ -495,6 +493,8 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
         WZ <- lapply(Z,`%*%`,x=W)
         ZWX <- lapply(Z,crossprod,y=WX)
         ZWy <- lapply(Z,crossprod,y=Wy)
+        dim(ZWX) <- c(nlevs,1)
+        dim(ZWy) <- c(nlevs,1)
 
         for(k in 1:nlevs){
             Z.k <- Z[[k]]
@@ -514,20 +514,22 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
         ZWX <- fuseMat(ZWX)
         ZWy <- fuseMat(ZWy)
         K <- solve(ZWZ.iSigma)
-        resid <- priW%*%(y-pi)
 
+        ZWZ. <- list()
         for(k in 1:nlevs){
-            ZWZ. <- do.call(rbind,ZWZ[,k])
+            ZWZ.[[k]] <- do.call(rbind,ZWZ[,k])
         }
         
         u <- list()
         S <- matrix(list(),nlevs,nlevs)
+        iSigma.b <- iSigma%*%b
+        iSigma.b <- split(iSigma.b,b.split)
         
         for(k in 1:nlevs){
 
             G.star.k <- G.star[[k]]
-            Zres.k <- crossprod(Z[[k]],resid)
-            u[[k]] <- sapply(G.star.k,quadform,x=Zres.k)
+            iSigma.b.k <- iSigma.b[[k]]
+            u[[k]] <- sapply(G.star.k,quadform,x=iSigma.b.k)
 
             ZWZ.kk <- ZWZ[[k,k]]
             ZWZ.k <- ZWZ.[[k]]
@@ -554,16 +556,13 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
                     ZWZ.r <- ZWZ.[[r]]
 
                     A.kr <- ZWZ.kr - crossprod(ZWZ.k,K%*%ZWZ.r)
-                    A.rk <- t(A.kr)
-
                     G.star.A.kr <- lapply(G.star.k,`%*%`,y=A.kr)
-                    G.star.A.rk <- lapply(G.star.k,`%*%`,y=A.rk)
 
                     p.r <- ncol(Z[[r]])
                     S.kr <- matrix(0,p.k,p.r)
                     h1 <- rows(S.kr)
                     h2 <- cols(S.kr)
-                    S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.rk[h2])
+                    S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.kr[h2])
                     S[[k,r]] <- S.kr
                     S[[k,r]] <- t(S.kr)
                 }
@@ -572,7 +571,8 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
 
         u <- unlist(u)
         Info.theta <- fuseMat(S)
-        
+
+        last.theta <- theta
         theta <- solve(Info.theta,u)
         theta <- split(theta,vpar.selector)
         Phi <- list()
@@ -599,11 +599,11 @@ browser(expr=is.null(.ESSBP.[["@9@"]]));##:ess-bp-end:##
         deviance <- sum(dev.resids) + logDetSigma + logDet.ZWZ.iSigma
 
         crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
-
+        
         if(control$trace)
             cat("\nIteration",iter,"- Deviance =",deviance,#"theta =",theta,
-                "criterion = ",abs(deviance-last.deviance)/abs(0.1+deviance)#,
-                                        #"criterion[2] = ",max(abs(theta - last.theta))
+                "criterion = ",abs(deviance-last.deviance)/abs(0.1+deviance),
+                                        "criterion[2] = ",max(abs(unlist(theta) - unlist(last.theta)))
                 )
 
         if(crit < control$eps){
