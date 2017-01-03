@@ -140,17 +140,18 @@ mclogit <- function(
         }
         
         Z <- lapply(groups,mkZ,rX=rX)
-        G <- mkG(ncol(rX))
+        G <- mkG(rX)
         G <- rep(list(G),length(groups))
         names(Z) <- names(groups)
         names(G) <- names(groups)
         
-        fit <- mclogit.fit.rePQL(Y,sets,weights,
-                                 X,Z,G,groups,
-                                 start=fit$coef,
-                                 control=control,
-                                 offset = offset)
+        fit <- mmclogit.fitPQL(Y,sets,weights,
+                               X,Z,G,groups,
+                               start=fit$coef,
+                               control=control,
+                               offset = offset)
     }
+    
     if(x) fit$x <- X
     if(x && length(random)) fit$z <- Z
     if(!y) {
@@ -170,7 +171,7 @@ mclogit <- function(
                       model=mf,
                       N=N))
     if(length(random))
-        class(fit) <- c("mclogitRandeff","mclogit","lm")
+        class(fit) <- c("mmclogit","mclogit","lm")
     else
         class(fit) <- c("mclogit","lm")
     fit
@@ -315,19 +316,18 @@ mclogit.fit <- function(
 }
 
 
-mclogit.fit.rePQL <- function(
-      y,
-      s,
-      w,
-      X,
-      Z,
-      G,
-      groups,
-      start,
-      offset=NULL,
-      control=mclogit.control()
+mmclogit.fitPQL <- function(
+                            y,
+                            s,
+                            w,
+                            X,
+                            Z,
+                            G,
+                            groups,
+                            start,
+                            offset=NULL,
+                            control=mclogit.control()
       ){
-    #crossprod <- Matrix:::crossprod
 
     nvar <- ncol(X)
     nobs <- length(y)
@@ -355,14 +355,13 @@ mclogit.fit.rePQL <- function(
 
     ## Starting values for variance parameters
 
-    priW <- Diagonal(x=w)
+    sqrt.w <- sqrt(w)
 
-    Pi <- Matrix(0,nrow=nobs,ncol=nsets)
     i <- 1:nobs
-    Pi[cbind(i,s)] <- pi
-    Pi <- Diagonal(x=pi)-tcrossprod(Pi)
-    W <- priW%*%Pi
-
+    W <- Matrix(0,nrow=nobs,ncol=nsets)
+    W[cbind(i,s)] <- sqrt.w*pi
+    W <- Diagonal(x=w*pi)-tcrossprod(W)
+    
     y.star <- eta + (y-pi)/pi
 
     Wy <- W%*%y.star
@@ -438,7 +437,7 @@ mclogit.fit.rePQL <- function(
     iSigma <- do.call(bdiag,unname(iSigma))
 
     b.split <- rep(1:nlevs,sapply(Z,ncol))
-
+    
     ## Extended IWLS and Fisher-scoring for variance parameters
     converged <- FALSE
     ZWZ <- matrix(list(),nlevs,nlevs)
@@ -477,9 +476,9 @@ mclogit.fit.rePQL <- function(
 
         dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
 
-        Pi[cbind(i,s)] <- pi
-        Pi <- Diagonal(x=pi)-tcrossprod(Pi)
-        W <- priW%*%Pi
+        W <- Matrix(0,nrow=nobs,ncol=nsets)
+        W[cbind(i,s)] <- sqrt.w*pi
+        W <- Diagonal(x=w*pi)-tcrossprod(W)
 
         y.star <- eta + (y-pi)/pi
 
@@ -592,18 +591,19 @@ mclogit.fit.rePQL <- function(
         iSigma <- do.call(bdiag,unname(iSigma))
 
         ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
+        b.iSigma.b <- as.numeric(crossprod(b,iSigma%*%b))
 
         logDet.ZWZ.iSigma <- log.Det(ZWZ.iSigma)
 
         last.deviance <- deviance
-        deviance <- sum(dev.resids) + logDetSigma + logDet.ZWZ.iSigma
+        deviance <- sum(dev.resids) + logDetSigma + logDet.ZWZ.iSigma + b.iSigma.b
 
         crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
         
         if(control$trace)
-            cat("\nIteration",iter,"- Deviance =",deviance,#"theta =",theta,
-                "criterion = ",abs(deviance-last.deviance)/abs(0.1+deviance),
-                                        "criterion[2] = ",max(abs(unlist(theta) - unlist(last.theta)))
+            cat("\nIteration",iter,"- Deviance =",deviance#,"theta =",theta,
+                #"criterion = ",abs(deviance-last.deviance)/abs(0.1+deviance),
+                #                        "criterion[2] = ",max(abs(unlist(theta) - unlist(last.theta)))
                 )
 
         if(crit < control$eps){
@@ -617,46 +617,44 @@ mclogit.fit.rePQL <- function(
     K <- solve(ZWZ.iSigma)
     XiVW <- XWX - crossprod(ZWX,K%*%ZWX)
     covmat.coef <- solve(XiVX)
+    covmat.coef <- as.matrix(covmat.coef)
     
-  
-    if(all(eigen(Info.theta)$values>0))
-      covmat.theta <- solve(Info.theta)
-    else{
-      warning("Fisher Information not positive definite, using simple approximation")
-      covmat.theta <- solve(Info1.theta)
-    }
+    covmat.theta <- solve(Info.theta)
+    
+    coef <- drop(coef)
+    colnames(covmat.coef) <- rownames(covmat.coef) <- names(covmat.coef)
 
-   coef <- drop(coef)
-   covmat <- as.matrix(covmat)
-   colnames(covmat) <- rownames(covmat) <- names(coef)
+    Phi <- structure(lapply(Phi,as.matrix),
+                     names=names(G))
+                     
+    resid.df <- length(y)#-length(unique(s))
+    model.df <- ncol(X) + length(theta)
+    resid.df <- resid.df-model.df
 
-   names(theta) <- names(lev.ics)
-   colnames(covmat.theta) <- rownames(covmat.theta) <- names(theta)
-
-   resid.df <- length(y)#-length(unique(s))
-   model.df <- ncol(X) + length(theta)
-   resid.df <- resid.df-model.df
-   return(list(
-      coefficients = coef,
-      varPar = theta,
-      linear.predictors = eta,
-      fitted.values = pi,
-      ll=NA,
-      deviance=deviance,
-      deviance.residuals=dev.resids,
-      working.residuals=(y-pi)/pi,
-      response.residuals=y-pi,
-      residual.df = resid.df,
-      model.df = model.df,
-      iter = iter,
-      y = y,
-      s = s,
-      converged = converged,
-      control=control,
-      covmat=covmat,
-      covmat.varPar = covmat.theta,
-      rank=rank
-      ))
+    return(list(
+        coefficients = coef,
+        VarCov = Phi,
+        varPar = theta,
+        linear.predictors = eta,
+        fitted.values = pi,
+        ll=NA,
+        deviance=deviance,
+        deviance.residuals=dev.resids,
+        working.residuals=(y-pi)/pi,
+        response.residuals=y-pi,
+        residual.df = resid.df,
+        model.df = model.df,
+        iter = iter,
+        y = y,
+        s = s,
+        groups = groups,
+        G = G,
+        converged = converged,
+        control=control,
+        covmat=covmat.coef,
+        covmat.varPar = covmat.theta,
+        rank=rank
+    ))
 }
 
 
@@ -726,12 +724,6 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
         print.default(format(x$coefficients, digits=digits),
                       print.gap = 2, quote = FALSE)
     } else cat("No coefficients\n\n")
-    if(length(x$varPar)) {
-        cat("Variance paremeters")
-        cat(":\n")
-        print.default(format(x$varPar, digits=digits),
-                      print.gap = 2, quote = FALSE)
-    }
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)))
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
@@ -739,18 +731,7 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     invisible(x)
 }
 
-vcov.mclogit <- function(object,varPar=TRUE,...){
-  if(varPar && length(object$varPar)){
-    cm <- object$covmat
-    cmv <- object$covmat.varPar
-    nms <- colnames(cm)
-    nmsv <- paste0("Var(",colnames(cmv),")")
-    
-    v <- as.matrix(bdiag(cm,cmv))
-    colnames(v) <- rownames(v) <- c(nms,nmsv)
-    return(v)
-  }
-  else
+vcov.mclogit <- function(object,...){
     return(object$covmat)
 }
 
@@ -781,32 +762,10 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
     coef.table[,3] <- zvalue
     coef.table[,4] <- pvalue
 
-    if(length(object$varPar)){
-      covmat.vp <- object$covmat.varPar 
-      varPar <- object$varPar
-      var.vp <- diag(covmat.vp)
-      s.err.vp <- sqrt(var.vp)
-      #zvalue.vp <- varPar/s.err.vp
-      #pvalue.vp <- 2*pnorm(-abs(zvalue.vp))
-      zvalue.vp <- sqrt(object$chisq.theta)
-      pvalue.vp <- pchisq(object$chisq.theta,1,lower.tail=FALSE)
-
-
-      varPar.table <- array(NA,dim=c(length(varPar),4))
-      dimnames(varPar.table) <- list(names(varPar),
-            c("Estimate", "Std. Error","z value","Pr(>|z|)"))
-      varPar.table[,1] <- varPar
-      varPar.table[,2] <- s.err.vp
-      varPar.table[,3] <- zvalue.vp
-      varPar.table[,4] <- pvalue.vp
-    } else varPar.table <- NULL
-
     ans <- c(object[c("call","terms","deviance","contrasts",
                        "null.deviance","iter","na.action","model.df","residual.df","N")],
               list(coefficients = coef.table,
-                    varPar = varPar.table,
-                    cov.coef=object$covmat,
-                    cov.varPar=object$covmat.varPar))
+                    cov.coef=object$covmat))
     p <- length(coef)
     if(correlation && p > 0) {
         dd <- sqrt(diag(ans$cov.coef))
@@ -826,17 +785,9 @@ print.summary.mclogit <-
     cat(paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
 
     coefs <- x$coefficients
-    if(length(x$varPar)){
-      varPar <- x$varPar
-      rownames(varPar) <- paste("Var(",rownames(varPar),")",sep="")
-      coefs <- rbind(coefs,varPar)
-    }
     printCoefmat(coefs, digits=digits, signif.stars=signif.stars,
                      na.print="NA", ...)
-#     cat("\n")
-#     cat("AIC: ", format(x$aic, digits= max(4, digits+1)),"\n\n",
-#         "Number of Fisher Scoring iterations: ", x$iter,
-#         "\n", sep="")
+
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher Scoring iterations: ", x$iter,
@@ -857,8 +808,8 @@ print.summary.mclogit <-
         }
     }
 
-    if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
-    else cat("\n")
+    if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n\n", sep="")
+    else cat("\n\n")
     invisible(x)
 }
 
@@ -1032,7 +983,10 @@ mkZ <- function(groups,rX){
     Z
 }
 
-mkG <- function(p){
+mkG <- function(rX){
+
+    p <- ncol(rX)
+    nms <- colnames(rX)
     
     G <- matrix(0,p,p)
     ltT <- lower.tri(G,diag=TRUE)
@@ -1044,11 +998,15 @@ mkG <- function(p){
     diag(G) <- 1:p
     G[ltF] <- p + 1:m
     G <- lwr2sym(G)
+    rownames(G) <- colnames(G) <- nms
     
     lapply(1:n,mkG1,G)
 }
 
-mkG1 <- function(i,G) Matrix(array(as.integer(i==G),dim=dim(G)))
+mkG1 <- function(i,G) Matrix(array(as.integer(i==G),
+                                   dim=dim(G),
+                                   dimnames=dimnames(G)
+                                   ))
 
 fillG <- function(G,theta){
 
@@ -1082,4 +1040,146 @@ fuseMat <- function(X){
     if(ncol(X)>1)
         X <- apply(X,1,cbindList)
     do.call(rbind,X)
+}
+
+
+print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
+    cat("\nCall: ", deparse(x$call), "\n\n")
+    if(length(coef(x))) {
+        cat("Coefficients")
+        if(is.character(co <- x$contrasts))
+            cat("  [contrasts: ",
+                apply(cbind(names(co),co), 1, paste, collapse="="), "]")
+        cat(":\n")
+        print.default(format(x$coefficients, digits=digits),
+                      print.gap = 2, quote = FALSE)
+    } else cat("No coefficients\n\n")
+
+    cat("\n(Co-)Variances:\n")
+    VarCov <- x$VarCov
+    for(k in 1:length(VarCov)){
+        cat("Grouping level:",names(VarCov)[k],"\n")
+        VarCov.k <- VarCov[[k]]
+        VarCov.k[] <- format(VarCov.k, digits=digits)
+        VarCov.k[upper.tri(VarCov.k)] <- ""
+        print.default(VarCov.k, print.gap = 2, quote = FALSE)
+    }
+    
+    cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
+        "\nResidual Deviance:", format(signif(x$deviance, digits)))
+    if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
+    else cat("\n")
+    invisible(x)
+}
+
+summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic.cor = FALSE,...){
+
+    ## calculate coef table
+
+    coef <- object$coefficients
+    covmat.scaled <- object$covmat 
+    var.cf <- diag(covmat.scaled)
+    s.err <- sqrt(var.cf)
+    zvalue <- coef/s.err
+    pvalue <- 2*pnorm(-abs(zvalue))
+
+    coef.table <- array(NA,dim=c(length(coef),4))
+    dimnames(coef.table) <- list(names(coef),
+            c("Estimate", "Std. Error","z value","Pr(>|z|)"))
+    coef.table[,1] <- coef
+    coef.table[,2] <- s.err
+    coef.table[,3] <- zvalue
+    coef.table[,4] <- pvalue
+
+    G <- object$G
+    nlevs <- length(G)
+    nvpar <- sapply(G,length)
+    vpar.selector <- rep(1:nlevs,nvpar)
+    
+    se.varPar <- sqrt(diag(object$covmat.varPar))
+    se.varPar <- split(se.varPar,vpar.selector)
+    VarCov.table <- list()
+    for(k in 1:nlevs){
+        VarCov.k <- object$VarCov[[k]]
+        se.VarCov.k <- as.matrix(fillG(G[[k]],se.varPar[[k]]))
+        VarCov.table.k <- array(NA,dim=c(dim(VarCov.k),2))
+        VarCov.table.k[,,1] <- VarCov.k
+        VarCov.table.k[,,2] <- se.VarCov.k
+        dimnames(VarCov.table.k)[1:2] <- dimnames(VarCov.k)
+        dimnames(VarCov.table.k)[[3]] <- c("Estimate", "Std. Error")
+        VarCov.table[[k]] <- VarCov.table.k
+    }
+    names(VarCov.table) <- names(object$VarCov)
+    
+    ans <- c(object[c("call","terms","deviance","contrasts",
+                       "null.deviance","iter","na.action","model.df","residual.df","N")],
+              list(coefficients = coef.table,
+                   cov.coef=object$covmat,
+                   VarCov = VarCov.table))
+    p <- length(coef)
+    if(correlation && p > 0) {
+        dd <- sqrt(diag(ans$cov.coef))
+        ans$correlation <-
+            ans$cov.coef/outer(dd,dd)
+        ans$symbolic.cor <- symbolic.cor
+    }
+
+ 
+    class(ans) <- "summary.mmclogit"
+    return(ans)
+}
+
+
+print.summary.mmclogit <-
+    function (x, digits = max(3, getOption("digits") - 3),
+              symbolic.cor = x$symbolic.cor,
+              signif.stars = getOption("show.signif.stars"), ...){
+    cat("\nCall:\n")
+    cat(paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
+
+    coefs <- x$coefficients
+    cat("Coefficents:\n")
+    printCoefmat(coefs, digits=digits, signif.stars=signif.stars,
+                     na.print="NA", ...)
+
+    cat("\n(Co-)Variances:\n")
+    VarCov <- x$VarCov
+    for(k in 1:length(VarCov)){
+        cat("Grouping level:",names(VarCov)[k],"\n")
+        VarCov.k <- VarCov[[k]]
+
+        utri <- rep(upper.tri(VarCov.k[,,1]),2)
+        VarCov.k[utri] <- NA
+        VarCov.k <- ftable(VarCov.k,col.vars=3:2)
+        VarCov.k <- format(VarCov.k, digits=digits, quote=FALSE)[-3,-2]
+        VarCov.k[-(1:2),-1] <- gsub("NA","  ",VarCov.k[-(1:2),-1],fixed=TRUE)
+        
+        VarCov.k[1,] <- format(trimws(VarCov.k[1,]),justify="left")
+        VarCov.k <- format(VarCov.k)
+        cat(paste(apply(VarCov.k,1,paste,collapse=" "),collapse="\n"),"\n")
+    }
+
+    cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
+        "\nResidual Deviance:", format(signif(x$deviance, digits)),
+        "\nNumber of Fisher Scoring iterations: ", x$iter,
+        "\nNumber of observations: ",x$N,
+        "\n")
+    correl <- x$correlation
+    if(!is.null(correl)) {
+        p <- NCOL(correl)
+        if(p > 1) {
+            cat("\nCorrelation of Coefficients:\n")
+            if(is.logical(symbolic.cor) && symbolic.cor) {
+                print(symnum(correl, abbr.colnames = NULL))
+            } else {
+                correl <- format(round(correl, 2), nsmall = 2, digits = digits)
+                correl[!lower.tri(correl)] <- ""
+                print(correl[-1, -p, drop=FALSE], quote = FALSE)
+            }
+        }
+    }
+    
+    if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n\n", sep="")
+    else cat("\n\n")
+    invisible(x)
 }
