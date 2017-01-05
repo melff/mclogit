@@ -31,7 +31,7 @@
 mclogit(formula, data=parent.frame(), random=NULL,
         subset, weights = NULL, offset=NULL, na.action = getOption("na.action"),
         model = TRUE, x = FALSE, y = TRUE, contrasts=NULL,
-        start=NULL,start.theta=NULL,
+        start=NULL,
         control=mclogit.control(\dots), \dots)
 }
 \arguments{
@@ -78,10 +78,6 @@ mclogit(formula, data=parent.frame(), random=NULL,
 
   \item{start}{an optional numerical vector of starting values
     for the conditional logit parameters.
-  }
-
-  \item{start.theta}{an optional numerical vector of starting values
-    for the variance parameters.
   }
 
   \item{model}{a logical value indicating whether \emph{model frame}
