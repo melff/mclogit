@@ -354,6 +354,7 @@ mmclogit.fitPQL <- function(
     G.star <- Map(G.star1,I.mk,G)
 
     ## Starting values for variance parameters
+    
 
     sqrt.w <- sqrt(w)
 
@@ -389,7 +390,7 @@ mmclogit.fitPQL <- function(
         u1 <- sapply(G.star.k,quadform,x=v.k)
         u2 <- sapply(G.star.k,tr.crossprod,B=A.kk)
         u[[k]] <- u1 - u2
-
+        
         G.star.A.kk <- lapply(G.star.k,`%*%`,y=A.kk)
         
         hh.k <- length(G[[k]])
@@ -430,6 +431,17 @@ mmclogit.fitPQL <- function(
     for(k in 1:nlevs)
         Phi[[k]] <- fillG(G[[k]],theta[[k]])
 
+    ## Check for negative variances
+    diagPhi <- unlist(lapply(Phi,diag))
+    if(any(diagPhi < 0)){
+        warning("Moment equations give negative variances.
+  Your model appears to be misspecified.
+  I will use a dummy covariance matrix.",call.=FALSE)
+        for(k in 1:nlevs){
+            Phi[[k]] <- diag(ncol(Phi[[k]]))
+        }
+    }
+    
     iPhi <- lapply(Phi,solve)
 
     Sigma <- Map(`%x%`,I.mk,Phi)
@@ -440,8 +452,10 @@ mmclogit.fitPQL <- function(
 
     b.split <- rep(1:nlevs,sapply(Z,ncol))
     
-    ## Extended IWLS and Fisher-scoring for variance parameters
     converged <- FALSE
+   
+    ## IWLS for coefficients and variance parameters    
+
     ZWZ <- matrix(list(),nlevs,nlevs)
     for(k in 1:nlevs){
         Z.k <- Z[[k]]
@@ -458,25 +472,18 @@ mmclogit.fitPQL <- function(
     
     ZWX <- fuseMat(ZWX)
     ZWy <- fuseMat(ZWy)
-    ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
+
+    ZWZ.iSigma <- fuseMat(ZWZ) + iSigma
+    K <- solve(ZWZ.iSigma)
+    b <- K%*%(ZWy-ZWX%*%coef)    
     
     for(iter in 1:control$maxit){
         
-        K <- solve(ZWZ.iSigma)
-        XiVX <- XWX - crossprod(ZWX,K%*%ZWX)
-        XiVy <- XWy - crossprod(ZWX,K%*%ZWy)
-        coef <- solve(XiVX,XiVy)
+        last.deviance <- deviance
+        last.coef <- coef
+        last.theta <- theta
 
-        b <- K%*%(ZWy-ZWX%*%coef)
-        
-        b. <- split(b,b.split)
-        Zb <- Map(`%*%`,Z,b.)
-        Zb <- Reduce(`+`,Zb)
-
-        eta <- as.vector(X%*%coef) + as.vector(Zb) + offset
-        pi <- mclogitP(eta,s)
-
-        dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
+        ## General preparations
 
         W <- Matrix(0,nrow=nobs,ncol=nsets)
         W[cbind(i,s)] <- sqrt.w*pi
@@ -497,6 +504,7 @@ mmclogit.fitPQL <- function(
         dim(ZWX) <- c(nlevs,1)
         dim(ZWy) <- c(nlevs,1)
 
+        ZWZ <- matrix(list(),nlevs,nlevs)
         for(k in 1:nlevs){
             Z.k <- Z[[k]]
             ZWZ[[k,k]] <- crossprod(Z.k,W%*%Z.k)
@@ -510,11 +518,22 @@ mmclogit.fitPQL <- function(
             }
         }
 
-        ## Fisher-scoring step for variance parameters
         ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
         ZWX <- fuseMat(ZWX)
         ZWy <- fuseMat(ZWy)
         K <- solve(ZWZ.iSigma)
+        
+        ## Update coef 
+
+        XiVX <- XWX - crossprod(ZWX,K%*%ZWX)
+        XiVy <- XWy - crossprod(ZWX,K%*%ZWy)
+        coef <- solve(XiVX,XiVy)
+
+        ## Update b
+
+        b <- K%*%(ZWy-ZWX%*%coef)
+        
+        ## Update theta
 
         ZWZ. <- list()
         for(k in 1:nlevs){
@@ -571,37 +590,74 @@ mmclogit.fitPQL <- function(
                 }
             }
         }
-
+        
         u <- unlist(u)
         Info.theta <- fuseMat(S)
 
-        last.theta <- theta
         theta <- solve(Info.theta,u)
         theta <- split(theta,vpar.selector)
-        Phi <- list()
-        for(k in 1:nlevs)
-            Phi[[k]] <- fillG(G[[k]],theta[[k]])
 
-        logDetPhi <- lapply(Phi,log.Det)
-        logDetSigma <- Map(`*`,logDetPhi,mk)
-        logDetSigma <- sum(unlist(logDetSigma))
         
-        iPhi <- lapply(Phi,solve)
+        ## Compute deviance and determine step size
 
-        Sigma <- Map(`%x%`,I.mk,Phi)
-        Sigma <- do.call(bdiag,unname(Sigma))
+        stepsize.found <- FALSE
 
-        iSigma <- Map(`%x%`,I.mk,iPhi)
-        iSigma <- do.call(bdiag,unname(iSigma))
+        ZWZ <- fuseMat(ZWZ)
+        for(iiter in 1:control$maxit) {
 
-        ZWZ.iSigma <- fuseMat(ZWZ)+iSigma
-        b.iSigma.b <- as.numeric(crossprod(b,iSigma%*%b))
+            K <- solve(ZWZ.iSigma)
+            b <- K%*%(ZWy-ZWX%*%coef)
+        
+            b. <- split(b,b.split)
+            Zb <- Map(`%*%`,Z,b.)
+            Zb <- Reduce(`+`,Zb)
+            
+            eta <- as.vector(X%*%coef) + as.vector(Zb) + offset
+            pi <- mclogitP(eta,s)
 
-        logDet.ZWZ.iSigma <- log.Det(ZWZ.iSigma)
+            dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
 
-        last.deviance <- deviance
-        deviance <- sum(dev.resids) + logDetSigma + logDet.ZWZ.iSigma + b.iSigma.b
+            Phi <- list()
+            for(k in 1:nlevs)
+                Phi[[k]] <- fillG(G[[k]],theta[[k]])
 
+            logDetPhi <- lapply(Phi,log.Det)
+            logDetSigma <- Map(`*`,logDetPhi,mk)
+            logDetSigma <- sum(unlist(logDetSigma))
+            
+            iPhi <- lapply(Phi,solve)
+
+            Sigma <- Map(`%x%`,I.mk,Phi)
+            Sigma <- do.call(bdiag,unname(Sigma))
+
+            iSigma <- Map(`%x%`,I.mk,iPhi)
+            iSigma <- do.call(bdiag,unname(iSigma))
+            
+            ZWZ.iSigma <- ZWZ + iSigma
+            b.iSigma.b <- as.numeric(crossprod(b,iSigma%*%b))
+
+            logDet.ZWZ.iSigma <- log.Det(ZWZ.iSigma)
+            
+            deviance <- sum(dev.resids) + logDetSigma + logDet.ZWZ.iSigma + b.iSigma.b
+            crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
+
+            if(deviance < last.deviance || crit < control$eps){
+                stepsize.found <- TRUE
+                break
+            }
+
+            coef <- (coef + last.coef)/2
+            theta <- Map(`/`,Map(`+`,theta,last.theta),2)
+            #if(control$trace) cat("\n\tDeviance =",deviance)
+        }
+        if(!stepsize.found){
+            cat("\n")
+            warning("Cannot find an appropriate step size, giving up",
+                    call.=FALSE)
+            break
+        }
+        
+        
         crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
         
         if(control$trace)
@@ -616,8 +672,24 @@ mmclogit.fitPQL <- function(
             break
         }
     }
-    if (!converged) warning("algorithm did not converge")
+    if (!converged) warning("Algorithm did not converge.",
+                    call.=FALSE)
 
+    W <- Matrix(0,nrow=nobs,ncol=nsets)
+    W[cbind(i,s)] <- sqrt.w*pi
+    W <- Diagonal(x=w*pi)-tcrossprod(W)
+
+    WX <- W%*%X
+    XWX <- crossprod(X,WX)
+    iXWX <- solve(XWX)
+
+    WZ <- lapply(Z,`%*%`,x=W)
+    ZWX <- lapply(Z,crossprod,y=WX)
+    ZWy <- lapply(Z,crossprod,y=Wy)
+    dim(ZWX) <- c(nlevs,1)
+    dim(ZWy) <- c(nlevs,1)
+    
+    ZWX <- fuseMat(ZWX)
     K <- solve(ZWZ.iSigma)
     XiVW <- XWX - crossprod(ZWX,K%*%ZWX)
     covmat.coef <- solve(XiVX)
@@ -718,7 +790,7 @@ mclogitLinkInv <- function(y,s,w){
 }
 
 print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
-    cat("\nCall: ", deparse(x$call), "\n\n")
+    cat(paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
     if(length(coef(x))) {
         cat("Coefficients")
         if(is.character(co <- x$contrasts))
@@ -730,6 +802,7 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     } else cat("No coefficients\n\n")
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)))
+    if(!x$converged) cat("\nNote: Algorithm did not converge.\n")
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
     else cat("\n")
     invisible(x)
@@ -767,7 +840,8 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
     coef.table[,4] <- pvalue
 
     ans <- c(object[c("call","terms","deviance","contrasts",
-                       "null.deviance","iter","na.action","model.df","residual.df","N")],
+                      "null.deviance","iter","na.action","model.df",
+                      "residual.df","N","converged")],
               list(coefficients = coef.table,
                     cov.coef=object$covmat))
     p <- length(coef)
@@ -812,6 +886,7 @@ print.summary.mclogit <-
         }
     }
 
+    if(!x$converged) cat("\n\nNote: Algorithm did not converge.\n")
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n\n", sep="")
     else cat("\n\n")
     invisible(x)
@@ -963,7 +1038,7 @@ weights.mclogit <- function(object, type = c("prior", "working"),...) {
 }
 
 print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
-    cat("\nCall: ", deparse(x$call), "\n\n")
+    cat(paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
     if(length(coef(x))) {
         cat("Coefficients")
         if(is.character(co <- x$contrasts))
@@ -986,6 +1061,7 @@ print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)))
+    if(!x$converged) cat("\n\nNote: Algorithm did not converge.\n")
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
     else cat("\n")
     invisible(x)
@@ -1031,7 +1107,8 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     names(VarCov.table) <- names(object$VarCov)
     
     ans <- c(object[c("call","terms","deviance","contrasts",
-                       "null.deviance","iter","na.action","model.df","residual.df","N")],
+                      "null.deviance","iter","na.action","model.df",
+                      "residual.df","N","converged")],
               list(coefficients = coef.table,
                    cov.coef=object$covmat,
                    VarCov = VarCov.table))
@@ -1064,7 +1141,7 @@ print.summary.mmclogit <-
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
     for(k in 1:length(VarCov)){
-        cat("Grouping level:",names(VarCov)[k],"\n")
+        cat("\nGrouping level:",names(VarCov)[k],"\n")
         VarCov.k <- VarCov[[k]]
 
         utri <- rep(upper.tri(VarCov.k[,,1]),2)
@@ -1098,6 +1175,7 @@ print.summary.mmclogit <-
         }
     }
     
+    if(!x$converged) cat("\nNote: Algorithm did not converge.\n")
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n\n", sep="")
     else cat("\n\n")
     invisible(x)
