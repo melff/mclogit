@@ -404,18 +404,20 @@ mmclogit.fitPQL <- function(
         S[[k,k]] <- S.kk
         
         if(k<nlevs){
+            p.k <- ncol(Z[[k]])
             for(r in (k+1):nlevs){
 
                 A.kr <- tcrossprod(ZWX.iXWX,ZWX[[r]])
                 G.star.A.kr <- lapply(G.star.k,`%*%`,y=A.kr)
 
-                p.r <- ncol(Z[[r]])
-                S.kr <- matrix(0,p.k,p.r)
-                h1 <- rows(S.kr)
-                h2 <- cols(S.kr)
+                hh.r <- length(G[[r]])
+                S.kr <- matrix(0,hh.k,hh.r)
+
+                h1 <- row(S.kr)
+                h2 <- col(S.kr)
                 S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.kr[h2])
                 S[[k,r]] <- S.kr
-                S[[k,r]] <- t(S.kr)                
+                S[[r,k]] <- t(S.kr)                
             }
         }
     }
@@ -466,10 +468,10 @@ mmclogit.fitPQL <- function(
         coef <- solve(XiVX,XiVy)
 
         b <- K%*%(ZWy-ZWX%*%coef)
-
+        
         b. <- split(b,b.split)
         Zb <- Map(`%*%`,Z,b.)
-        Zb <- do.call(rbind,Zb)
+        Zb <- Reduce(`+`,Zb)
 
         eta <- as.vector(X%*%coef) + as.vector(Zb) + offset
         pi <- mclogitP(eta,s)
@@ -549,6 +551,7 @@ mmclogit.fitPQL <- function(
 
             if(k<nlevs){
 
+                p.k <- ncol(Z[[k]])
                 for(r in (k+1):nlevs){
                     
                     ZWZ.kr <- ZWZ[[k,r]]
@@ -557,13 +560,14 @@ mmclogit.fitPQL <- function(
                     A.kr <- ZWZ.kr - crossprod(ZWZ.k,K%*%ZWZ.r)
                     G.star.A.kr <- lapply(G.star.k,`%*%`,y=A.kr)
 
-                    p.r <- ncol(Z[[r]])
-                    S.kr <- matrix(0,p.k,p.r)
-                    h1 <- rows(S.kr)
-                    h2 <- cols(S.kr)
+                    hh.r <- length(G[[r]])
+                    S.kr <- matrix(0,hh.k,hh.r)
+
+                    h1 <- row(S.kr)
+                    h2 <- col(S.kr)
                     S.kr[] <- mapply(tr.crossprod,G.star.A.kr[h1],G.star.A.kr[h2])
                     S[[k,r]] <- S.kr
-                    S[[k,r]] <- t(S.kr)
+                    S[[r,k]] <- t(S.kr)
                 }
             }
         }
@@ -958,91 +962,6 @@ weights.mclogit <- function(object, type = c("prior", "working"),...) {
   else naresid(object$na.action, res)
 }
 
-
-tr <- function(x) sum(diag(x))
-
-mkZ <- function(groups,rX){
-
-    n <- length(groups)
-    ug <- unique(groups)
-    m <- length(ug)
-    p <- ncol(rX)
-    n.j <- tabulate(groups,m)
-    
-    Z <- Matrix(0,nrow=n,ncol=m*p)
-
-    i <- 1:n
-    k <- 1:p
-    j <- groups
-    
-    i <- rep(i,p)
-    jk <- rep((j-1)*p,p)+rep(k,each=n)
-    i.jk <- cbind(i,jk)
-
-    Z[i.jk] <- rX
-    Z
-}
-
-mkG <- function(rX){
-
-    p <- ncol(rX)
-    nms <- colnames(rX)
-    
-    G <- matrix(0,p,p)
-    ltT <- lower.tri(G,diag=TRUE)
-    ltF <- lower.tri(G,diag=FALSE)
-
-    n <- p*(p+1)/2
-    m <- p*(p-1)/2
-    
-    diag(G) <- 1:p
-    G[ltF] <- p + 1:m
-    G <- lwr2sym(G)
-    rownames(G) <- colnames(G) <- nms
-    
-    lapply(1:n,mkG1,G)
-}
-
-mkG1 <- function(i,G) Matrix(array(as.integer(i==G),
-                                   dim=dim(G),
-                                   dimnames=dimnames(G)
-                                   ))
-
-fillG <- function(G,theta){
-
-    Phi <- Map(`*`,theta,G)
-
-    if(length(Phi)>1){
-        for(i in 2:length(Phi))
-            Phi[[1]] <- Phi[[1]] + Phi[[i]]
-    }
-    Phi[[1]]
-}
-
-
-lunq <- function(x)length(attr(x,"unique"))
-
-G.star1 <- function(I,G)Map(`%x%`,list(I),G)
-quadform <- function(A,x) as.numeric(crossprod(x,A%*%x))
-tr.crossprod <- function(A,B) sum(A*B)
-
-lwr2sym <- function(X){
-
-    lwrX <- lower.tri(X)
-    x.lwr <- X[lwrX]
-    Y <- t(X)
-    Y[lwrX] <- x.lwr
-    Y
-}
-
-
-fuseMat <- function(X){
-    if(ncol(X)>1)
-        X <- apply(X,1,cbindList)
-    do.call(rbind,X)
-}
-
-
 print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     cat("\nCall: ", deparse(x$call), "\n\n")
     if(length(coef(x))) {
@@ -1183,3 +1102,97 @@ print.summary.mmclogit <-
     else cat("\n\n")
     invisible(x)
 }
+
+
+
+
+tr <- function(x) sum(diag(x))
+
+mkZ <- function(groups,rX){
+
+    n <- length(groups)
+    ug <- unique(groups)
+    m <- length(ug)
+    p <- ncol(rX)
+    n.j <- tabulate(groups,m)
+    
+    Z <- Matrix(0,nrow=n,ncol=m*p)
+
+    i <- 1:n
+    k <- 1:p
+    j <- groups
+    
+    i <- rep(i,p)
+    jk <- rep((j-1)*p,p)+rep(k,each=n)
+    i.jk <- cbind(i,jk)
+
+    Z[i.jk] <- rX
+    Z
+}
+
+mkG <- function(rX){
+
+    p <- ncol(rX)
+    nms <- colnames(rX)
+    
+    G <- matrix(0,p,p)
+    ltT <- lower.tri(G,diag=TRUE)
+    ltF <- lower.tri(G,diag=FALSE)
+
+    n <- p*(p+1)/2
+    m <- p*(p-1)/2
+    
+    diag(G) <- 1:p
+    G[ltF] <- p + 1:m
+    G <- lwr2sym(G)
+    rownames(G) <- colnames(G) <- nms
+    
+    lapply(1:n,mkG1,G)
+}
+
+mkG1 <- function(i,G) Matrix(array(as.integer(i==G),
+                                   dim=dim(G),
+                                   dimnames=dimnames(G)
+                                   ))
+
+fillG <- function(G,theta){
+
+    Phi <- Map(`*`,theta,G)
+
+    if(length(Phi)>1){
+        for(i in 2:length(Phi))
+            Phi[[1]] <- Phi[[1]] + Phi[[i]]
+    }
+    Phi[[1]]
+}
+
+
+lunq <- function(x)length(attr(x,"unique"))
+
+G.star1 <- function(I,G)Map(`%x%`,list(I),G)
+quadform <- function(A,x) as.numeric(crossprod(x,A%*%x))
+tr.crossprod <- function(A,B) sum(A*B)
+
+lwr2sym <- function(X){
+
+    lwrX <- lower.tri(X)
+    x.lwr <- X[lwrX]
+    Y <- t(X)
+    Y[lwrX] <- x.lwr
+    Y
+}
+
+
+fuseMat <- function(x){
+    if(ncol(x)>1){
+        y <- lapply(1:nrow(x),
+                    fuseCols,x=x)
+    }
+    else
+        y <- x
+    
+    do.call(rbind,y)
+}
+
+cbindList <- function(x) do.call(cbind,x)
+fuseCols <- function(x,i) do.call(cbind,x[i,]) 
