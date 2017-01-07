@@ -107,13 +107,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
   \code{linear.predictors}, and \code{y}, which are matrices with
   number of columns equal to the number of response categories minus one.
 }
-\details{
-  \code{mclogit} tries first to fit the model using the IRLS algorithm of
-  \code{\link[stats]{glm.fit}}, which has the advantage that
-  starting values are not needed in most cases. If convergence
-  cannot achieved, it tries to minimize the deviance using
-  \code{\link[stats]{optim}} with method "BFGS".
-}
+
 \examples{
 data(Transport)
 
