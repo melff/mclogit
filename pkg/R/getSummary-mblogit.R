@@ -78,3 +78,5 @@ getSummary.mblogit <- function(obj,
        xlevels = obj$xlevels,
        sumstat=sumstat)
 }
+
+getSummary.mmblogit <- getSummary.mblogit
