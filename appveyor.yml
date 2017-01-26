@@ -13,8 +13,8 @@ install:
 # Adapt as necessary starting from here
 
 before_build:
-#  - cp travis-tool.sh pkg\travis-tool.sh
-#  - cp travis-tool.sh.cmd pkg\travis-tool.sh.cmd
+  - cp ../travis-tool.sh ./travis-tool.sh
+  - cp travis-tool.sh.cmd pkg/travis-tool.sh.cmd
   - cd pkg
   - bash -c "echo '^travis-tool\.sh\.cmd$' >> .Rbuildignore"
   
