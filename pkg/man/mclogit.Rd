@@ -102,10 +102,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
 }
 \value{
   \code{mclogit} returns an object of class "mclogit", which has almost the
-  same structure as an object of class "\link[stats]{glm}". The difference are
-  the components \code{coefficients}, \code{residuals}, \code{fitted.values},
-  \code{linear.predictors}, and \code{y}, which are matrices with
-  number of columns equal to the number of response categories minus one.
+  same structure as an object of class "\link[stats]{glm}".
 }
 
 \examples{
