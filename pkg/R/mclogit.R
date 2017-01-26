@@ -348,65 +348,69 @@ fitted.mclogit <- function(object,type=c("probabilities","counts"),...){
 
 predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
 
-  type <- match.arg(type)
-  rhs <- object$formula[-2]
-  if(missing(newdata)){
-    m <- model.frame(rhs,data=object$model)
-    na.act <- object$na.action
-  }
-  else{
-    m <- model.frame(rhs,data=newdata)
-    na.act <- attr(m,"na.action")
-  }
-  X <- model.matrix(rhs,m,
-          contasts.arg=object$contrasts,
-          xlev=object$xlevels
-          )
-  drop <- match("(Intercept)",colnames(X))
-  X <- X[,-drop,drop=FALSE]
-  eta <- c(X %*% coef(object))
-  if(se.fit){
-    V <- vcov(object)
-    stopifnot(ncol(X)==ncol(V))
-  }
-
-  
-  if(type=="response") {
-    lhs <- object$formula[[2]]
-    set <- lhs[[3]]
-    set <- eval(set,newdata,parent.frame())
-    if(length(na.act))
-        set <- set[-na.act]
-    set <- match(set,unique(set))
-    exp.eta <- exp(eta)
-    sum.exp.eta <- rowsum(exp.eta,set)
-    p <- exp.eta/sum.exp.eta[set]
+    type <- match.arg(type)
+    rhs <- object$formula[-2]
+    if(missing(newdata)){
+        m <- model.frame(object$formula,data=object$data)
+        set <- m[[1]][,2]
+        na.act <- object$na.action
+    }
+    else{
+        fo <- object$formula
+        lhs <- fo[[2]]
+        if(deparse(lhs[[1]])=="cbind"){
+            lhs <- lhs[[3]]
+        }
+        fo[[2]] <- lhs
+        m <- model.frame(fo,data=newdata)
+        set <- m[[1]]
+        na.act <- attr(m,"na.action")
+    }
+    X <- model.matrix(rhs,m,
+                      contasts.arg=object$contrasts,
+                      xlev=object$xlevels
+                      )
+    drop <- match("(Intercept)",colnames(X))
+    X <- X[,-drop,drop=FALSE]
+    eta <- c(X %*% coef(object))
     if(se.fit){
-      wX <- p*(X - rowsum(p*X,set)[set,,drop=FALSE])
-      se.p <- sqrt(rowSums(wX * (wX %*% V)))
-      if(is.null(na.act))
-        list(fit=p,se.fit=se.p)
-      else
-        list(fit=napredict(na.act,p),
-             se.fit=napredict(na.act,se.p))
+        V <- vcov(object)
+        stopifnot(ncol(X)==ncol(V))
+    }
+
+    
+    if(type=="response") {
+        
+        set <- match(set,unique(set))
+        exp.eta <- exp(eta)
+        sum.exp.eta <- rowsum(exp.eta,set)
+        p <- exp.eta/sum.exp.eta[set]
+        if(se.fit){
+            wX <- p*(X - rowsum(p*X,set)[set,,drop=FALSE])
+            se.p <- sqrt(rowSums(wX * (wX %*% V)))
+            if(is.null(na.act))
+                list(fit=p,se.fit=se.p)
+            else
+                list(fit=napredict(na.act,p),
+                     se.fit=napredict(na.act,se.p))
+        }
+        else {
+            if(is.null(na.act)) p
+            else napredict(na.act,p)
+        }
+    }
+    else if(se.fit) {
+        se.eta <- sqrt(rowSums(X * (X %*% V)))
+        if(is.null(na.act))
+            list(fit=eta,se.fit=se.eta) 
+        else
+            list(fit=napredict(na.act,eta),
+                 se.fit=napredict(na.act,se.eta))
     }
     else {
-      if(is.null(na.act)) p
-      else napredict(na.act,p)
+        if(is.null(na.act)) eta
+        else napredict(na.act,eta)
     }
-  }
-  else if(se.fit) {
-    se.eta <- sqrt(rowSums(X * (X %*% V)))
-    if(is.null(na.act))
-      list(fit=eta,se.fit=se.eta) 
-    else
-      list(fit=napredict(na.act,eta),
-           se.fit=napredict(na.act,se.eta))
-    }
-  else {
-    if(is.null(na.act)) eta
-    else napredict(na.act,eta)
-  }
 }
 
 logLik.mclogit <- function(object,...){
