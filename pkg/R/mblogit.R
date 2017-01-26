@@ -93,8 +93,9 @@ mblogit <- function(formula,
     prior.weights <- weights
     
     if(is.factor(y)){
-        
-        D <- contrasts(y)
+
+        D <- diag(nlevels(y))[,-1]
+        dimnames(D) <- list(levels(y),levels(y)[-1])
         I <- diag(nlevels(y))
         dimnames(I) <- list(levels(y),levels(y))
         yy <- c(I[,y])
@@ -379,15 +380,18 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
   else if(se.fit) {
     se.eta <- sqrt(rowSums(XD * (XD %*% V)))
     se.eta <- rspmat(se.eta)
+    eta <- eta[,-1,drop=FALSE]
+    se.eta <- se.eta[,-1,drop=FALSE]
     if(is.null(na.act))
-      list(fit=eta,se.fit=se.eta) 
+        list(fit=eta,se.fit=se.eta) 
     else
       list(fit=napredict(na.act,eta),
            se.fit=napredict(na.act,se.eta))
   }
   else {
-    if(is.null(na.act)) eta
-    else napredict(na.act,eta)
+      eta <- eta[,-1,drop=FALSE]
+      if(is.null(na.act)) eta
+      else napredict(na.act,eta)
   }
 }
 
