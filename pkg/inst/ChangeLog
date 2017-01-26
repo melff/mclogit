@@ -1,3 +1,13 @@
+2017-01-26:
+  - Fixed some bugs in predict models for `mclogit` objects.
+  - Made sure that dummy coding is used for response factors even if they are ordinal
+
+2017-01-07:
+  - Implemented random slopes for baseline logit models.
+
+2017-01-05:
+  - Implemented random slopes for conditional logit models.
+
 2016-09-01:
   - Fixed `mclogit.fit()` and `predict.mclogit()` to work better without covariates.
 

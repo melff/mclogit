@@ -8,7 +8,7 @@
     \item New \code{nobs} and \code{extractAIC} methods for \code{mclogit} objects, so that \code{drop1.default} should work with these.
     \item New function \code{mblogit} to fit multinomial baseline logit models.
     \item \code{mclogit} \code{mclogit.fit} now allow user-provided starting values.
-    }
+  }
   }
   \subsection{BUGFIXES}{
   \itemize{
@@ -17,6 +17,8 @@
     \item Corrected handling of weights and standard errors of prediction.
     \item Matrices returned by the \code{mclogit} method of \code{vcov()} have
       row and column names.
+    \item The number of observations is now displayed where it was not before.
+    \item \code{nobs} is defined in \code{mclogit.fit.rePQL}.
     }
   }
   \subsection{USER-VISIBLE CHANGES}{
