@@ -46,7 +46,7 @@ artifacts:
   - path: 'pkg\*_*.zip'
     name: binary
 
-version: 0.5.1
+version: 0.5.1-{build}
 
 branches:
   only:
@@ -55,7 +55,7 @@ branches:
 notifications:
   - provider: Email
     to: mclogit@elff.eu
-    on_build_success: change
+    on_build_success: true
     on_build_failure: true
 
 deploy:
@@ -68,5 +68,5 @@ deploy:
   prerelease: false
   on:
     branch: master                 # release from master branch only
-    # appveyor_repo_tag: true        # deploy on tag push only
+    appveyor_repo_tag: true        # deploy on tag push only
   

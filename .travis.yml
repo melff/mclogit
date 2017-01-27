@@ -9,6 +9,6 @@ before_install: cd pkg
 notifications:
   email:
     recipients: mclogit@elff.eu
-    on_success: change
+    on_success: always
     on_failure: always
     
