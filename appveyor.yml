@@ -6,6 +6,7 @@ init:
         $ErrorActionPreference = "Stop"
         Invoke-WebRequest http://raw.github.com/krlmlr/r-appveyor/master/scripts/appveyor-tool.ps1 -OutFile "..\appveyor-tool.ps1"
         Import-Module '..\appveyor-tool.ps1'
+        Update-AppveyorBuild -Version "$env:APPVEYOR_REPO_TAG_NAME"
 
 install:
   ps: Bootstrap
@@ -46,7 +47,7 @@ artifacts:
   - path: 'pkg\*_*.zip'
     name: binary
 
-version: 0.5.1-{build}
+version: 0.5-{build}
 
 branches:
   only:
