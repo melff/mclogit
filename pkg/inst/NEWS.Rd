@@ -1,5 +1,5 @@
 \name{NEWS}
-\title{\emph{memisc} News}
+\title{\emph{mclogit} News}
 \encoding{UTF-8}
 
 \section{Version 0.4}{
