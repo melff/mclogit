@@ -1,3 +1,6 @@
+2017-10-25:
+  - Fixed handling of dropped predictors in `predict.mclogit`.
+
 2017-01-26:
   - Fixed some bugs in predict models for `mclogit` objects.
   - Made sure that dummy coding is used for response factors even if they are ordinal

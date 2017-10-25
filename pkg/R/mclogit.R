@@ -370,8 +370,10 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
                       contasts.arg=object$contrasts,
                       xlev=object$xlevels
                       )
-    drop <- match("(Intercept)",colnames(X))
-    X <- X[,-drop,drop=FALSE]
+
+    cf <- coef(object)
+    X <- X[,names(cf)]
+    
     eta <- c(X %*% coef(object))
     if(se.fit){
         V <- vcov(object)

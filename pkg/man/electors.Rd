@@ -33,13 +33,13 @@ summary(mclogit(
   random=~1|party.time,
   data=within(electors,party.time<-interaction(party,time))))
 
-summary(mclogit(
+\donttest{summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/(class*time)+welfare/class+auth/class,
   random=~1|party.time,
   data=within(electors,{
         party.time <-interaction(party,time)
         econ.left.sq <- (econ.left-mean(econ.left))^2
-        })))
+        })))}
 
 }
 
