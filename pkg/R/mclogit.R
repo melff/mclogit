@@ -24,15 +24,24 @@ quickInteraction <- function(by){
   return(structure(f,unique=uf))
 }
 
-constInSets <- function(X,sets){
-    ans <- integer(0)
+matConstInSets <- function(X,sets){
+    ans <- logical(ncol(X))
     for(i in 1:ncol(X)){
         v <- tapply(X[,i],sets,var)
-        if(all(v[is.finite(v)]==0)) ans <- c(ans,i)
+        ans[i] <- all(v[is.finite(v)]==0) 
     }
-    names(ans) <- colnames(X)[ans]
     ans
 }
+
+listConstInSets <- function(X,sets){
+    ans <- logical(length(X))
+    for(i in 1:length(X)){
+        v <- tapply(X[[i]],sets,var)
+        ans[i] <- all(v[is.finite(v)]==0) 
+    }
+    ans
+}
+
 
 mclogit <- function(
                 formula,
@@ -102,10 +111,12 @@ mclogit <- function(
     xlevels <- .getXlevels(mt,mf)
     icpt <- match("(Intercept)",colnames(X),nomatch=0)
     if(icpt) X <- X[,-icpt,drop=FALSE]
-    const <- constInSets(X,sets)
-    if(length(const)){
-        warning("removing ",paste(names(const),collapse=",")," from model")
-        X <- X[,-const,drop=FALSE]
+    const <- matConstInSets(X,sets)
+    if(any(const)){
+        warning("removing ",
+                gsub("(Intercept)","intercept",paste(colnames(X)[const],collapse=","),fixed=TRUE),
+                " from model due to insufficient within-choice set variance")
+        X <- X[,!const,drop=FALSE]
     }
     if(!length(start)){
       drop.coefs <- check.mclogit.drop.coefs(Y,sets,weights,X,
@@ -115,14 +126,21 @@ mclogit <- function(
         X <- X[,!drop.coefs,drop=FALSE]
       }
     }
+    if(ncol(X)<1)
+        stop("No predictor variable remains in model")
     
+    if(length(random) && control$trace)
+        cat("Fitting plain conditional logit to obtain starting values")
     
     fit <- mclogit.fit(Y,sets,weights,X,
-                        control=control,
-                        start = start,
-                        offset = offset)
+                       control=control,
+                       start = start,
+                       offset = offset)
 
     if(length(random)){ ## random effects
+
+        if(control$trace)
+            cat("Fitting random effects/random coefficients model")
         
         null.dev <- fit$null.deviance
     
@@ -131,7 +149,6 @@ mclogit <- function(
         
         groups <- random$groups
         rX <- model.matrix(rt,mf,contrasts)
-        
         groups <- mf[groups]
         
         nlev <- length(groups)
@@ -141,6 +158,21 @@ mclogit <- function(
             for(i in 2:nlev)
                 groups[[i]] <- quickInteraction(groups[c(i-1,i)])
         }
+
+        gconst <- listConstInSets(groups,sets)
+        if(any(gconst)){
+            rconst <- matConstInSets(rX,sets)
+            if(any(rconst)){
+                cat("\n")
+                warning("removing ",
+                        gsub("(Intercept)","intercept",paste(colnames(rX)[rconst],collapse=","),fixed=TRUE),
+                        " from random part of the model\n because of insufficient within-choice set variance")
+                rX <- rX[,!rconst,drop=FALSE]
+            }
+            if(ncol(rX)<1)
+                stop("No predictor variable remains in random part of the model.\nPlease reconsider your model specification.")
+        }
+        
         
         Z <- lapply(groups,mkZ,rX=rX)
         G <- mkG(rX)
