@@ -105,6 +105,27 @@ mclogit(formula, data=parent.frame(), random=NULL,
   same structure as an object of class "\link[stats]{glm}".
 }
 
+\note{
+  Covariates that are constant within choice sets are automatically
+  dropped from the model formula specified by the \code{formula}
+  argument of \code{mclogit}.
+
+  If the model contains random effects, these should
+  \itemize{
+    \item either vary within choice sets (e.g. the levels of a factor
+    that defines the choice sets should not be nested within the levels
+    of factor)
+    \item or be random coefficients of covariates that vary within
+    choice sets. 
+  }
+  
+  In earlier versions of the package (prior to 0.6) it will lead to a
+  failure of the model fitting algorithm if these conditions are not
+  satisfied. Since version 0.6 of the package, the function
+  \code{mclogit} will complain about such model a misspecification
+  explicitely.
+}
+
 \examples{
 data(Transport)
 
