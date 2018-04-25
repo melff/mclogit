@@ -22,9 +22,9 @@
   where the choice set may vary across choice occasions.
 
   Conditional logit models without random effects are fitted by
-  Fisher-scoring/IWLS.
-  The implementation of mixed conditional logit currently is limited
-  to PQL and random intercepts.
+  Fisher-scoring/IWLS. Models with random effects 
+  (mixed conditional logit models) are estimated via maximum likelihood
+  with a simple Laplace aproximation (aka PQL).
 }
 \usage{
 
