@@ -1,3 +1,7 @@
+2018-04-25:
+  - Improved handling of with misspecified random effect structures.
+  - Added documentation about new handling of misspecified models.
+	
 2017-10-25:
   - Fixed handling of dropped predictors in `predict.mclogit`.
 
