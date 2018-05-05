@@ -2,6 +2,34 @@
 \title{\emph{mclogit} News}
 \encoding{UTF-8}
 
+\section{Version 0.6}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item \code{mclogit} now complains about (i.e. throws an error
+      exception) when the random effects structure cannot be estimated,
+      e.g. because random effects are constant within choice sets
+      and therefore drop out by the formation of conditional logits.
+    }
+  }
+}
+
+\section{Version 0.5}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item \code{mclogit} now supports conditional logit models with
+      random slopes.
+      \item \code{mblogit} now supports multinomial baseline models with
+      random intercept and random slopes.
+    }
+  }
+  \subsection{BUGFIXES}{
+  \itemize{
+    \item \code{predict} methods of objects created by \code{mclogit}
+    and \code{mblogit} are better in handling missing data.
+    }
+  }
+}
+
 \section{Version 0.4}{
   \subsection{NEW FEATURES}{
   \itemize{
