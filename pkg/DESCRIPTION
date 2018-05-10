@@ -6,8 +6,8 @@ Date: 2018-04-25
 Author: Martin Elff
 Maintainer: Martin Elff <mclogit@elff.eu>
 Description: Specification and estimation of conditional logit models of binary
-    responses and multinomial counts is provided, with or without alternative-
-    specific random effects. The current implementation of the estimator for random
+    responses and multinomial counts is provided, with or without
+    random effects. The current implementation of the estimator for random
     effects variances uses a Laplace approximation (or PQL) approach and thus should
     be used only if groups sizes are large.
 License: GPL-2
