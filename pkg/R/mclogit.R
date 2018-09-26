@@ -404,7 +404,7 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
                       )
 
     cf <- coef(object)
-    X <- X[,names(cf)]
+    X <- X[,names(cf), drop=FALSE]
     
     eta <- c(X %*% coef(object))
     if(se.fit){
