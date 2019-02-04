@@ -194,7 +194,7 @@ mclogit <- function(
     if(x && length(random)) fit$z <- Z
     if(!y) {
         fit$y <- NULL
-        ftt$s <- NULL
+        fit$s <- NULL
     }
     fit <- c(fit,list(call = call, formula = formula,
                       terms = mt,
