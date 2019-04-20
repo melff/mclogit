@@ -196,7 +196,7 @@ mblogit <- function(formula,
                       D=D,
                       N=N))
     if(length(random))
-        class(fit) <- c("mmblogit","mmclogit","mclogit","lm")
+        class(fit) <- c("mmblogit","mblogit","mmclogit","mclogit","lm")
     else
         class(fit) <- c("mblogit","mclogit","lm")
     fit
