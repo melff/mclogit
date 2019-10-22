@@ -94,7 +94,7 @@ mblogit <- function(formula,
     
     if(is.factor(y)){
 
-        D <- diag(nlevels(y))[,-1]
+        D <- diag(nlevels(y))[,-1, drop=FALSE]
         dimnames(D) <- list(levels(y),levels(y)[-1])
         I <- diag(nlevels(y))
         dimnames(I) <- list(levels(y),levels(y))
@@ -103,7 +103,7 @@ mblogit <- function(formula,
         weights <- rep(weights,each=nlevels(y))
     } else if(is.matrix(y)){
         
-        D <- diag(ncol(y))[,-1]
+        D <- diag(ncol(y))[,-1, drop=FALSE]
         if(length(colnames(y))){
             rownames(D) <- colnames(y)
             colnames(D) <- colnames(y)[-1]
