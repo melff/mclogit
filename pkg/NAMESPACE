@@ -7,8 +7,10 @@ export(
       mmclogit.fitPQL,
       mclogit.control,
       getSummary.mclogit,
+      getSummary.mmclogit,
       mblogit,
-      getSummary.mblogit
+      getSummary.mblogit,
+      getSummary.mmblogit
 )
 S3method(print,mclogit)
 S3method(vcov,mclogit)
