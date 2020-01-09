@@ -306,7 +306,7 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
 
     ans <- c(object[c("call","terms","deviance","contrasts",
                       "null.deviance","iter","na.action","model.df",
-                      "residual.df","N","converged")],
+                      "df.residual","N","converged")],
               list(coefficients = coef.table,
                     cov.coef=object$covmat))
     p <- length(coef)
@@ -493,7 +493,7 @@ nobs.mclogit <- function(object,...) object$N
 extractAIC.mclogit <- function(fit, scale = 0, k = 2, ...) 
 {
   N <- fit$N
-  edf <- N - fit$residual.df
+  edf <- N - fit$df.residual
   aic <- AIC(fit)
   c(edf, aic + (k - 2) * edf)
 }
@@ -579,7 +579,7 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     
     ans <- c(object[c("call","terms","deviance","contrasts",
                       "null.deviance","iter","na.action","model.df",
-                      "residual.df","N","converged")],
+                      "df.residual","N","converged")],
               list(coefficients = coef.table,
                    cov.coef=object$covmat,
                    VarCov = VarCov.table))

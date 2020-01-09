@@ -1,6 +1,8 @@
 2020-01-09:
   - Document getSummary.mmclogit, getSummary.mmblogit
   - Make 'mblogit' handle matrix responses with zero-sum rows
+  - Renamed 'residual.df' to 'df.residual' in results object of 'mclogit.fit' et
+    al. (Fixes issue #4)
 
 2019-10-23:
   - Merge pull request #3 from skyborla/fix-mblogit

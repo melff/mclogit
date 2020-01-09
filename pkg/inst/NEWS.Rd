@@ -16,7 +16,9 @@
     \item \code{mblogit} now handles responses with only two columns.
     \item \code{mblogit} now can deal with matrix responses that have
     rows that sum to zero.
-    }
+    \item \code{mclogit} and \code{mblogit} now return a component
+    named "df.residual" instead of "residual.df".
+  }
   }
 }
 

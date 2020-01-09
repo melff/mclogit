@@ -35,7 +35,7 @@ anova.mclogitlist <- function (object, ..., dispersion = NULL, test = NULL)
   nmodels <- length(object)
   if (nmodels == 1) stop("'anova.mclogit' can only be used to compare fitted models")
     
-  resdf <- as.numeric(lapply(object, function(x) x$residual.df))
+  resdf <- as.numeric(lapply(object, function(x) x$df.residual))
   resdev <- as.numeric(lapply(object, function(x) x$deviance))
   table <- data.frame(resdf, resdev, c(NA, -diff(resdf)), c(NA, 
                                                             -diff(resdev)))
