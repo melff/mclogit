@@ -1,6 +1,8 @@
 \name{getSummary-methods}
 \alias{getSummary.mclogit}
 \alias{getSummary.mblogit}
+\alias{getSummary.mmclogit}
+\alias{getSummary.mmblogit}
 \title{`getSummary` Methods}
 \description{
   \code{\link[memisc]{getSummary}} methods for use by \code{\link[memisc]{mtable}}
@@ -13,6 +15,14 @@
             alpha=.05,
             rearrange=NULL,
             \dots)
+\method{getSummary}{mmblogit}(obj,
+            alpha=.05,
+            \dots)
+\method{getSummary}{mmclogit}(obj,
+            alpha=.05,
+            rearrange=NULL,
+            \dots)
+
 }
 \arguments{
   \item{obj}{an object returned by \code{\link{mblogit}} or \code{\link{mclogit}}}

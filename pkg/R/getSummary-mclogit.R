@@ -103,3 +103,5 @@ getSummary.mclogit <- function(obj,
        xlevels = obj$xlevels,
        sumstat=sumstat)
 }
+
+getSummary.mmclogit <- getSummary.mclogit
