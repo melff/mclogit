@@ -11,6 +11,13 @@
       and therefore drop out by the formation of conditional logits.
     }
   }
+  \subsection{BUGFIXES}{
+  \itemize{
+    \item \code{mblogit} now handles responses with only two columns.
+    \item \code{mblogit} now can deal with matrix responses that have
+    rows that sum to zero.
+    }
+  }
 }
 
 \section{Version 0.5}{

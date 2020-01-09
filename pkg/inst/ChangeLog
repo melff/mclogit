@@ -1,6 +1,22 @@
+2020-01-09:
+  - Document getSummary.mmclogit, getSummary.mmblogit
+  - Make 'mblogit' handle matrix responses with zero-sum rows
+
+2019-10-23:
+  - Merge pull request #3 from skyborla/fix-mblogit
+    Fix mblogit for responses with only two levels
+  - Export getSummary.mmclogit, getSummary.mmblogit  
+
+2019-04-20:
+  - Let 'mmblogit' models inherit from class 'mblogit'
+
+2019-02-04:
+  - Merged pull request #2 from pmcharrison/ftt-fix:
+    Fixed typo (ftt -> fit)
+		
 2018-09-26:
   - Fixed matrix column selection in predict.mclogit if there is only one
-	  predictor (also PR from skyborla)
+    predictor (also PR from skyborla)
 
 2018-04-25:
   - Improved handling of with misspecified random effect structures.
