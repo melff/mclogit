@@ -114,7 +114,15 @@ mblogit <- function(formula,
         }
         
         w <- rowSums(y)
-        yy <- c(t(y/w))
+        yy <- y/w
+        if(any(w==0)){
+            yy[w==0,] <- 0
+            N <- sum(weights[w>0])
+            warning(sprintf("ignoring %d observerations with counts that sum to zero",
+                            sum(w==0)),
+                    call. = FALSE, immediate. = TRUE)
+        }
+        yy <- c(t(yy))
         weights <- rep(w*weights,each=ncol(y))
     }
     else stop("response must either be a factor or a matrix of counts")
