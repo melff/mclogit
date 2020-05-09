@@ -54,7 +54,9 @@ mclogit <- function(
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
                 start=NULL,
-                control=mclogit.control(...),
+                control=if(length(random))
+                            mmclogit.control(...)
+                        else mclogit.control(...),
                 ...
             ){
 # Assumptions:
@@ -132,7 +134,7 @@ mclogit <- function(
     if(length(random) && control$trace)
         cat("Fitting plain conditional logit to obtain starting values")
     
-    fit <- mclogit.fit(Y,sets,weights,X,
+    fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
                        control=control,
                        start = start,
                        offset = offset)
@@ -140,7 +142,7 @@ mclogit <- function(
     if(length(random)){ ## random effects
 
         if(control$trace)
-            cat("Fitting random effects/random coefficients model")
+            cat("Fitting random effects/random coefficients model\n")
         
         null.dev <- fit$null.deviance
     
@@ -148,7 +150,7 @@ mclogit <- function(
         rt <- terms(random$formula)
         
         groups <- random$groups
-        rX <- model.matrix(rt,mf,contrasts)
+        Z <- model.matrix(rt,mf,contrasts)
         groups <- mf[groups]
         
         nlev <- length(groups)
@@ -161,27 +163,19 @@ mclogit <- function(
 
         gconst <- listConstInSets(groups,sets)
         if(any(gconst)){
-            rconst <- matConstInSets(rX,sets)
+            rconst <- matConstInSets(Z,sets)
             if(any(rconst)){
                 cat("\n")
                 warning("removing ",
-                        gsub("(Intercept)","intercept",paste(colnames(rX)[rconst],collapse=","),fixed=TRUE),
+                        gsub("(Intercept)","intercept",paste(colnames(Z)[rconst],collapse=","),fixed=TRUE),
                         " from random part of the model\n because of insufficient within-choice set variance")
-                rX <- rX[,!rconst,drop=FALSE]
+                Z <- Z[,!rconst,drop=FALSE]
             }
-            if(ncol(rX)<1)
+            if(ncol(Z)<1)
                 stop("No predictor variable remains in random part of the model.\nPlease reconsider your model specification.")
         }
         
-        
-        Z <- lapply(groups,mkZ,rX=rX)
-        G <- mkG(rX)
-        G <- rep(list(G),length(groups))
-        names(Z) <- names(groups)
-        names(G) <- names(groups)
-        
-        fit <- mmclogit.fitPQL(Y,sets,weights,
-                               X,Z,G,groups,
+        fit <- mmclogit.fitPQL(Y,sets,weights,X,Z,groups,
                                start=fit$coef,
                                control=control,
                                offset = offset)
@@ -543,8 +537,9 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     ## calculate coef table
 
     coef <- object$coefficients
-    covmat.scaled <- object$covmat 
-    var.cf <- diag(covmat.scaled)
+    info.coef <- object$info.coef
+    vcov.cf <- solve(info.coef)
+    var.cf <- diag(vcov.cf)
     s.err <- sqrt(var.cf)
     zvalue <- coef/s.err
     pvalue <- 2*pnorm(-abs(zvalue))
@@ -557,32 +552,17 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     coef.table[,3] <- zvalue
     coef.table[,4] <- pvalue
 
-    G <- object$G
-    nlevs <- length(G)
-    nvpar <- sapply(G,length)
-    vpar.selector <- rep(1:nlevs,nvpar)
-    
-    se.varPar <- sqrt(diag(object$covmat.varPar))
-    se.varPar <- split(se.varPar,vpar.selector)
-    VarCov.table <- list()
-    for(k in 1:nlevs){
-        VarCov.k <- object$VarCov[[k]]
-        se.VarCov.k <- as.matrix(fillG(G[[k]],se.varPar[[k]]))
-        VarCov.table.k <- array(NA,dim=c(dim(VarCov.k),2))
-        VarCov.table.k[,,1] <- VarCov.k
-        VarCov.table.k[,,2] <- se.VarCov.k
-        dimnames(VarCov.table.k)[1:2] <- dimnames(VarCov.k)
-        dimnames(VarCov.table.k)[[3]] <- c("Estimate", "Std. Error")
-        VarCov.table[[k]] <- VarCov.table.k
-    }
-    names(VarCov.table) <- names(object$VarCov)
+    VarCov <- object$VarCov
+    info.theta <- object$info.theta
+    se_VarCov <- se_Phi(VarCov,info.theta)
     
     ans <- c(object[c("call","terms","deviance","contrasts",
                       "null.deviance","iter","na.action","model.df",
                       "df.residual","N","converged")],
               list(coefficients = coef.table,
-                   cov.coef=object$covmat,
-                   VarCov = VarCov.table))
+                   vcov.coef = vcov.cf,
+                   VarCov    = VarCov,
+                   se_VarCov = se_VarCov))
     p <- length(coef)
     if(correlation && p > 0) {
         dd <- sqrt(diag(ans$cov.coef))
@@ -611,22 +591,25 @@ print.summary.mmclogit <-
 
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
+    se_VarCov <- x$se_VarCov
     for(k in 1:length(VarCov)){
-        cat("\nGrouping level:",names(VarCov)[k],"\n")
+        cat("Grouping level:",names(VarCov)[k],"\n")
         VarCov.k <- VarCov[[k]]
+        VarCov.k[] <- format(VarCov.k, digits=digits)
+        VarCov.k[upper.tri(VarCov.k)] <- ""
+        #print.default(VarCov.k, print.gap = 2, quote = FALSE)
+        VarCov.k <- format_Mat(VarCov.k,title="Estimate")
 
-        utri <- rep(upper.tri(VarCov.k[,,1]),2)
-        VarCov.k[utri] <- NA
-        VarCov.k <- ftable(VarCov.k,col.vars=3:2)
-        VarCov.k <- format(VarCov.k, digits=digits, quote=FALSE)[-3,-2]
-        VarCov.k[-(1:2),-1] <- gsub("NA","  ",VarCov.k[-(1:2),-1],fixed=TRUE)
-        
-        VarCov.k[1,] <- format(trimws(VarCov.k[1,]),justify="left")
-        VarCov.k <- format(VarCov.k)
-        cat(paste(apply(VarCov.k,1,paste,collapse=" "),collapse="\n"),"\n")
+        se_VarCov.k <- se_VarCov[[k]]
+        se_VarCov.k[] <- format(se_VarCov.k, digits=digits)
+        se_VarCov.k[upper.tri(se_VarCov.k)] <- ""
+        se_VarCov.k <- format_Mat(se_VarCov.k,title="Std.Err.",rownames=" ")
+
+        VarCov.k <- paste(VarCov.k,se_VarCov.k)
+        writeLines(VarCov.k)
     }
 
-    cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
+    cat("\nNull Deviance:    ", format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher Scoring iterations: ", x$iter,
         "\nNumber of observations: ",x$N,
@@ -745,3 +728,14 @@ fuseMat <- function(x){
 
 cbindList <- function(x) do.call(cbind,x)
 fuseCols <- function(x,i) do.call(cbind,x[i,]) 
+
+format_Mat <- function(x,title="",rownames=NULL){
+    if(length(rownames))
+        rn <- format(c("",rownames))
+    else 
+        rn <- format(c("",rownames(x)))
+    x <- format(x)
+    x <- apply(x,1,paste,collapse=" ")
+    x <- format(c(title,x))
+    paste(rn,x)
+}

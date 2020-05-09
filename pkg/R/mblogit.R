@@ -144,16 +144,16 @@ mblogit <- function(formula,
         
         random <- setupRandomFormula(random)
         rt <- terms(random$formula)
-        
+
         groups <- random$groups
-        rX <- model.matrix(rt,mf,contrasts)
+        Z <- model.matrix(rt,mf,contrasts)
 
-        rXD <- rX%x%D
+        ZD <- Z%x%D
 
-        colnames(rXD) <- paste0(rep(colnames(D),ncol(rX)),
+        colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
                                "~",
-                               rep(colnames(rX),each=ncol(D)))
-        colnames(rXD) <- gsub("(Intercept)","1",colnames(rXD),fixed=TRUE)
+                               rep(colnames(Z),each=ncol(D)))
+        colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
         
         groups <- mf[groups]
         groups <- lapply(groups,rep,each=nrow(D))
@@ -166,14 +166,8 @@ mblogit <- function(formula,
                 groups[[i]] <- quickInteraction(groups[c(i-1,i)])
         }
 
-        Z <- lapply(groups,mkZ,rX=rXD)
-        G <- mkG(rXD)
-        G <- rep(list(G),length(groups))
-        names(Z) <- names(groups)
-        names(G) <- names(groups)
-        
         fit <- mmclogit.fitPQL(y=yy,s=s,w=weights,
-                               X=XD,Z=Z,G=G,groups=groups,
+                               X=XD,Z=ZD,groups=groups,
                                start=fit$coef,
                                control=control,
                                offset = offset)
@@ -191,6 +185,12 @@ mblogit <- function(formula,
     fit$coefmat <- coefmat
     fit$coefficients <- coefficients
     
+    if(x) fit$x <- X
+    if(x && length(random)) fit$z <- Z
+    if(!y) {
+        fit$y <- NULL
+        fit$s <- NULL
+    }
     fit <- c(fit,list(call = call, formula = formula,
                       terms = mt,
                       random = NULL,
