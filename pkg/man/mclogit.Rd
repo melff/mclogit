@@ -32,7 +32,9 @@ mclogit(formula, data=parent.frame(), random=NULL,
         subset, weights = NULL, offset=NULL, na.action = getOption("na.action"),
         model = TRUE, x = FALSE, y = TRUE, contrasts=NULL,
         start=NULL,
-        control=mclogit.control(\dots), \dots)
+        control=if(length(random))
+                    mmclogit.control(\dots)
+                else mclogit.control(\dots), \dots)
 }
 \arguments{
   \item{formula}{a model formula: a symbolic description of the
@@ -96,7 +98,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
     See \code{\link{mclogit.control}} }
 
   \item{\dots}{
-    arguments to be passed to \code{mclogit.control}
+    arguments to be passed to \code{mclogit.control} or \code{mmclogit.control}
     }
 
 }

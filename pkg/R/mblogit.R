@@ -32,7 +32,7 @@
 #' of \code{model.matrix.default}.
 #' @param control a list of parameters for the fitting process.
 #' See \code{\link{mclogit.control}}
-#' @param \dots arguments to be passed to \code{mclogit.control}
+#' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
 #'
 #' @return   \code{mblogit} returns an object of class "mblogit", which has almost the
 #' same structure as an object of class "\link[stats]{glm}". The difference are

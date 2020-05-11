@@ -1,5 +1,6 @@
 \name{mclogit.control}
 \alias{mclogit.control}
+\alias{mmclogit.control}
 
 \title{Control Parameters for the Fitting Process}
 \description{
@@ -9,6 +10,9 @@
 \usage{
 mclogit.control(epsilon = 1e-08,
                 maxit = 25, trace=TRUE)
+mmclogit.control(epsilon = 1e-08,
+                 maxit = 25, trace=TRUE,
+                 trace.inner=FALSE)
 }
 \arguments{
    \item{epsilon}{positive convergence tolerance \eqn{\epsilon};
@@ -17,6 +21,8 @@ mclogit.control(epsilon = 1e-08,
    \item{maxit}{integer giving the maximal number of IWLS or PQL iterations.}
    \item{trace}{logical indicating if output should be produced for each
     iteration.}
+   \item{trace.inner}{logical indicating if output should be produced for each
+    inner iteration of the PQL method.}
 }
 \value{
   A list.

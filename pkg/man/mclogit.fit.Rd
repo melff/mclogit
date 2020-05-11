@@ -11,8 +11,8 @@
 \usage{
 mclogit.fit(y, s, w, X, start = NULL, offset = NULL, control = mclogit.control())
 
-mmclogit.fitPQL(y, s, w, X, Z, G, groups, start,
-                  offset = NULL, control = mclogit.control())
+mmclogit.fitPQL(y, s, w, X, Z, groups, start,
+                  offset = NULL, control = mmclogit.control())
 }
 \arguments{
   \item{y}{a response vector. Should be binary.}
@@ -20,7 +20,6 @@ mmclogit.fitPQL(y, s, w, X, Z, G, groups, start,
   \item{w}{a vector with observation weights.}
   \item{X}{a model matrix; required.}
   \item{Z}{the random effects design matrix.}
-  \item{G}{a list of design matrices for the (co-)variance parameters.}
   \item{groups}{a list of grouping factors.}
   \item{start}{an optional numerical vector of starting values
     for the coefficients.
