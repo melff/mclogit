@@ -553,8 +553,8 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     coef.table[,4] <- pvalue
 
     VarCov <- object$VarCov
-    info.theta <- object$info.theta
-    se_VarCov <- se_Phi(VarCov,info.theta)
+    info.lambda <- object$info.lambda
+    se_VarCov <- se_Phi(VarCov,info.lambda)
     
     ans <- c(object[c("call","terms","deviance","contrasts",
                       "null.deviance","iter","na.action","model.df",

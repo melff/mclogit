@@ -89,8 +89,8 @@ mmclogit.fitPQL <- function(
     #    warning("fitted probabilities numerically 0 occurred")
 
     info.coef <- fit$info.fixed
-    info.theta <- fit$info.theta
-    G <- fit$G
+    info.lambda <- fit$info.lambda
+    info.psi <- fit$info.psi
     
     Phi <- fit$Phi
     for(k in seq_along(Phi))
@@ -126,8 +126,8 @@ mmclogit.fitPQL <- function(
         converged = converged,
         control=control,
         info.coef = info.coef,
-        info.theta = info.theta,
-        G = G
+        info.lambda = info.lambda,
+        info.psi = info.psi
         ))
 }
 
@@ -137,9 +137,6 @@ PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
     nlevs <- length(groups)
     m <- lapply(groups,lunq)
 
-    # Design matrix for variance parameters
-    G <- mapply(Gfunc,d,m,SIMPLIFY=TRUE)
-    
     # Naive starting values
     
     Wy <- W%*%y
@@ -162,48 +159,50 @@ PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
         Phi.start[[k]] <- S.k/(m.k-1)
     }
 
-    phi.start <- unlist(lapply(Phi.start,vech))
     Psi.start <- lapply(Phi.start,solve)
-    theta.start <- unlist(lapply(Psi.start,vech))
+    Lambda.start <- lapply(Psi.start,chol)
+    lambda.start <- unlist(lapply(Lambda.start,uvech))
 
     WZ <- bMatProd(W,Z)
     ZWZ <- bMatCrsProd(WZ,Z)
     ZWX <- bMatCrsProd(WZ,X)
     ZWy <- bMatCrsProd(WZ,y)
 
-    qval <- qfunc(theta.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    qfunc1 <- function(theta) qfunc(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    nqfunc1 <- function(theta) -qfunc(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    #qfuncv <- Vectorize(qfunc1)
+    # qval <- qfunc(lambda.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    # qfunc1 <- function(lambda) qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    nqfunc1 <- function(lambda) -qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    # qfuncv <- Vectorize(qfunc1)
 
-    gval <- grfunc(theta.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    grfunc1 <- function(theta) grfunc(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    ngrfunc1 <- function(theta) -grfunc(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    # gval <- grfunc(lambda.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    # grfunc1 <- function(lambda) grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    ngrfunc1 <- function(lambda) -grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
 
-    #grfuncv <- Vectorize(grfunc1)
+    # grfuncv <- Vectorize(grfunc1)
     # layout(1:3)
-    # curve(qfuncv(x),from=2.75,to=3)
-    # points(theta.start,qval)
-    # curve(grfuncv(x),from=2.75,to=3)
-    # points(theta.start,gval)
+    # curve(qfuncv(x),from=1.5,to=2)
+    # points(lambda.start,qval)
+    # curve(grfuncv(x),from=1.5,to=2)
+    # points(lambda.start,gval)
     # abline(h=0)
 
-    info_func1 <- function(theta) info_func(theta,d,ZWZ,G)
-    #hess_func1 <- function(theta) -info_func(theta,d,ZWZ,G)
-    #info_funcv <- function(theta) {s1 <- lapply(theta,info_func1);sapply(s1,as.vector)}
-    #curve(info_funcv(x),from=2.75,to=3)
+    info_func1 <- function(lambda) info_func(lambda,d,ZWZ)
+    # hess_func1 <- function(lambda) -info_func(lambda,d,ZWZ)
+    # info_funcv <- function(lambda) {s1 <- lapply(lambda,info_func1);sapply(s1,as.vector)}
+    # curve(info_funcv(x),from=1.5,to=2)
 
     if(control$trace.inner) cat("\n")
-    res.port <- nlminb(theta.start,
+    res.port <- nlminb(lambda.start,
                        objective = nqfunc1,
                        gradient = ngrfunc1,
                        control = list(trace = as.integer(control$trace.inner))
                        )
 
-    theta <- res.port$par
-    info.theta <- info_func1(theta)
+    lambda <- res.port$par
+    info.lambda <- info_func1(lambda)
+    info.psi <- info_func_psi(lambda,d,ZWZ)
 
-    Psi <- theta2Psi(theta,m,d)
+    Lambda <- lambda2Mat(lambda,m,d)
+    Psi <- lapply(Lambda,crossprod)
     iSigma <- Psi2iSigma(Psi,m)
 
     Phi <- lapply(Psi,solve)
@@ -211,7 +210,8 @@ PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
     H <- ZWZ + iSigma
     K <- solve(H)
 
-    log.det.iSigma <- 2*sum(log(diag(chol_blockMatrix(iSigma,resplit=FALSE))))
+    log.det.iSigma <- Lambda2log.det.iSigma(Lambda,m)
+    
     log.det.ZWZiSigma <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
 
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
@@ -223,23 +223,24 @@ PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
     b[] <- lapply(b[],as.matrix) 
     
     list(
-        theta = theta,
+        lambda = lambda,
         coefficients = list(fixed = alpha,
                             random = b),
         Psi = Psi,
         Phi = Phi,
         info.fixed = as.matrix(XiVX),
-        info.theta = info.theta,
+        info.lambda = info.lambda,
+        info.psi = info.psi,
         log.det.iSigma   = log.det.iSigma,
-        log.det.ZWZiSigma = log.det.ZWZiSigma,
-        G = G
+        log.det.ZWZiSigma = log.det.ZWZiSigma
     )
  }
 
-qfunc <- function(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
+qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
-    Psi <- theta2Psi(theta,m,d)
+    Lambda <- lambda2Mat(lambda,m,d)
+    Psi <- lapply(Lambda,crossprod)
     iSigma <- Psi2iSigma(Psi,m)
 
     H <- ZWZ + iSigma
@@ -252,20 +253,24 @@ qfunc <- function(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     b <- bMatProd(K,ZWy-bMatProd(ZWX,alpha))
 
     y.aXiVXa.y <- yWy - crossprod(XWy,alpha) - fuseMat(bMatCrsProd(ZWy,b))
-    S <- mapply(v_bCrossprod,b,d)
-    bPsib <- mapply(`%*%`,S,Psi)
-    bPsib <- Reduce(`+`,bPsib)
+    #S <- mapply(v_bCrossprod,b,d)
+    #bPsib <- mapply(`%*%`,S,Psi)
+    #bPsib <- Reduce(`+`,bPsib)
+
     
-    log.det.iSigma <- 2*sum(log(diag(chol_blockMatrix(iSigma,resplit=FALSE))))
+    #log.det.iSigma <- 2*sum(log(diag(chol_blockMatrix(iSigma,resplit=FALSE))))
+    log.det.iSigma <- Lambda2log.det.iSigma(Lambda,m)
+    
     log.det.H <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
     res <- (log.det.iSigma - log.det.H - y.aXiVXa.y)/2
     as.vector(res)
 }
 
-grfunc <- function(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
+grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
-    Psi <- theta2Psi(theta,m,d)
+    Lambda <- lambda2Mat(lambda,m,d)
+    Psi <- lapply(Lambda,crossprod)
     iSigma <- Psi2iSigma(Psi,m)
 
     H <- ZWZ + iSigma
@@ -283,32 +288,69 @@ grfunc <- function(theta,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     SumK.k <- mapply(sum_blockDiag,K.kk,d)
     Gr <- list()
     for(k in 1:nlevs)
-        Gr[[k]] <- (m[k]*Phi[[k]] - SumK.k[[k]] - S[[k]])/2
-    gr <- lapply(Gr,vech)
+        Gr[[k]] <- Lambda[[k]]%*%(m[k]*Phi[[k]] - SumK.k[[k]] - S[[k]])
+    gr <- lapply(Gr,uvech)
     unlist(gr)
 }
 
-info_func <- function(theta,d,ZWZ,G){
+info_func_psi <- function(lambda,d,ZWZ){
+
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
-    Psi <- theta2Psi(theta,m,d)
+
+    Lambda <- lambda2Mat(lambda,m,d)
+    Psi <- lapply(Lambda,crossprod)
     iSigma <- Psi2iSigma(Psi,m)
 
     H <- ZWZ + iSigma
     K <- solve(H)
     T <- iSigma - K
+    
     Imat <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
     for(k in 1:nlevs) {
         T.k <- T[[k,k]]
-        G.k <- G[[k]]
-        TG.k <- T.k%*%G.k
-        Imat[[k,k]] <- crossprod(TG.k)
+        B.kk <- block_kronSum(T.k,m[k],m[k])
+        Imat[[k,k]] <- B.kk/2
         if(k < nlevs)
             for(k_ in seq(from=k+1,to=nlevs)){
-                G.k_ <- G[[k_]]
-                TG.kk_ <- T[[k,k_]]%*%G.k_
-                TG.k_k <- T[[k_,k]]%*%G.k
-                Imat[[k_,k]] <- crossprod(TG.kk_,TG.k_k)
+                T.kk_ <- T[[k,k_]]
+                B.kk_ <- block_kronSum(T.kk_,m[k],m[k_])
+                Imat[[k,k_]] <- B.kk_/2
+                Imat[[k_,k]] <- t(Imat[[k,k_]])
+            }
+    }
+    as.matrix(fuseMat(Imat))
+} 
+
+
+info_func <- function(lambda,d,ZWZ){
+
+    nlevs <- ncol(ZWZ)
+    m <- bM_ncol(ZWZ)%/%d
+
+    Lambda <- lambda2Mat(lambda,m,d)
+    Psi <- lapply(Lambda,crossprod)
+    iSigma <- Psi2iSigma(Psi,m)
+
+    G.lambda <- d.psi.d.lambda(Lambda)
+    
+    H <- ZWZ + iSigma
+    K <- solve(H)
+    T <- iSigma - K
+    
+    Imat <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
+    for(k in 1:nlevs) {
+        T.k <- T[[k,k]]
+        B.kk <- block_kronSum(T.k,m[k],m[k])
+        G.k <- G.lambda[[k]]
+        Imat[[k,k]] <- crossprod(G.k,B.kk%*%G.k)/2
+        if(k < nlevs)
+            for(k_ in seq(from=k+1,to=nlevs)){
+                T.kk_ <- T[[k,k_]]
+                B.kk_ <- block_kronSum(T.kk_,m[k],m[k_])
+                G.k_ <- G.lambda[[k_]]
+                Imat[[k,k_]] <- crossprod(G.k,B.kk_%*%G.k_)/2
+                Imat[[k_,k]] <- t(Imat[[k,k_]])
             }
     }
     as.matrix(fuseMat(Imat))
@@ -323,11 +365,21 @@ setVech <- function(x,v) {
     x
 }
 
-theta2Psi <- function(theta,m,d){
+uvech <- function(x) x[upper.tri(x,diag=TRUE)]
+set_uvech <- function(x,v,symm=FALSE) {
+    ij <- upper.tri(x,diag=TRUE)
+    x[ij] <- v
+    if(symm){
+        x <- t(x)
+        x[ij] <- v
+    }
+    x
+}
+lambda2Mat <- function(lambda,m,d){
     nlevs <- length(m)
-    dd2 <- d*(d+1)%/%2
-    theta <- split_(theta,dd2)
-    lapply(theta,setVech,x=diag(d))
+    dd2 <- d*(d+1)/2
+    lambda <- split_(lambda,dd2)
+    lapply(lambda,set_uvech,x=diag(d))
 }
 
 Psi2iSigma <- function(Psi,m){
@@ -335,19 +387,8 @@ Psi2iSigma <- function(Psi,m){
     blockDiag(iSigma)
 }
 
-theta2iSigma <- function(theta,m,d){
-    nlevs <- length(m)
-    dd2 <- d*(d+1)%/%2
-    theta <- split_(theta,dd2)
-    Psi <- lapply(theta,setVech,x=diag(d))
-    iSigma <- mapply(mk.iSigma.k,Psi,m,SIMPLIFY=FALSE)
-    blockDiag(iSigma)
-}
-
 mk.iSigma.k <- function(Psi,m){
-    d <- ncol(Psi)
-    iSigma.k <- Matrix(0,d*m,d*m)
-    set_blockDiag(iSigma.k,Psi)
+    Diagonal(m) %x% Psi
 }
 
 split_ <- function(x,n){
@@ -357,22 +398,10 @@ split_ <- function(x,n){
     split(x,i)
 }
 
-vec.vech <- function(d){
-    dd <- d*d
-    dd2 <- (d*(d+1))%/%2
-    I <- matrix(1:dd,d,d)
-    J <- I*0
-    J[lower.tri(J,diag=TRUE)] <- 1:dd2
-    J[upper.tri(J)] <- t(J)[upper.tri(J)]
-    ij <- cbind(as.vector(I),as.vector(J))
-    res <- Matrix(0,dd,dd2)
-    res[ij] <- 1
-    res
-}
-
 Gfunc <- function(d,m){
-    G_ <- vec.vech(d)
-    do.call(rbind,rep(list(G_),m))
+    x <- Diagonal(n=m)
+    dim(x) <- c(m*m,1)
+    x %x% Diagonal(n=d*d)
 }
 
 mmclogit.control <- function(
@@ -387,17 +416,6 @@ mmclogit.control <- function(
         stop("maximum number of iterations must be > 0")
     list(epsilon = epsilon, maxit = maxit,
          trace = trace, trace.inner = trace.inner)
-}
-
-se_Phi_ <- function(Phi,info.theta){
-    d <- ncol(Phi)
-    Phi.Phi <- Phi %x% Phi
-    G.theta <- vec.vech(d)
-    vcov.theta <- solve(info.theta)
-    vcov.psi <- G.theta %*% tcrossprod(vcov.theta,G.theta)
-    vcov.phi <- Phi.Phi %*% vcov.psi %*% Phi.Phi
-    se.phi <- sqrt(diag(vcov.phi))
-    matrix(se.phi,d,d,dimnames=dimnames(Phi))
 }
 
 split_bdiag <- function(x,n){
@@ -415,8 +433,76 @@ split_bdiag <- function(x,n){
     y
 }
 
-se_Phi <- function(Phi,info.theta){
+se_Phi <- function(Phi,info.lambda){
     d <- ncol(Phi[[1]])
-    info.theta <- split_bdiag(info.theta,d)
-    Map(se_Phi_,Phi,info.theta)
+    dd2 <- d*(d+1)/2
+    info.lambda <- split_bdiag(info.lambda,dd2)
+    Map(se_Phi_,Phi,info.lambda)
+}
+
+block_kronSum <- function(A,m1,m2){
+    nr <- nrow(A)
+    nc <- ncol(A)
+    d1 <- nr%/%m1
+    d2 <- nc%/%m2
+    A <- as.array(A)
+    dim(A) <- c(d1,m1,d2,m2)
+    A <- aperm(A,c(2,4,1,3)) # dim = m1,m2,d1,d2
+    dim(A) <- c(m1*m2,d1*d2)
+    B <- crossprod(A) # dim = d1*d2,d1*d2
+    dim(B) <- c(d1,d2,d1,d2)
+    B <- aperm(B,c(1,3,2,4)) # dim = d1,d1,d2,d2
+    dim(B) <- c(d1*d1,d2*d2)
+    return(B)
+}
+
+
+d.psi.d.lambda <- function(Lambda) {
+    lapply(Lambda,d.psi.d.lambda.1)
+}
+
+d.psi.d.lambda.1 <- function(Lambda){
+    d <- ncol(Lambda)
+    d_2 <- d*(d+1)/2
+    G <- array(0,c(d,d,d,d))
+
+    g <- rep(1:d,d*d*d)
+    h <- rep(1:d,each=d,d*d)
+    i <- rep(1:d,each=d*d,d)
+    j <- rep(1:d,each=d*d*d)
+
+    delta <- diag(d)
+    
+    G[cbind(g,h,i,j)] <- delta[cbind(g,j)]*Lambda[cbind(i,h)] + Lambda[cbind(i,g)]*delta[cbind(h,j)]
+    
+    dim(G) <- c(d*d,d*d)
+    keep.lambda <- as.vector(upper.tri(Lambda,diag=TRUE))
+    G[,keep.lambda]
+}
+
+se_Phi_ <- function(Phi,info.lambda){
+    d <- ncol(Phi)
+    Psi <- solve(Phi)
+    Lambda <- chol(Psi)
+    G <- d.psi.d.lambda.1(Lambda)
+    vcov.lambda <- solve(info.lambda)
+    vcov.psi <- G%*%tcrossprod(vcov.lambda,G)
+    PhiPhi <- Phi%x%Phi
+    vcov.phi <- PhiPhi%*%vcov.psi%*%PhiPhi
+    se.phi <- sqrt(diag(vcov.phi))
+    matrix(se.phi,d,d,dimnames=dimnames(Phi))
+}
+
+Lambda2log.det.iSigma <- function(Lambda,m){
+    res <- Map(Lambda2log.det.iSigma_1,Lambda,m)
+    sum(unlist(res))
+}
+
+Lambda2log.det.iSigma_1 <- function(Lambda,m){
+    dLambda <- diag(Lambda)
+    if(any(dLambda < 0)){
+        Lambda <- chol(crossprod(Lambda))
+        dLambda <- diag(Lambda)
+    }
+    m*sum(log(dLambda))
 }

@@ -227,8 +227,8 @@ set_blockDiag <- function(x,v){
     n <- ncol(v)
     i <- rep(1:n,n)
     j <- rep(1:n,each=n)
-    nblks <- nrow(x) %/% n
-    offs <- rep(seq.int(from=0,to=nblks-1),each=n*n)
+    nblks <- ncol(x) %/% n
+    offs <- rep(seq.int(from=0,to=nblks-1)*n,each=n*n)
     i <- rep(i,nblks) + offs
     j <- rep(j,nblks) + offs
     x[cbind(i,j)] <- v

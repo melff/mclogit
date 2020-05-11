@@ -53,7 +53,9 @@ mblogit <- function(formula,
                     na.action = getOption("na.action"),
                     model = TRUE, x = FALSE, y = TRUE,
                     contrasts=NULL,
-                    control=mclogit.control(...),
+                    control=if(length(random))
+                                mmclogit.control(...)
+                            else mclogit.control(...),
                     ...){
     
     call <- match.call(expand.dots = TRUE)
@@ -82,7 +84,7 @@ mblogit <- function(formula,
     if(!is.null(weights) && !is.numeric(weights))
         stop("'weights' must be a numeric vector")
     
-    y <- model.response(mf, "any")
+    Y <- model.response(mf, "any")
     X <- model.matrix(mt,mf,contrasts)
     contrasts <- attr(X, "contrasts")
     xlevels <- .getXlevels(mt,mf)
@@ -92,38 +94,38 @@ mblogit <- function(formula,
     N <- sum(weights)
     prior.weights <- weights
     
-    if(is.factor(y)){
+    if(is.factor(Y)){
 
-        D <- diag(nlevels(y))[,-1, drop=FALSE]
-        dimnames(D) <- list(levels(y),levels(y)[-1])
-        I <- diag(nlevels(y))
-        dimnames(I) <- list(levels(y),levels(y))
-        yy <- c(I[,y])
+        weights <- rep(weights,each=nlevels(Y))
+        D <- diag(nlevels(Y))[,-1, drop=FALSE]
+        dimnames(D) <- list(levels(Y),levels(Y)[-1])
+        I <- diag(nlevels(Y))
+        dimnames(I) <- list(levels(Y),levels(Y))
+        Y <- c(I[,Y])
         
-        weights <- rep(weights,each=nlevels(y))
-    } else if(is.matrix(y)){
+    } else if(is.matrix(Y)){
         
-        D <- diag(ncol(y))[,-1, drop=FALSE]
-        if(length(colnames(y))){
-            rownames(D) <- colnames(y)
-            colnames(D) <- colnames(y)[-1]
+        D <- diag(ncol(Y))[,-1, drop=FALSE]
+        if(length(colnames(Y))){
+            rownames(D) <- colnames(Y)
+            colnames(D) <- colnames(Y)[-1]
         }
         else {
-            rownames(D) <- 1:ncol(y)
-            colnames(D) <- 2:ncol(y)
+            rownames(D) <- 1:ncol(Y)
+            colnames(D) <- 2:ncol(Y)
         }
         
-        w <- rowSums(y)
-        yy <- y/w
+        w <- rowSums(Y)
+        Y <- Y/w
         if(any(w==0)){
-            yy[w==0,] <- 0
+            Y[w==0,] <- 0
             N <- sum(weights[w>0])
             warning(sprintf("ignoring %d observerations with counts that sum to zero",
                             sum(w==0)),
                     call. = FALSE, immediate. = TRUE)
         }
-        yy <- c(t(yy))
-        weights <- rep(w*weights,each=ncol(y))
+        weights <- rep(w*weights,each=ncol(Y))
+        Y <- as.vector(t(Y))
     }
     else stop("response must either be a factor or a matrix of counts")
     
@@ -134,8 +136,8 @@ mblogit <- function(formula,
     colnames(XD) <- paste0(rep(colnames(D),ncol(X)),
                                   "~",
                                   rep(colnames(X),each=ncol(D)))
-    
-    fit <- mclogit.fit(y=yy,s=s,w=weights,X=XD,
+
+    fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
                        control=control)
 
     if(length(random)){ ## random effects
@@ -166,7 +168,7 @@ mblogit <- function(formula,
                 groups[[i]] <- quickInteraction(groups[c(i-1,i)])
         }
 
-        fit <- mmclogit.fitPQL(y=yy,s=s,w=weights,
+        fit <- mmclogit.fitPQL(y=Y,s=s,w=weights,
                                X=XD,Z=ZD,groups=groups,
                                start=fit$coef,
                                control=control,
@@ -494,21 +496,23 @@ print.summary.mmblogit <-
  
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
+    se_VarCov <- x$se_VarCov
     for(k in 1:length(VarCov)){
-        cat("\nGrouping level:",names(VarCov)[k],"\n")
+        cat("Grouping level:",names(VarCov)[k],"\n")
         VarCov.k <- VarCov[[k]]
+        VarCov.k[] <- format(VarCov.k, digits=digits)
+        VarCov.k[upper.tri(VarCov.k)] <- ""
+        #print.default(VarCov.k, print.gap = 2, quote = FALSE)
+        VarCov.k <- format_Mat(VarCov.k,title="Estimate")
 
-        utri <- rep(upper.tri(VarCov.k[,,1]),2)
-        VarCov.k[utri] <- NA
-        VarCov.k <- ftable(VarCov.k,col.vars=3:2)
-        VarCov.k <- format(VarCov.k, digits=digits, quote=FALSE)[-3,-2]
-        VarCov.k[-(1:2),-1] <- gsub("NA","  ",VarCov.k[-(1:2),-1],fixed=TRUE)
-        
-        VarCov.k[1,] <- format(trimws(VarCov.k[1,]),justify="left")
-        VarCov.k <- format(VarCov.k)
-        cat(paste(apply(VarCov.k,1,paste,collapse=" "),collapse="\n"),"\n")
+        se_VarCov.k <- se_VarCov[[k]]
+        se_VarCov.k[] <- format(se_VarCov.k, digits=digits)
+        se_VarCov.k[upper.tri(se_VarCov.k)] <- ""
+        se_VarCov.k <- format_Mat(se_VarCov.k,title="Std.Err.",rownames=" ")
+
+        VarCov.k <- paste(VarCov.k,se_VarCov.k)
+        writeLines(VarCov.k)
     }
-   
 
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
