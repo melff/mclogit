@@ -1,8 +1,8 @@
 Package: mclogit
 Type: Package
 Title: Mixed Conditional Logit Models
-Version: 0.6.3
-Date: 2019-01-09
+Version: 0.7
+Date: 2020-05-11
 Author: Martin Elff
 Maintainer: Martin Elff <mclogit@elff.eu>
 Description: Specification and estimation of conditional logit models of binary
@@ -20,4 +20,4 @@ Imports:
 LazyLoad: Yes
 URL: http://www.elff.eu/software/mclogit/,http://github.com/melff/mclogit/
 BugReports: http://github.com/melff/mclogit/issues
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
