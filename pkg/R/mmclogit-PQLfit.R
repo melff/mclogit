@@ -59,6 +59,7 @@ mmclogit.fitPQL <- function(
         fit <- PQLinnerFit(y.star,X,Z,W,d,groups,offset,control)
 
         coef <- fit$coefficients
+        last.eta <- eta
         eta <- as.vector(X%*%coef$fixed) + offset
         for(k in 1:nlevs){
             eta <- eta +  as.vector(Z[[k]]%*%coef$random[[k]])
@@ -72,10 +73,13 @@ mmclogit.fitPQL <- function(
         log.det.iSigma <- fit$log.det.iSigma
         log.det.ZWZiSigma <- fit$log.det.ZWZiSigma
         deviance <- sum(dev.resids) - log.det.iSigma + log.det.ZWZiSigma
-        if(control$trace)
-            cat("\nIteration",iter,"- Deviance =",deviance)
-        crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
+        #crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
+        crit <- sum((eta - last.eta)^2) /sum(eta^2)
 
+        if(control$trace){
+            cat("\nIteration",iter,"- criterion =",crit)
+        }
+        
         if(crit < control$eps){
           converged <- TRUE
           if(control$trace)
