@@ -135,6 +135,7 @@ mmclogit.fitPQL <- function(
         ))
 }
 
+matrank <- function(x) qr(x)$rank
 
 PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
 
@@ -160,6 +161,13 @@ PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
         m.k <- m[[k]]
         dim(b.k) <- c(d,m.k)
         S.k <- tcrossprod(b.k)
+        if(matrank(S.k) < d){
+            warning(sprintf("Singular initial covariance matrix at level %d.
+This may indicate that the number of groups is too small.
+Correcting, but expect the unexpected",k))
+            S.k <- diag(x=S.k)
+            S.k <- diag(S.k,nrow=d)
+        }
         Phi.start[[k]] <- S.k/(m.k-1)
     }
 
