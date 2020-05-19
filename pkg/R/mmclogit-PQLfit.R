@@ -43,13 +43,15 @@ mmclogit.fitPQL <- function(
     d <- ncol(Z0)
     # Expand random effects design matrix from intecepts and slopes for random effects
     # for each level
-    Z <- blockMatrix(lapply(groups,mkZ,rX=Z0))
     Z <- lapply(groups,mkZ,rX=Z0)
     Z <- blockMatrix(Z,ncol=length(Z))
     # Outer iterations: update non-linear part of the model
     converged <- FALSE
+    fit <- NULL
     for(iter in 1:control$maxit){
 
+        do.backup <- FALSE
+        
         W <- Matrix(0,nrow=nobs,ncol=nsets)
         W[cbind(i,s)] <- sqrt.w*pi
         W <- Diagonal(x=w*pi)-tcrossprod(W)
@@ -58,7 +60,15 @@ mmclogit.fitPQL <- function(
         ww <- w*pi
         good <- ww > 0
 
-        fit <- PQLinnerFit(y.star,X,Z,W,d,groups,offset,control)
+        last.fit <- fit
+        
+        fit <- try(PQLinnerFit(y.star,X,Z,W,d,groups,offset,control),silent=TRUE)
+        if(inherits(fit,"try-error")){
+            fit <- last.fit
+            if(control$trace) cat("\n")
+            warning("Numeric problems in inner iteration, bailing out")
+            break
+        }
 
         coef <- fit$coefficients
         last.eta <- eta
@@ -67,8 +77,8 @@ mmclogit.fitPQL <- function(
             eta <- eta +  as.vector(Z[[k]]%*%coef$random[[k]])
         }
         
-        pi <-   mclogitP(eta,s)
         last.deviance <- deviance
+        pi <-   mclogitP(eta,s)
         dev.resids <- ifelse(y>0,
                 2*w*y*(log(y)-log(pi)),
                 0)
@@ -78,22 +88,87 @@ mmclogit.fitPQL <- function(
         #crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
         crit <- sum((eta - last.eta)^2) /sum(eta^2)
 
-        if(control$trace){
-            cat("\nIteration",iter,"- criterion =",crit)
+        if(is.finite(deviance)){
+            if(deviance > last.deviance && control$break.on.increase){
+                # if(control$trace) cat("\n")
+                warning("Cannot decrease the deviance, backing up",call.=FALSE)
+                do.backup <- TRUE
+            }
+            if(deviance < 0 && control$break.on.negative){
+                # if(control$trace) cat("\n")
+                warning("Negative deviance, backing up",call.=FALSE)
+                do.backup <- TRUE
+            }
+        }
+        else if(control$break.on.infinite){
+            # if(control$trace) cat("\n")
+            warning("Non-finite deviance, backing up",call.=FALSE)
+            do.backup <- TRUE
+        }
+            
+        
+        if(do.backup){
+            fit <- last.fit
+            eta <- last.eta
+            pi <-   mclogitP(eta,s)
+            dev.resids <- ifelse(y>0,
+                                 2*w*y*(log(y)-log(pi)),
+                                 0)
+            deviance <- last.deviance
+            break
         }
         
-        if(crit < control$eps){
+        step.truncated <- FALSE
+        if(!is.finite(deviance) || deviance > last.deviance && control$avoid.increase){
+            if(control$trace) cat("  ")
+            warning("step size truncated due to possible divergence", call. = FALSE)
+            step.truncated <- TRUE
+            for(iiter in 1:control$maxit){
+                eta <- (eta + last.eta)/2
+                pi <-   mclogitP(eta,s)
+                dev.resids <- ifelse(y>0,
+                                     2*w*y*(log(y)-log(pi)),
+                                     0)
+                deviance <- sum(dev.resids) - log.det.iSigma + log.det.ZWZiSigma
+                if(control$trace)
+                    cat("  Stepsize halved - new deviance = ",deviance,"\n")
+                #crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
+                crit <- sum((eta - last.eta)^2) /sum(eta^2)
+                if(is.finite(deviance) && (deviance <= last.deviance || crit <= control$eps))
+                    break
+            }
+        }
+        
+        if(control$trace){
+            cat("Iteration",iter,"- deviance =",deviance,"- criterion =",crit)
+        }
+        
+        if(crit <= control$eps){
           converged <- TRUE
           if(control$trace)
             cat("\nconverged\n")
           break
         }
+        else if(control$trace)cat("\n")
     }
-    if (!converged) warning("algorithm did not converge")
-    #eps <- 10*.Machine$double.eps
-    #if (any(pi < eps) || any(1-pi < eps))
-    #    warning("fitted probabilities numerically 0 occurred")
-
+    if(!converged && !do.backup){
+        # if(control$trace) cat("\n")
+        warning("Algorithm did not converge",call.=FALSE)
+    }
+    if(step.truncated || do.backup){
+        # if(control$trace) cat("\n")
+        warning("Algorithm stopped due to false convergence",call.=FALSE)
+    }
+    eps <- 10*.Machine$double.eps
+    if (any(pi < eps) || any(1-pi < eps)){
+        # if(control$trace) cat("\n")
+        warning("Fitted probabilities numerically 0 occurred",call.=FALSE)
+    }
+    if(deviance < 0){
+        # if(control$trace) cat("\n")
+        warning("Approximate deviance is negative.\nYou might be overfitting your data or the group size is too small.",call.=FALSE)
+    }
+    
     info.coef <- fit$info.fixed
     info.lambda <- fit$info.lambda
     info.psi <- fit$info.psi
@@ -176,7 +251,7 @@ Correcting, but expect the unexpected",k))
     Psi.start <- lapply(Phi.start,solve)
     Lambda.start <- lapply(Psi.start,chol)
     lambda.start <- unlist(lapply(Lambda.start,uvech))
-
+    
     WZ <- bMatProd(W,Z)
     ZWZ <- bMatCrsProd(WZ,Z)
     ZWX <- bMatCrsProd(WZ,X)
@@ -422,14 +497,23 @@ mmclogit.control <- function(
                              epsilon = 1e-08,
                              maxit = 25,
                              trace = TRUE,
-                             trace.inner = FALSE
+                             trace.inner = FALSE,
+                             avoid.increase = FALSE,
+                             break.on.increase = FALSE,
+                             break.on.infinite = FALSE,
+                             break.on.negative = FALSE
                             ) {
     if (!is.numeric(epsilon) || epsilon <= 0)
         stop("value of epsilon must be > 0")
     if (!is.numeric(maxit) || maxit <= 0)
         stop("maximum number of iterations must be > 0")
     list(epsilon = epsilon, maxit = maxit,
-         trace = trace, trace.inner = trace.inner)
+         trace = trace, trace.inner = trace.inner,
+         avoid.increase = avoid.increase,
+         break.on.increase = break.on.increase,
+         break.on.infinite = break.on.infinite,
+         break.on.negative = break.on.negative
+         )
 }
 
 split_bdiag <- function(x,n){
