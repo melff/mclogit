@@ -44,6 +44,8 @@ mmclogit.fitPQL <- function(
     # Expand random effects design matrix from intecepts and slopes for random effects
     # for each level
     Z <- blockMatrix(lapply(groups,mkZ,rX=Z0))
+    Z <- lapply(groups,mkZ,rX=Z0)
+    Z <- blockMatrix(Z,ncol=length(Z))
     # Outer iterations: update non-linear part of the model
     converged <- FALSE
     for(iter in 1:control$maxit){
