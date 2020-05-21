@@ -1,15 +1,18 @@
-mmclogit.fitPQL <- function(
-                            y,
-                            s,
-                            w,
-                            X,
-                            Z,
-                            groups,
-                            start,
-                            offset=NULL,
-                            control=mmclogit.control()
-      ){
+mmclogit.fitPQLMQL <- function(
+                               y,
+                               s,
+                               w,
+                               X,
+                               Z,
+                               groups,
+                               start=NULL,
+                               offset=NULL,
+                               method=c("PQL","MQL"),
+                               control=mmclogit.control()
+                               ){
 
+    method <- match.arg(method)
+    
     nvar <- ncol(X)
     nobs <- length(y)
     nsets <- length(unique(s))
@@ -55,14 +58,14 @@ mmclogit.fitPQL <- function(
         W <- Matrix(0,nrow=nobs,ncol=nsets)
         W[cbind(i,s)] <- sqrt.w*pi
         W <- Diagonal(x=w*pi)-tcrossprod(W)
-
         y.star <- eta - offset + (y-pi)/pi
+
         ww <- w*pi
         good <- ww > 0
 
         last.fit <- fit
         
-        fit <- try(PQLinnerFit(y.star,X,Z,W,d,groups,offset,control),silent=TRUE)
+        fit <- try(PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,control),silent=TRUE)
         if(inherits(fit,"try-error")){
             fit <- last.fit
             if(control$trace) cat("\n")
@@ -73,8 +76,21 @@ mmclogit.fitPQL <- function(
         coef <- fit$coefficients
         last.eta <- eta
         eta <- as.vector(X%*%coef$fixed) + offset
-        for(k in 1:nlevs){
-            eta <- eta +  as.vector(Z[[k]]%*%coef$random[[k]])
+
+        penalty <- 0
+        if(method=="PQL"){
+            for(k in 1:nlevs){
+                eta <- eta +  as.vector(Z[[k]]%*%coef$random[[k]])
+                B.k <- coef$random[[k]]
+                B.k <- matrix(B.k,nrow=d)
+                Psi.k <- fit$Psi[[k]]
+                penalty <- penalty - sum(B.k * (Psi.k%*%B.k))
+            }
+        } else {
+            ZWZiSigma <- fit$ZWZiSigma
+            b <- coef$random
+            b <- blockMatrix(b,nrow=nlevs)
+            penalty <- as.vector(fuseMat(bMatCrsProd(b,bMatProd(ZWZiSigma,b))))
         }
         
         last.deviance <- deviance
@@ -84,7 +100,7 @@ mmclogit.fitPQL <- function(
                 0)
         log.det.iSigma <- fit$log.det.iSigma
         log.det.ZWZiSigma <- fit$log.det.ZWZiSigma
-        deviance <- sum(dev.resids) - log.det.iSigma + log.det.ZWZiSigma
+        deviance <- sum(dev.resids) - penalty - log.det.iSigma + log.det.ZWZiSigma
         #crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
         crit <- sum((eta - last.eta)^2) /sum(eta^2)
 
@@ -123,6 +139,7 @@ mmclogit.fitPQL <- function(
             if(control$trace) cat("  ")
             warning("step size truncated due to possible divergence", call. = FALSE)
             step.truncated <- TRUE
+            break.on.finite <- !is.finite(deviance) && !control$avoid.increase
             for(iiter in 1:control$maxit){
                 eta <- (eta + last.eta)/2
                 pi <-   mclogitP(eta,s)
@@ -134,7 +151,7 @@ mmclogit.fitPQL <- function(
                     cat("  Stepsize halved - new deviance = ",deviance,"\n")
                 #crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
                 crit <- sum((eta - last.eta)^2) /sum(eta^2)
-                if(is.finite(deviance) && (deviance <= last.deviance || crit <= control$eps))
+                if(is.finite(deviance) && (break.on.finite || deviance <= last.deviance || crit <= control$eps))
                     break
             }
         }
@@ -214,7 +231,7 @@ mmclogit.fitPQL <- function(
 
 matrank <- function(x) qr(x)$rank
 
-PQLinnerFit <- function(y,X,Z,W,d,groups,offset,control){
+PQLMQL_innerFit <- function(y,X,Z,W,d,groups,offset,method,control){
 
     nlevs <- length(groups)
     m <- lapply(groups,lunq)
@@ -247,7 +264,7 @@ Correcting, but expect the unexpected",k))
         }
         Phi.start[[k]] <- S.k/(m.k-1)
     }
-
+#browser()
     Psi.start <- lapply(Phi.start,solve)
     Lambda.start <- lapply(Psi.start,chol)
     lambda.start <- unlist(lapply(Lambda.start,uvech))
@@ -321,7 +338,8 @@ Correcting, but expect the unexpected",k))
         info.lambda = info.lambda,
         info.psi = info.psi,
         log.det.iSigma   = log.det.iSigma,
-        log.det.ZWZiSigma = log.det.ZWZiSigma
+        log.det.ZWZiSigma = log.det.ZWZiSigma,
+        ZWZiSigma = H
     )
  }
 

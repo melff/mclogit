@@ -53,6 +53,7 @@ mblogit <- function(formula,
                     na.action = getOption("na.action"),
                     model = TRUE, x = FALSE, y = TRUE,
                     contrasts=NULL,
+                    method = NULL,
                     control=if(length(random))
                                 mmclogit.control(...)
                             else mclogit.control(...),
@@ -143,6 +144,7 @@ mblogit <- function(formula,
     if(length(random)){ ## random effects
 
         null.dev <- fit$null.deviance
+        if(!length(method)) method <- "PQL"
         
         random <- setupRandomFormula(random)
         rt <- terms(random$formula)
@@ -168,13 +170,11 @@ mblogit <- function(formula,
                 groups[[i]] <- quickInteraction(groups[c(i-1,i)])
         }
 
-        fit <- mmclogit.fitPQL(y=Y,s=s,w=weights,
-                               X=XD,Z=ZD,groups=groups,
-                               start=fit$coef,
-                               control=control,
-                               offset = offset)
-        
-        fit$null.deviance <- null.dev
+        fit <- mmclogit.fitPQLMQL(y=Y,s=s,w=weights,
+                                  X=XD,Z=ZD,groups=groups,
+                                  method=method,
+                                  control=control,
+                                  offset = offset)
     }
     
     coefficients <- fit$coefficients

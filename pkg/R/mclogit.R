@@ -53,6 +53,7 @@ mclogit <- function(
                 na.action = getOption("na.action"),
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
+                method = NULL,
                 start=NULL,
                 control=if(length(random))
                             mmclogit.control(...)
@@ -146,6 +147,8 @@ mclogit <- function(
         
         null.dev <- fit$null.deviance
     
+        if(!length(method)) method <- "PQL"
+
         random <- setupRandomFormula(random)
         rt <- terms(random$formula)
         
@@ -175,13 +178,10 @@ mclogit <- function(
                 stop("No predictor variable remains in random part of the model.\nPlease reconsider your model specification.")
         }
         
-        fit <- mmclogit.fitPQL(Y,sets,weights,X,Z,groups,
-                               start=fit$coef,
-                               control=control,
-                               offset = offset)
-
-        fit$null.deviance <- null.dev
-        
+        fit <- mmclogit.fitPQLMQL(Y,sets,weights,X,Z,groups,
+                                  method = method,
+                                  control=control,
+                                  offset = offset)
     }
     
     if(x) fit$x <- X

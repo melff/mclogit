@@ -4,7 +4,7 @@ importFrom(methods,as)
 export(
       mclogit,
       mclogit.fit,
-      mmclogit.fitPQL,
+      mmclogit.fitPQLMQL,
       mclogit.control,
       getSummary.mclogit,
       getSummary.mmclogit,
