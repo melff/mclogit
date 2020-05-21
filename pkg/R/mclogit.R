@@ -132,21 +132,13 @@ mclogit <- function(
     if(ncol(X)<1)
         stop("No predictor variable remains in model")
     
-    if(length(random) && control$trace)
-        cat("Fitting plain conditional logit to obtain starting values")
-    
+    if(!length(random))
     fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
                        control=control,
                        start = start,
                        offset = offset)
-
-    if(length(random)){ ## random effects
-
-        if(control$trace)
-            cat("Fitting random effects/random coefficients model\n")
+    else { ## random effects
         
-        null.dev <- fit$null.deviance
-    
         if(!length(method)) method <- "PQL"
 
         random <- setupRandomFormula(random)

@@ -138,12 +138,11 @@ mblogit <- function(formula,
                                   "~",
                                   rep(colnames(X),each=ncol(D)))
 
+    if(!length(random))
     fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
                        control=control)
+    else { ## random effects
 
-    if(length(random)){ ## random effects
-
-        null.dev <- fit$null.deviance
         if(!length(method)) method <- "PQL"
         
         random <- setupRandomFormula(random)
