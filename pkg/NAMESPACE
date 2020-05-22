@@ -44,3 +44,6 @@ S3method(summary,mmblogit)
 S3method(print,summary.mmblogit)
 
 S3method(update,mclogit)
+
+export(overdispersion)
+S3method(overdispersion,mclogit)

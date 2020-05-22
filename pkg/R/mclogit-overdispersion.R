@@ -45,7 +45,10 @@ update_mclogit_overdispersion <- function(object,overdispersion){
     return(object)
 }
 
-overdispersion <- function(object,method=NULL,...){
+overdispersion <- function(object,method,...)
+    UseMethod("overdispersion")
+
+overdispersion.mclogit <- function(object,method=NULL,...){
     if(is.null(method))
         return(object$phi)
     else {
