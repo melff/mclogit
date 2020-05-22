@@ -42,3 +42,5 @@ S3method(print,summary.mmclogit)
 S3method(print,mmblogit)
 S3method(summary,mmblogit)
 S3method(print,summary.mmblogit)
+
+S3method(update,mclogit)

@@ -54,6 +54,7 @@ mclogit <- function(
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
                 method = NULL,
+                overdispersion = FALSE,
                 start=NULL,
                 control=if(length(random))
                             mmclogit.control(...)
@@ -134,6 +135,7 @@ mclogit <- function(
     
     if(!length(random))
     fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
+                       overdispersion=overdispersion,
                        control=control,
                        start = start,
                        offset = offset)
@@ -251,6 +253,8 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
         print.default(format(x$coefficients, digits=digits),
                       print.gap = 2, quote = FALSE)
     } else cat("No coefficients\n\n")
+    if(x$phi != 1)
+        cat("\nOverdispersion: ",x$phi)
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)))
     if(!x$converged) cat("\nNote: Algorithm did not converge.\n")
@@ -260,7 +264,7 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 }
 
 vcov.mclogit <- function(object,...){
-    return(object$covmat)
+    return(object$covmat * object$phi)
 }
 
 weights.mclogit <- function(object,...){
@@ -276,15 +280,27 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
     ## calculate coef table
 
     coef <- object$coefficients
-    covmat.scaled <- object$covmat 
+
+    if(is.null(dispersion))
+        dispersion <- object$phi
+    
+    covmat.scaled <- object$covmat * dispersion
+    
     var.cf <- diag(covmat.scaled)
     s.err <- sqrt(var.cf)
     zvalue <- coef/s.err
-    pvalue <- 2*pnorm(-abs(zvalue))
+
+    if(dispersion == 1)
+        pvalue <- 2*pnorm(-abs(zvalue))
+    else
+        pvalue <- 2*pt(-abs(zvalue),df=object$df.residual)
 
     coef.table <- array(NA,dim=c(length(coef),4))
-    dimnames(coef.table) <- list(names(coef),
-            c("Estimate", "Std. Error","z value","Pr(>|z|)"))
+    rownames(coef.table) <- names(coef)
+    if(dispersion == 1)
+        colnames(coef.table) <- c("Estimate", "Std. Error","z value","Pr(>|z|)")
+    else
+        colnames(coef.table) <- c("Estimate", "Std. Error","t value","Pr(>|t|)")
     coef.table[,1] <- coef
     coef.table[,2] <- s.err
     coef.table[,3] <- zvalue
@@ -294,7 +310,9 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
                       "null.deviance","iter","na.action","model.df",
                       "df.residual","N","converged")],
               list(coefficients = coef.table,
-                    cov.coef=object$covmat))
+                   cov.coef=covmat.scaled,
+                   dispersion = dispersion
+                   ))
     p <- length(coef)
     if(correlation && p > 0) {
         dd <- sqrt(diag(ans$cov.coef))
@@ -316,12 +334,15 @@ print.summary.mclogit <-
     coefs <- x$coefficients
     printCoefmat(coefs, digits=digits, signif.stars=signif.stars,
                      na.print="NA", ...)
+    if(x$dispersion != 1)
+        cat("\nOverdispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
 
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher Scoring iterations: ", x$iter,
         "\nNumber of observations: ",x$N,
         "\n")
+    
     correl <- x$correlation
     if(!is.null(correl)) {
         p <- NCOL(correl)
@@ -730,4 +751,12 @@ format_Mat <- function(x,title="",rownames=NULL){
     x <- apply(x,1,paste,collapse=" ")
     x <- format(c(title,x))
     paste(rn,x)
+}
+
+update.mclogit <-  function(object, formula., overdispersion, ...) {
+    if(inherits(object,"mmclogit") ||
+       missing(formula.) ||
+       formula. == object$formula && !missing(overdispersion))
+        update_mclogit_overdispersion(object,overdispersion)
+    else NextMethod()
 }

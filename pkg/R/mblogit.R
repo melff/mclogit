@@ -54,6 +54,7 @@ mblogit <- function(formula,
                     model = TRUE, x = FALSE, y = TRUE,
                     contrasts=NULL,
                     method = NULL,
+                    overdispersion = FALSE,
                     control=if(length(random))
                                 mmclogit.control(...)
                             else mclogit.control(...),
@@ -94,7 +95,7 @@ mblogit <- function(formula,
         weights <- rep(1,nrow(X))
     N <- sum(weights)
     prior.weights <- weights
-    
+
     if(is.factor(Y)){
 
         weights <- rep(weights,each=nlevels(Y))
@@ -139,8 +140,9 @@ mblogit <- function(formula,
                                   rep(colnames(X),each=ncol(D)))
 
     if(!length(random))
-    fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
-                       control=control)
+        fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
+                           overdispersion=overdispersion,
+                           control=control)
     else { ## random effects
 
         if(!length(method)) method <- "PQL"
@@ -204,6 +206,7 @@ mblogit <- function(formula,
                       model=mf,
                       D=D,
                       N=N))
+
     if(length(random))
         class(fit) <- c("mmblogit","mblogit","mmclogit","mclogit","lm")
     else
@@ -236,9 +239,12 @@ print.mblogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     print.default(format(coefmat, digits=digits),
                   print.gap = 2, quote = FALSE)
   } else cat("No coefficients\n\n")
+  if(x$phi != 1)
+      cat("\nOverdispersion: ",x$phi)
   
   cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
       "\nResidual Deviance:", format(signif(x$deviance, digits)))
+  if(!x$converged) cat("\n\nNote: Algorithm did not converge.\n")
   if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
   else cat("\n")
   invisible(x)
@@ -280,7 +286,8 @@ print.summary.mblogit <-
                    signif.legend=signif.stars && i==ncategs,
                    na.print="NA", ...)
     }
-    
+    if(x$dispersion != 1)
+        cat("\nOverdispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
 
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
@@ -302,6 +309,7 @@ print.summary.mblogit <-
       }
     }
     
+    if(!x$converged) cat("\n\nNote: Algorithm did not converge.\n")
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
     else cat("\n")
     invisible(x)

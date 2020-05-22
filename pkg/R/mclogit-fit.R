@@ -3,6 +3,7 @@ mclogit.fit <- function(
       s,
       w,
       X,
+      overdispersion=FALSE,
       start=NULL,
       offset=NULL,
       control=mclogit.control()
@@ -74,11 +75,11 @@ mclogit.fit <- function(
           break
         }
     }
-    if (!converged) warning("algorithm did not converge")
-    if (boundary) warning("algorithm stopped at boundary value")
-    #eps <- 10*.Machine$double.eps
-    #if (any(pi < eps) || any(1-pi < eps))
-    #    warning("fitted probabilities numerically 0 occurred")
+    if (!converged) warning("algorithm did not converge",call.=FALSE)
+    if (boundary) warning("algorithm stopped at boundary value",call.=FALSE)
+    eps <- 10*.Machine$double.eps
+    if (any(pi < eps) || any(1-pi < eps))
+       warning("fitted probabilities numerically 0 occurred",call.=FALSE)
 
     XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
     ww <- w*pi
@@ -89,12 +90,28 @@ mclogit.fit <- function(
     null.deviance <- sum(ifelse(y>0,
                     2*w*y*(log(y)-log(pi0)),
                     0))
-    resid.df <- length(y)#-length(unique(s))
+    resid.df <- length(y)-length(unique(s))
     model.df <- ncol(X)
     resid.df <- resid.df - model.df
     ll <- mclogit.logLik(y,pi,w)
+
+    if(!isFALSE(overdispersion)){
+        if(isTRUE(overdispersion))
+            odisp.method <- "Afroz"
+        else
+            odisp.method <- match.arg(overdispersion,
+                                      c("Afroz",
+                                        "Fletcher",
+                                        "Pearson",
+                                        "Deviance"))
+        phi <- mclogit.overdispersion(y,w,s,pi,coef,
+                                      method=odisp.method)
+    }
+    else phi <- 1
+    
     return(list(
         coefficients = drop(coef),
+        phi = phi,
         linear.predictors = eta,
         working.residuals = (y-pi)/pi,
         working.weights = w,
