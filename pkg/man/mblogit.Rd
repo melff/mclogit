@@ -14,8 +14,9 @@
 \usage{
 mblogit(formula, data = parent.frame(), random = NULL, subset,
   weights = NULL, na.action = getOption("na.action"), model = TRUE,
-  x = FALSE, y = TRUE, contrasts = NULL, control = if
-  (length(random)) mmclogit.control(...) else mclogit.control(...), ...)
+  x = FALSE, y = TRUE, contrasts = NULL, method = NULL,
+  control = if (length(random)) mmclogit.control(...) else
+  mclogit.control(...), ...)
 }
 \arguments{
 \item{formula}{the model formula. The response must be a factor or a matrix
@@ -52,6 +53,10 @@ of the returned value.}
 
 \item{contrasts}{an optional list. See the \code{contrasts.arg}
 of \code{model.matrix.default}.}
+
+\item{method}{\code{NULL} or a character string, either "PQL" or "MQL", specifies
+the type of the quasilikelihood approximation to be used if
+a random-effects model is to be estimated.}
 
 \item{control}{a list of parameters for the fitting process.
 See \code{\link{mclogit.control}}}

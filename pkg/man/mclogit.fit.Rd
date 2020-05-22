@@ -1,6 +1,6 @@
 \name{mclogit.fit}
 \alias{mclogit.fit}
-\alias{mmclogit.fitPQL}
+\alias{mmclogit.fitPQLMQL}
 \title{
   Internal functions used for model fit.
 }
@@ -11,8 +11,9 @@
 \usage{
 mclogit.fit(y, s, w, X, start = NULL, offset = NULL, control = mclogit.control())
 
-mmclogit.fitPQL(y, s, w, X, Z, groups, start,
-                  offset = NULL, control = mmclogit.control())
+mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
+                   offset = NULL, method=c("PQL","MQL"),
+                   control = mmclogit.control())
 }
 \arguments{
   \item{y}{a response vector. Should be binary.}
@@ -24,9 +25,10 @@ mmclogit.fitPQL(y, s, w, X, Z, groups, start,
   \item{start}{an optional numerical vector of starting values
     for the coefficients.
   }
-
   \item{offset}{an optional model offset. Currently only supported
     for models without random effects.}
+  \item{method}{a character string, either "PQL" or "MQL", specifies
+    the type of the quasilikelihood approximation.}
   \item{control}{a list of parameters for the fitting process.
     See \code{\link{mclogit.control}} }
 

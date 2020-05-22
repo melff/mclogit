@@ -30,6 +30,9 @@
 #' of the returned value.
 #' @param contrasts an optional list. See the \code{contrasts.arg}
 #' of \code{model.matrix.default}.
+#' @param method \code{NULL} or a character string, either "PQL" or "MQL", specifies
+#' the type of the quasilikelihood approximation to be used if
+#' a random-effects model is to be estimated.
 #' @param control a list of parameters for the fitting process.
 #' See \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
