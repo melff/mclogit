@@ -47,7 +47,7 @@ artifacts:
   - path: 'pkg\*_*.zip'
     name: binary
 
-version: 0.6-{build}
+version: 0.8-{build}
 
 branches:
   only:
