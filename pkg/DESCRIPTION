@@ -1,15 +1,16 @@
 Package: mclogit
 Type: Package
-Title: Mixed Conditional Logit Models
-Version: 0.8.0
-Date: 2020-05-22
+Title: Multinomial Logit Models, with or without random effects or overdispersion.
+Version: 0.8.1
+Date: 2020-05-23
 Author: Martin Elff
 Maintainer: Martin Elff <mclogit@elff.eu>
-Description: Specification and estimation of conditional logit models of binary
-    responses and multinomial counts is provided, with or without
-    random effects. The current implementation of the estimator for random
-    effects variances uses a Laplace approximation (or PQL) approach and thus should
-    be used only if groups sizes are large.
+Description: Provides estimators for multinomial logit models in their
+    conditional logit and baseline logit variants, with or without random effects,
+    with or without overdispersion. 
+    Random effects models are estimated using the PQL technique (based on a Laplace approximation)
+    or the MQL technique (based on a Solomon-Cox approximation). Estimates should be treated
+    with caution if the group sizes are small.
 License: GPL-2
 Depends:
     stats,
