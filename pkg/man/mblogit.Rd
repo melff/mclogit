@@ -14,8 +14,9 @@
 \usage{
 mblogit(formula, data = parent.frame(), random = NULL, subset,
   weights = NULL, na.action = getOption("na.action"), model = TRUE,
-  x = FALSE, y = TRUE, contrasts = NULL, control = if
-  (length(random)) mmclogit.control(...) else mclogit.control(...), ...)
+  x = FALSE, y = TRUE, contrasts = NULL, method = NULL,
+  control = if (length(random)) mmclogit.control(...) else
+  mclogit.control(...), ...)
 }
 \arguments{
 \item{formula}{the model formula. The response must be a factor or a matrix
@@ -53,6 +54,10 @@ of the returned value.}
 \item{contrasts}{an optional list. See the \code{contrasts.arg}
 of \code{model.matrix.default}.}
 
+\item{method}{\code{NULL} or a character string, either "PQL" or "MQL", specifies
+the type of the quasilikelihood approximation to be used if
+a random-effects model is to be estimated.}
+
 \item{control}{a list of parameters for the fitting process.
 See \code{\link{mclogit.control}}}
 
@@ -74,4 +79,14 @@ relative to a baseline category.
 The function \code{mblogit} internally rearranges the data
 into a 'long' format and uses \code{\link{mclogit.fit}} to compute
 estimates. Nevertheless, the 'user data' is unaffected.
+}
+\references{
+Agresti, Alan (2002).
+   \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
+   \url{https://doi.org/10.1002/0471249688}
+
+   Breslow, N.E. and D.G. Clayton (1993).
+   "Approximate Inference in Generalized Linear Mixed Models".
+   \emph{Journal of the American Statistical Association} 88 (421): 9-25.
+   \url{https://doi.org/10.1080/01621459.1993.10594284}
 }

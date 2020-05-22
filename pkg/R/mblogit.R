@@ -30,6 +30,9 @@
 #' of the returned value.
 #' @param contrasts an optional list. See the \code{contrasts.arg}
 #' of \code{model.matrix.default}.
+#' @param method \code{NULL} or a character string, either "PQL" or "MQL", specifies
+#' the type of the quasilikelihood approximation to be used if
+#' a random-effects model is to be estimated.
 #' @param control a list of parameters for the fitting process.
 #' See \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
@@ -43,6 +46,17 @@
 #' @details The function \code{mblogit} internally rearranges the data
 #' into a 'long' format and uses \code{\link{mclogit.fit}} to compute
 #' estimates. Nevertheless, the 'user data' is unaffected.
+#'
+#' @references
+#'    Agresti, Alan (2002).
+#'    \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
+#'    \url{https://doi.org/10.1002/0471249688}
+#'
+#'    Breslow, N.E. and D.G. Clayton (1993).
+#'    "Approximate Inference in Generalized Linear Mixed Models".
+#'    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
+#'    \url{https://doi.org/10.1080/01621459.1993.10594284}
+#'
 #' 
 #' @aliases predict.mblogit print.mblogit summary.mblogit print.summary.mblogit fitted.mblogit print.mmblogit summary.mmblogit print.summary.mmblogit
 mblogit <- function(formula,
