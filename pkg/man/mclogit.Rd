@@ -111,6 +111,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
   same structure as an object of class "\link[stats]{glm}".
 }
 
+
 \note{
   Covariates that are constant within choice sets are automatically
   dropped from the model formula specified by the \code{formula}
@@ -130,6 +131,29 @@ mclogit(formula, data=parent.frame(), random=NULL,
   satisfied. Since version 0.6 of the package, the function
   \code{mclogit} will complain about such model a misspecification
   explicitely.
+}
+
+\references{
+    Agresti, Alan (2002).
+    \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
+    \url{https://doi.org/10.1002/0471249688}
+
+    Breslow, N.E. and D.G. Clayton (1993).
+    "Approximate Inference in Generalized Linear Mixed Models".
+    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
+    \url{https://doi.org/10.1080/01621459.1993.10594284}
+    
+    Elff, Martin (2009).
+    "Social Divisions, Party Positions, and Electoral Behaviour".
+    \emph{Electoral Studies} 28(2): 297-308.
+    \url{https://doi.org/10.1016/j.electstud.2009.02.002}
+    
+    McFadden, D. (1973).
+    "Conditionial Logit Analysis of Qualitative Choice Behavior".
+    Pp. 105-135 in P. Zarembka (ed.).
+    \emph{Frontiers in Econometrics}.
+    New York: Wiley.
+    \url{https://eml.berkeley.edu/reprints/mcfadden/zarembka.pdf}
 }
 
 \examples{
