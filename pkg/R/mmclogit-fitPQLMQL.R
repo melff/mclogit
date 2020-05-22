@@ -202,7 +202,6 @@ mmclogit.fitPQLMQL <- function(
     resid.df <- length(y)#-length(unique(s))
     model.df <- ncol(X)
     resid.df <- resid.df - model.df
-    ll <- mclogit.logLik(y,pi,w)
     return(list(
         coefficients = coef$fixed,
         VarCov = Phi,
@@ -214,7 +213,6 @@ mmclogit.fitPQLMQL <- function(
         model.df = model.df,
         fitted.values = pi,
         deviance=deviance,
-        ll=ll,
         deviance.residuals=dev.resids,
         null.deviance=null.deviance,
         iter = iter,
