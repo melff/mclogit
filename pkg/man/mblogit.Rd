@@ -15,7 +15,7 @@
 mblogit(formula, data = parent.frame(), random = NULL, subset,
   weights = NULL, na.action = getOption("na.action"), model = TRUE,
   x = FALSE, y = TRUE, contrasts = NULL, method = NULL,
-  overdispersion = FALSE, control = if (length(random))
+  dispersion = FALSE, control = if (length(random))
   mmclogit.control(...) else mclogit.control(...), ...)
 }
 \arguments{
@@ -58,8 +58,8 @@ of \code{model.matrix.default}.}
 the type of the quasilikelihood approximation to be used if
 a random-effects model is to be estimated.}
 
-\item{overdispersion}{a logical value or a character string; whether and how
-an overdispersion parameter should be estimated. For details see \code{\link{overdispersion}}.}
+\item{dispersion}{a logical value or a character string; whether and how
+a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.}
 
 \item{control}{a list of parameters for the fitting process.
 See \code{\link{mclogit.control}}}

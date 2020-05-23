@@ -33,8 +33,8 @@
 #' @param method \code{NULL} or a character string, either "PQL" or "MQL", specifies
 #' the type of the quasilikelihood approximation to be used if
 #' a random-effects model is to be estimated.
-#' @param overdispersion a logical value or a character string; whether and how
-#' an overdispersion parameter should be estimated. For details see \code{\link{overdispersion}}.
+#' @param dispersion a logical value or a character string; whether and how
+#' a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.
 #' @param control a list of parameters for the fitting process.
 #' See \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
@@ -70,7 +70,7 @@ mblogit <- function(formula,
                     model = TRUE, x = FALSE, y = TRUE,
                     contrasts=NULL,
                     method = NULL,
-                    overdispersion = FALSE,
+                    dispersion = FALSE,
                     control=if(length(random))
                                 mmclogit.control(...)
                             else mclogit.control(...),
@@ -157,7 +157,7 @@ mblogit <- function(formula,
 
     if(!length(random))
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
-                           overdispersion=overdispersion,
+                           dispersion=dispersion,
                            control=control)
     else { ## random effects
 
@@ -256,7 +256,7 @@ print.mblogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
                   print.gap = 2, quote = FALSE)
   } else cat("No coefficients\n\n")
   if(x$phi != 1)
-      cat("\nOverdispersion: ",x$phi)
+      cat("\nDispersion: ",x$phi)
   
   cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
       "\nResidual Deviance:", format(signif(x$deviance, digits)))
@@ -303,7 +303,7 @@ print.summary.mblogit <-
                    na.print="NA", ...)
     }
     if(x$dispersion != 1)
-        cat("\nOverdispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
+        cat("\nDispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
 
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),

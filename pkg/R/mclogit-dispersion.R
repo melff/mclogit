@@ -1,4 +1,4 @@
-mclogit.overdispersion <- function(y,w,s,pi,coef,method){
+mclogit.dispersion <- function(y,w,s,pi,coef,method){
     N <- length(w)
     n <- length(unique(s))
     p <- length(coef)
@@ -22,21 +22,21 @@ mclogit.overdispersion <- function(y,w,s,pi,coef,method){
     return(phi)
 }
 
-update_mclogit_overdispersion <- function(object,overdispersion){
+update_mclogit_dispersion <- function(object,dispersion){
 
-    if(!isFALSE(overdispersion)){
-        if(is.numeric(overdispersion))
-            phi <- overdispersion
+    if(!isFALSE(dispersion)){
+        if(is.numeric(dispersion))
+            phi <- dispersion
         else {
-        if(isTRUE(overdispersion))
-            odisp.method <- "Afroz"
+        if(isTRUE(dispersion))
+            method <- "Afroz"
         else 
-            odisp.method <- match.arg(overdispersion,
+            method <- match.arg(dispersion,
                                       c("Afroz",
                                         "Fletcher",
                                         "Pearson",
                                         "Deviance"))
-        phi <- overdispersion(object,method=odisp.method)
+        phi <- dispersion(object,method=method)
         }
     }
     else phi <- 1
@@ -45,10 +45,10 @@ update_mclogit_overdispersion <- function(object,overdispersion){
     return(object)
 }
 
-overdispersion <- function(object,method,...)
-    UseMethod("overdispersion")
+dispersion <- function(object,method,...)
+    UseMethod("dispersion")
 
-overdispersion.mclogit <- function(object,method=NULL,...){
+dispersion.mclogit <- function(object,method=NULL,...){
     if(is.null(method))
         return(object$phi)
     else {
@@ -61,7 +61,7 @@ overdispersion.mclogit <- function(object,method=NULL,...){
                                      "Fletcher",
                                      "Pearson",
                                      "Deviance"))
-        phi <- mclogit.overdispersion(y,w,s,pi,coef,
+        phi <- mclogit.dispersion(y,w,s,pi,coef,
                                       method=method)
         return(phi)
     }

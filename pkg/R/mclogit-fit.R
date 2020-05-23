@@ -3,7 +3,7 @@ mclogit.fit <- function(
       s,
       w,
       X,
-      overdispersion=FALSE,
+      dispersion=FALSE,
       start=NULL,
       offset=NULL,
       control=mclogit.control()
@@ -95,16 +95,16 @@ mclogit.fit <- function(
     resid.df <- resid.df - model.df
     ll <- mclogit.logLik(y,pi,w)
 
-    if(!isFALSE(overdispersion)){
-        if(isTRUE(overdispersion))
+    if(!isFALSE(dispersion)){
+        if(isTRUE(dispersion))
             odisp.method <- "Afroz"
         else
-            odisp.method <- match.arg(overdispersion,
+            odisp.method <- match.arg(dispersion,
                                       c("Afroz",
                                         "Fletcher",
                                         "Pearson",
                                         "Deviance"))
-        phi <- mclogit.overdispersion(y,w,s,pi,coef,
+        phi <- mclogit.dispersion(y,w,s,pi,coef,
                                       method=odisp.method)
     }
     else phi <- 1

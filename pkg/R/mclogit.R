@@ -54,7 +54,7 @@ mclogit <- function(
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
                 method = NULL,
-                overdispersion = FALSE,
+                dispersion = FALSE,
                 start=NULL,
                 control=if(length(random))
                             mmclogit.control(...)
@@ -135,7 +135,7 @@ mclogit <- function(
     
     if(!length(random))
     fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
-                       overdispersion=overdispersion,
+                       dispersion=dispersion,
                        control=control,
                        start = start,
                        offset = offset)
@@ -254,7 +254,7 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
                       print.gap = 2, quote = FALSE)
     } else cat("No coefficients\n\n")
     if(x$phi != 1)
-        cat("\nOverdispersion: ",x$phi)
+        cat("\nDispersion: ",x$phi)
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)))
     if(!x$converged) cat("\nNote: Algorithm did not converge.\n")
@@ -335,7 +335,7 @@ print.summary.mclogit <-
     printCoefmat(coefs, digits=digits, signif.stars=signif.stars,
                      na.print="NA", ...)
     if(x$dispersion != 1)
-        cat("\nOverdispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
+        cat("\nDispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
 
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
@@ -753,10 +753,10 @@ format_Mat <- function(x,title="",rownames=NULL){
     paste(rn,x)
 }
 
-update.mclogit <-  function(object, formula., overdispersion, ...) {
+update.mclogit <-  function(object, formula., dispersion, ...) {
     if(inherits(object,"mmclogit") ||
        missing(formula.) ||
-       formula. == object$formula && !missing(overdispersion))
-        update_mclogit_overdispersion(object,overdispersion)
+       formula. == object$formula && !missing(dispersion))
+        update_mclogit_dispersion(object,dispersion)
     else NextMethod()
 }
