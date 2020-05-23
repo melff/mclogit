@@ -1,8 +1,7 @@
-#' Multinomial (Baseline) Logit Models for Categorical and Multinommial Responses
+#' Baseline-Category Logit Models for Categorical and Multinomial Responses
 #'
-#' The function \code{mblogit} fits multinomial logit models for categorical
-#' and multinomial count responses with fixed alternatives, where the logits are
-#' relative to a baseline category. 
+#' The function \code{mblogit} fits baseline-category logit models for categorical
+#' and multinomial count responses with fixed alternatives. 
 #'
 #' @param formula the model formula. The response must be a factor or a matrix
 #' of counts.

@@ -10,7 +10,7 @@
 \alias{print.mmblogit}
 \alias{summary.mmblogit}
 \alias{print.summary.mmblogit}
-\title{Multinomial (Baseline) Logit Models for Categorical and Multinommial Responses}
+\title{Baseline-Category Logit Models for Categorical and Multinomial Responses}
 \usage{
 mblogit(formula, data = parent.frame(), random = NULL, subset,
   weights = NULL, na.action = getOption("na.action"), model = TRUE,
@@ -74,9 +74,8 @@ the components \code{coefficients}, \code{residuals}, \code{fitted.values},
 number of columns equal to the number of response categories minus one.
 }
 \description{
-The function \code{mblogit} fits multinomial logit models for categorical
-and multinomial count responses with fixed alternatives, where the logits are
-relative to a baseline category.
+The function \code{mblogit} fits baseline-category logit models for categorical
+and multinomial count responses with fixed alternatives.
 }
 \details{
 The function \code{mblogit} internally rearranges the data
