@@ -81,12 +81,12 @@ into a 'long' format and uses \code{\link{mclogit.fit}} to compute
 estimates. Nevertheless, the 'user data' is unaffected.
 }
 \references{
-  Agresti, Alan (2002).
-  \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
-  \url{https://doi.org/10.1002/0471249688}
+Agresti, Alan (2002).
+   \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
+   \url{https://doi.org/10.1002/0471249688}
 
-  Breslow, N.E. and D.G. Clayton (1993).
-  "Approximate Inference in Generalized Linear Mixed Models".
-  \emph{Journal of the American Statistical Association} 88 (421): 9-25.
-  \url{https://doi.org/10.1080/01621459.1993.10594284}
+   Breslow, N.E. and D.G. Clayton (1993).
+   "Approximate Inference in Generalized Linear Mixed Models".
+   \emph{Journal of the American Statistical Association} 88 (421): 9-25.
+   \url{https://doi.org/10.1080/01621459.1993.10594284}
 }
