@@ -201,3 +201,15 @@ summary(mclogit(
 }
 \keyword{models}
 \keyword{regression}
+
+\seealso{
+Conditional logit models are also supported by \pkg{gmnl}, \pkg{mlogit}, and \pkg{survival}.
+\pkg{survival} supports conditional logit models for binary panel data and case-control studies.     
+\pkg{mlogit} and \pkg{gmnl} treat conditional logit models from an econometric perspective.
+Unlike the present package, they focus on the random utility interpretation of discrete choice models
+and support generalisations of conditional logit models, such as nested logit models, that are intended
+to overcome the IIA (indipendence from irrelevant alterantives) assumption. Mixed multinomial models are
+also supported and estimated using simulation-based techniques. Unlike the present package,
+mixed or random-effects extensions are mainly intended to fit repeated choices of the same individuals and not
+aggregated choices of many individuals facing identical alternatives.
+}

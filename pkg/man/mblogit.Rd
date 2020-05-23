@@ -123,3 +123,10 @@ Agresti, Alan (2002).
    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
    \url{https://doi.org/10.1080/01621459.1993.10594284}
 }
+\seealso{
+The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also fits multinomial
+baseline-category logit models, but has a slightly less convenient output and does not support
+overdispersion or random effects. However, it provides some other options. Baseline-category logit models are
+also supported by the package \pkg{VGAM}, as well as some reduced-rank and (semi-parametric) additive generalisations.
+The package \pkg{mnlogit} estimates logit models in a way optimized for large numbers of alternatives.
+}

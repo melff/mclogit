@@ -48,6 +48,12 @@
 #' into a 'long' format and uses \code{\link{mclogit.fit}} to compute
 #' estimates. Nevertheless, the 'user data' is unaffected.
 #'
+#' @seealso The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also fits multinomial
+#' baseline-category logit models, but has a slightly less convenient output and does not support
+#' overdispersion or random effects. However, it provides some other options. Baseline-category logit models are
+#' also supported by the package \pkg{VGAM}, as well as some reduced-rank and (semi-parametric) additive generalisations.
+#' The package \pkg{mnlogit} estimates logit models in a way optimized for large numbers of alternatives.
+#' 
 #' @example examples/mblogit-ex.R
 #' 
 #' @references
