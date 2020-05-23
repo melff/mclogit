@@ -13,6 +13,7 @@
 \alias{residuals.mclogit}
 \alias{AIC.mclogit}
 \alias{BIC.mclogit}
+\alias{update.mclogit}
 \alias{anova.mclogit}
 
 \title{Conditional Logit Models and Mixed Conditional Logit Models}
@@ -37,6 +38,11 @@ mclogit(formula, data=parent.frame(), random=NULL,
         control=if(length(random))
                     mmclogit.control(\dots)
                 else mclogit.control(\dots), \dots)
+
+\method{update}{mclogit}(object, formula., dispersion, \dots)
+
+\method{summary}{mclogit}(object, dispersion = NULL, correlation = FALSE,
+        symbolic.cor = FALSE,  \dots)    
 }
 \arguments{
   \item{formula}{a model formula: a symbolic description of the
@@ -100,8 +106,11 @@ mclogit(formula, data=parent.frame(), random=NULL,
       the type of the quasilikelihood approximation to be used if
       a random-effects model is to be estimated.}
 
-  \item{dispersion}{a logical value or a character string; whether and how
-     an dispersion parameter should be estimated. For details see \code{\link{dispersion}}.}
+  \item{dispersion}{a real number used as dispersion parameter;
+    a character vector that specifies the method to compute the dispersion;
+    a logical value -- if \code{TRUE} the default method
+    (\code{"Afroz"}) is used, if \code{FALSE}, the dispersion parameter
+    is set to 1, that is, no dispersion. For details see \code{\link{dispersion}}.}
   
   \item{control}{a list of parameters for the fitting process.
     See \code{\link{mclogit.control}} }
@@ -110,6 +119,16 @@ mclogit(formula, data=parent.frame(), random=NULL,
     arguments to be passed to \code{mclogit.control} or \code{mmclogit.control}
     }
 
+  \item{object}{an object that inherits class \code{"mclogit"}.
+    When passed to \code{dispersion()}, it 
+    should be the result of a call of \code{mclogit()} of
+    \code{mblogit()}, \emph{without} random effects.
+  }
+  \item{formula.}{a changes to the model formula,
+    see \code{\link[stats]{update.default}} and
+    \code{\link[stats]{update.formula}}.}
+  \item{correlation}{logical; see \code{\link[stats]{summary.lm}}.}
+  \item{symbolic.cor}{logical; see \code{\link[stats]{summary.lm}}.}
 }
 \value{
   \code{mclogit} returns an object of class "mclogit", which has almost the
