@@ -68,7 +68,8 @@ myGetSummary.classd <- function(x)getSummary.mclogit(x,rearrange=list(
                     )
         ))
 
-memisc::mtable(classd.model,getSummary=myGetSummary.classd)
+library(memisc)
+mtable(classd.model,getSummary=myGetSummary.classd)
 # Output would look like so:
 # ==================================================================================
 #                                 Econ. Left/Right    Lib./Auth.       Mod./Trad.

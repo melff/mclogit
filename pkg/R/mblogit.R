@@ -49,6 +49,8 @@
 #' into a 'long' format and uses \code{\link{mclogit.fit}} to compute
 #' estimates. Nevertheless, the 'user data' is unaffected.
 #'
+#' @example examples/mblogit-ex.R
+#' 
 #' @references
 #'    Agresti, Alan (2002).
 #'    \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.

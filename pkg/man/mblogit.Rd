@@ -83,6 +83,24 @@ The function \code{mblogit} internally rearranges the data
 into a 'long' format and uses \code{\link{mclogit.fit}} to compute
 estimates. Nevertheless, the 'user data' is unaffected.
 }
+\examples{
+library(MASS) # For 'housing' data
+library(nnet)
+library(memisc)
+
+(house.mult<- multinom(Sat ~ Infl + Type + Cont, weights = Freq,
+                       data = housing))
+
+
+(house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
+                         data = housing))
+
+summary(house.mult)
+
+summary(house.mblogit)
+
+mtable(house.mblogit)
+}
 \references{
 Agresti, Alan (2002).
    \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
