@@ -9,7 +9,10 @@
   intended for end users.
 }
 \usage{
-mclogit.fit(y, s, w, X, start = NULL, offset = NULL, control = mclogit.control())
+mclogit.fit(y, s, w, X,
+            overdispersion=FALSE,
+            start = NULL, offset = NULL,
+            control = mclogit.control())
 
 mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
                    offset = NULL, method=c("PQL","MQL"),
@@ -20,6 +23,8 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
   \item{s}{a vector identifying individuals or covariate strata}
   \item{w}{a vector with observation weights.}
   \item{X}{a model matrix; required.}
+  \item{overdispersion}{a logical value or a character string; whether and how
+     an overdispersion parameter should be estimated. For details see \code{\link{overdispersion}}.}
   \item{Z}{the random effects design matrix.}
   \item{groups}{a list of grouping factors.}
   \item{start}{an optional numerical vector of starting values

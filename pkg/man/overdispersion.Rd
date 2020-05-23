@@ -1,4 +1,5 @@
 \name{overdispersion}
+\alias{overdispersion}
 \alias{overdispersion.mclogit}
 \alias{update.mclogit}
 \title{Overdispersion in Multinomial Logit Models}
@@ -33,10 +34,27 @@ overdispersion(object,method, \dots)
     a logical value -- if \code{TRUE} the default method
     (\code{"Afroz"}) is used, if \code{FALSE}, the dispersion parameter
     is set to 1, that is, no overdispersion.}
-  \item{\dots}
+  \item{\dots}{other arguments, ignored or passed to other methods.}
 }
 \references{
   Afroz, Farzana, Matt Parry, and David Fletcher. (2019).
   "Estimating Overdispersion in Sparse Multinomial Data."
   \emph{Biometrics}, early view. \url{https://doi.org/10.1111/biom.13194}.
+}
+\examples{
+library(MASS) # For 'housing' data
+
+house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
+                         data = housing)
+
+overdispersion(house.mblogit,method="Afroz")
+overdispersion(house.mblogit,method="Deviance")
+
+summary(house.mblogit)
+
+phi.Afroz <- overdispersion(house.mblogit,method="Afroz")
+summary(house.mblogit, dispersion=phi.Afroz)
+
+summary(update(house.mblogit, overdispersion="Afroz"))
+
 }

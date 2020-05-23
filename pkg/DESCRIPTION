@@ -18,6 +18,9 @@ Depends:
 Imports:
     memisc,
     methods
+Suggests:
+    MASS,
+    nnet
 LazyLoad: Yes
 URL: http://www.elff.eu/software/mclogit/,http://github.com/melff/mclogit/
 BugReports: http://github.com/melff/mclogit/issues

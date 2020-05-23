@@ -33,6 +33,8 @@
 #' @param method \code{NULL} or a character string, either "PQL" or "MQL", specifies
 #' the type of the quasilikelihood approximation to be used if
 #' a random-effects model is to be estimated.
+#' @param overdispersion a logical value or a character string; whether and how
+#' an overdispersion parameter should be estimated. For details see \code{\link{overdispersion}}.
 #' @param control a list of parameters for the fitting process.
 #' See \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
