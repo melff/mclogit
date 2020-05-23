@@ -8,7 +8,7 @@
 
 <!-- [![Build status](https://ci.appveyor.com/api/projects/status/289k656f3jsbotd2?svg=true)](https://ci.appveyor.com/project/melff/mclogit) one CI service is enough -->
 
-This packages provides allows to estimate conditional logit models of binary responses and multinomial counts, with or without alternative-specific random effects (random intercepts only, no random slopes yet). The current implementation of the estimator for random effects variants of the model uses a Laplace approximation (or PQL) approach and thus should be used only if groups sizes are large.
+This packages provides estimators for multinomial logit models in their conditional logit and baseline logit variants, with or without random effects, with or without overdispersion. Random effects models are estimated using the PQL technique (based on a Laplace approximation) or the MQL technique (based on a Solomon-Cox approximation). Estimates should be treated with caution if the group sizes are small.
 
 Releases will be published on [CRAN](http://cran.r-project.org/package=mclogit). Pre-releases will be available here in source and binary form. To install from the sources on GitHub you can use `devtools::install_github("melff/mclogit",subdir="pkg")`.
 
