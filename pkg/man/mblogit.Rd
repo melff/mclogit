@@ -7,16 +7,29 @@
 \alias{summary.mblogit}
 \alias{print.summary.mblogit}
 \alias{fitted.mblogit}
+\alias{predict.mblogit,}
+\alias{weights.mblogit}
 \alias{print.mmblogit}
 \alias{summary.mmblogit}
 \alias{print.summary.mmblogit}
 \title{Baseline-Category Logit Models for Categorical and Multinomial Responses}
 \usage{
-mblogit(formula, data = parent.frame(), random = NULL, subset,
-  weights = NULL, na.action = getOption("na.action"), model = TRUE,
-  x = FALSE, y = TRUE, contrasts = NULL, method = NULL,
-  dispersion = FALSE, control = if (length(random))
-  mmclogit.control(...) else mclogit.control(...), ...)
+mblogit(
+  formula,
+  data = parent.frame(),
+  random = NULL,
+  subset,
+  weights = NULL,
+  na.action = getOption("na.action"),
+  model = TRUE,
+  x = FALSE,
+  y = TRUE,
+  contrasts = NULL,
+  method = NULL,
+  dispersion = FALSE,
+  control = if (length(random)) mmclogit.control(...) else mclogit.control(...),
+  ...
+)
 }
 \arguments{
 \item{formula}{the model formula. The response must be a factor or a matrix

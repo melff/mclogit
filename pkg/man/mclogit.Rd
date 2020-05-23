@@ -11,10 +11,14 @@
 \alias{fitted.mclogit}
 \alias{predict.mclogit}
 \alias{residuals.mclogit}
+\alias{weights.mclogit}
 \alias{AIC.mclogit}
 \alias{BIC.mclogit}
 \alias{update.mclogit}
 \alias{anova.mclogit}
+\alias{summary.mmclogit}
+\alias{print.summary.mmclogit}
+
 
 \title{Conditional Logit Models and Mixed Conditional Logit Models}
 \description{
