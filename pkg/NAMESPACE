@@ -27,6 +27,11 @@ S3method(BIC,mclogit)
 S3method(nobs,mclogit)
 S3method(extractAIC,mclogit)
 S3method(anova,mclogit)
+S3method(update,mclogit)
+
+S3method(print,mmclogit)
+S3method(summary,mmclogit)
+S3method(print,summary.mmclogit)
 
 S3method(print,mblogit)
 S3method(summary,mblogit)
@@ -35,15 +40,16 @@ S3method(fitted,mblogit)
 S3method(predict,mblogit)
 S3method(weights,mblogit)
 
-S3method(print,mmclogit)
-S3method(summary,mmclogit)
-S3method(print,summary.mmclogit)
-
 S3method(print,mmblogit)
 S3method(summary,mmblogit)
 S3method(print,summary.mmblogit)
 
-S3method(update,mclogit)
 
 export(dispersion)
 S3method(dispersion,mclogit)
+
+S3method(getSummary,mclogit)
+S3method(getSummary,mblogit)
+
+S3method(getSummary,mmclogit)
+S3method(getSummary,mmblogit)
