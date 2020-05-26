@@ -5,9 +5,10 @@ mmclogit.fitPQLMQL <- function(
                                X,
                                Z,
                                groups,
-                               start=NULL,
-                               offset=NULL,
-                               method=c("PQL","MQL"),
+                               start = NULL,
+                               offset = NULL,
+                               method = c("PQL","MQL"),
+                               estimator = c("ML","REML"),
                                control=mmclogit.control()
                                ){
 
@@ -65,7 +66,7 @@ mmclogit.fitPQLMQL <- function(
 
         last.fit <- fit
         
-        fit <- try(PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,control),silent=TRUE)
+        fit <- try(PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,estimator,control),silent=TRUE)
         if(inherits(fit,"try-error")){
             fit <- last.fit
             if(control$trace) cat("\n")
@@ -229,7 +230,7 @@ mmclogit.fitPQLMQL <- function(
 
 matrank <- function(x) qr(x)$rank
 
-PQLMQL_innerFit <- function(y,X,Z,W,d,groups,offset,method,control){
+PQLMQL_innerFit <- function(y,X,Z,W,d,groups,offset,method,estimator,control){
 
     nlevs <- length(groups)
     m <- lapply(groups,lunq)
@@ -274,12 +275,12 @@ Correcting, but expect the unexpected",k))
 
     # qval <- qfunc(lambda.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
     # qfunc1 <- function(lambda) qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    nqfunc1 <- function(lambda) -qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    nqfunc1 <- function(lambda) -qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator)
     # qfuncv <- Vectorize(qfunc1)
 
     # gval <- grfunc(lambda.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
     # grfunc1 <- function(lambda) grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    ngrfunc1 <- function(lambda) -grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
+    ngrfunc1 <- function(lambda) -grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator)
 
     # grfuncv <- Vectorize(grfunc1)
     # layout(1:3)
@@ -289,7 +290,7 @@ Correcting, but expect the unexpected",k))
     # points(lambda.start,gval)
     # abline(h=0)
 
-    info_func1 <- function(lambda) info_func(lambda,d,ZWZ)
+    info_func1 <- function(lambda) info_func(lambda,d,XWX,ZWX,ZWZ,estimator)
     # hess_func1 <- function(lambda) -info_func(lambda,d,ZWZ)
     # info_funcv <- function(lambda) {s1 <- lapply(lambda,info_func1);sapply(s1,as.vector)}
     # curve(info_funcv(x),from=1.5,to=2)
@@ -298,6 +299,7 @@ Correcting, but expect the unexpected",k))
     res.port <- nlminb(lambda.start,
                        objective = nqfunc1,
                        gradient = ngrfunc1,
+                       estimator = estimator,
                        control = list(trace = as.integer(control$trace.inner))
                        )
 
@@ -341,7 +343,9 @@ Correcting, but expect the unexpected",k))
     )
  }
 
-qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
+qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
+
+    estimator <- match.arg(estimator,c("ML","REML"))
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
     Lambda <- lambda2Mat(lambda,m,d)
@@ -368,10 +372,16 @@ qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     
     log.det.H <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
     res <- (log.det.iSigma - log.det.H - y.aXiVXa.y)/2
+    if(estimator == "REML"){
+        log.det.XiVX <- 2*log(diag(chol(XiVX)))
+        res <- res - log.det.XiVX/2
+    }
     as.vector(res)
 }
 
-grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
+grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
+
+    estimator <- match.arg(estimator,c("ML","REML"))
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
     Lambda <- lambda2Mat(lambda,m,d)
@@ -384,9 +394,21 @@ grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
     XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
 
-    alpha <- solve(XiVX,XiVy)
+    if(estimater=="REML"){
+        iA <- solve(XiVX)
+        alpha <- iA%*%XiVy
+    }
+    else
+        alpha <- solve(XiVX,XiVy)
     b <- bMatProd(K,ZWy-bMatProd(ZWX,alpha))
 
+    if(estimator=="REML"){
+        XWZK <- bMatCrsProd(ZWX,K)
+        iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
+        M <- bMatCrsProd(XWZK,iAXWZK)
+        K <- K + M
+    }
+    
     Phi <- lapply(Psi,solve)
     S <- mapply(v_bCrossprod,b,d)
     K.kk <- diag(K)
@@ -398,8 +420,9 @@ grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ){
     unlist(gr)
 }
 
-info_func_psi <- function(lambda,d,ZWZ){
+info_func_psi <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
 
+    estimator <- match.arg(estimator,c("ML","REML"))
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
 
@@ -410,6 +433,14 @@ info_func_psi <- function(lambda,d,ZWZ){
     H <- ZWZ + iSigma
     K <- solve(H)
     T <- iSigma - K
+
+    if(estimater=="REML"){
+        iA <- solve(XiVX)
+        XWZK <- bMatCrsProd(ZWX,K)
+        iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
+        M <- bMatCrsProd(XWZK,iAXWZK)
+        T <- T - M
+    }
     
     Imat <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
     for(k in 1:nlevs) {
@@ -428,8 +459,9 @@ info_func_psi <- function(lambda,d,ZWZ){
 } 
 
 
-info_func <- function(lambda,d,ZWZ){
+info_func <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
 
+    estimator <- match.arg(estimator,c("ML","REML"))
     nlevs <- ncol(ZWZ)
     m <- bM_ncol(ZWZ)%/%d
 
@@ -442,6 +474,14 @@ info_func <- function(lambda,d,ZWZ){
     H <- ZWZ + iSigma
     K <- solve(H)
     T <- iSigma - K
+
+    if(estimater=="REML"){
+        iA <- solve(XiVX)
+        XWZK <- bMatCrsProd(ZWX,K)
+        iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
+        M <- bMatCrsProd(XWZK,iAXWZK)
+        T <- T - M
+    }
     
     Imat <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
     for(k in 1:nlevs) {
