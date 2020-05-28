@@ -51,10 +51,10 @@ mmclogit.fitPQLMQL <- function(
     # Outer iterations: update non-linear part of the model
     converged <- FALSE
     fit <- NULL
+    do.backup <- FALSE
+    step.truncated <- FALSE
     for(iter in 1:control$maxit){
 
-        do.backup <- FALSE
-        
         W <- Matrix(0,nrow=nobs,ncol=nsets)
         W[cbind(i,s)] <- sqrt.w*pi
         W <- Diagonal(x=w*pi)-tcrossprod(W)
@@ -121,7 +121,8 @@ mmclogit.fitPQLMQL <- function(
             warning("Non-finite deviance, backing up",call.=FALSE)
             do.backup <- TRUE
         }
-            
+        else 
+            do.backup <- FALSE
         
         if(do.backup){
             fit <- last.fit
@@ -134,7 +135,6 @@ mmclogit.fitPQLMQL <- function(
             break
         }
         
-        step.truncated <- FALSE
         if(!is.finite(deviance) || deviance > last.deviance && control$avoid.increase){
             if(control$trace) cat("  ")
             warning("step size truncated due to possible divergence", call. = FALSE)
@@ -155,6 +155,7 @@ mmclogit.fitPQLMQL <- function(
                     break
             }
         }
+        else step.truncated <- FALSE
         
         if(control$trace){
             cat("Iteration",iter,"- deviance =",deviance,"- criterion =",crit)
