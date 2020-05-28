@@ -6,6 +6,7 @@ export(
       mclogit.fit,
       mmclogit.fitPQLMQL,
       mclogit.control,
+      mmclogit.control,
       getSummary.mclogit,
       getSummary.mmclogit,
       mblogit,
