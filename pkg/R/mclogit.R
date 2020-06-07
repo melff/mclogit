@@ -174,6 +174,7 @@ mclogit <- function(
         
         fit <- mmclogit.fitPQLMQL(Y,sets,weights,X,Z,groups,
                                   method = method,
+                                  estimator=estimator,
                                   control=control,
                                   offset = offset)
     }
@@ -760,3 +761,46 @@ update.mclogit <-  function(object, formula., dispersion, ...) {
         update_mclogit_dispersion(object,dispersion)
     else NextMethod()
 }
+
+
+getFirst <- function(x) x[1]
+
+simulate.mclogit <- function(object, nsim = 1, seed = NULL, ...){
+
+    if(object$phi > 1)
+        stop("Simulating responses from models with oversdispersion is not supported yet")
+    
+    if (!exists(".Random.seed", envir = .GlobalEnv, inherits = FALSE)) 
+        runif(1)
+    if (is.null(seed)) 
+        RNGstate <- get(".Random.seed", envir = .GlobalEnv)
+    else {
+        R.seed <- get(".Random.seed", envir = .GlobalEnv)
+        set.seed(seed)
+        RNGstate <- structure(seed, kind = as.list(RNGkind()))
+        on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
+    }
+    
+    weights <- object$weights
+    probs <- object$fitted.values
+    set <- object$s
+    i <- 1:length(probs)
+    
+    probs <- split(probs,set)
+    weights <- split(weights,set)
+    i <- split(i,set)
+    weights <- sapply(weights,getFirst)
+
+    yy <- mapply(rmultinom,size=weights,prob=probs,
+                 MoreArgs=list(n=nsim),SIMPLIFY=FALSE)
+    yy <- do.call(rbind,yy)
+
+    i <- unlist(i)
+    yy[i,] <- yy
+    rownames(yy) <- names(object$working.residuals)
+    colnames(yy) <- paste0("sim_",1:nsim)
+    yy
+}
+
+simulate.mmclogit <- function(object, nsim = 1, seed = NULL, ...)
+    stop("Simulating responses from random-effects models is not supported yet")

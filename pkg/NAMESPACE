@@ -54,3 +54,9 @@ S3method(getSummary,mblogit)
 
 S3method(getSummary,mmclogit)
 S3method(getSummary,mmblogit)
+
+S3method(simulate,mclogit)
+S3method(simulate,mblogit)
+
+S3method(simulate,mmclogit)
+S3method(simulate,mmblogit)
