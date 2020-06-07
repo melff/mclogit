@@ -54,6 +54,7 @@ mclogit <- function(
                 model = TRUE, x = FALSE, y = TRUE,
                 contrasts=NULL,
                 method = NULL,
+                estimator=c("ML","REML"),
                 dispersion = FALSE,
                 start=NULL,
                 control=if(length(random))

@@ -395,7 +395,7 @@ grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
     XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
 
-    if(estimater=="REML"){
+    if(estimator=="REML"){
         iA <- solve(XiVX)
         alpha <- iA%*%XiVy
     }
@@ -435,7 +435,7 @@ info_func_psi <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
     K <- solve(H)
     T <- iSigma - K
 
-    if(estimater=="REML"){
+    if(estimator=="REML"){
         iA <- solve(XiVX)
         XWZK <- bMatCrsProd(ZWX,K)
         iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
@@ -476,7 +476,7 @@ info_func <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
     K <- solve(H)
     T <- iSigma - K
 
-    if(estimater=="REML"){
+    if(estimator=="REML"){
         iA <- solve(XiVX)
         XWZK <- bMatCrsProd(ZWX,K)
         iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
