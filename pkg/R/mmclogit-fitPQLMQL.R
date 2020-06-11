@@ -66,8 +66,10 @@ mmclogit.fitPQLMQL <- function(
 
         last.fit <- fit
         
-        fit <- try(PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,estimator,control),silent=TRUE)
+        fit <- PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,estimator,control)
+        # fit <- try(PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,estimator,control),silent=TRUE)
         if(inherits(fit,"try-error")){
+            message(fit)
             fit <- last.fit
             if(control$trace) cat("\n")
             warning("Numeric problems in inner iteration, bailing out")
@@ -188,6 +190,7 @@ mmclogit.fitPQLMQL <- function(
         warning("Approximate deviance is negative.\nYou might be overfitting your data or the group size is too small.",call.=FALSE)
     }
     
+    coef <- fit$coefficients
     info.coef <- fit$info.fixed
     info.lambda <- fit$info.lambda
     info.psi <- fit$info.psi
@@ -300,13 +303,12 @@ Correcting, but expect the unexpected",k))
     res.port <- nlminb(lambda.start,
                        objective = nqfunc1,
                        gradient = ngrfunc1,
-                       estimator = estimator,
                        control = list(trace = as.integer(control$trace.inner))
                        )
 
     lambda <- res.port$par
     info.lambda <- info_func1(lambda)
-    info.psi <- info_func_psi(lambda,d,ZWZ)
+    info.psi <- info_func_psi(lambda,d,XWX,ZWX,ZWZ,estimator)
 
     Lambda <- lambda2Mat(lambda,m,d)
     Psi <- lapply(Lambda,crossprod)
@@ -358,7 +360,8 @@ qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
 
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
     XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
-
+    XiVX <- symmpart(XiVX)
+    
     alpha <- solve(XiVX,XiVy)
     b <- bMatProd(K,ZWy-bMatProd(ZWX,alpha))
 
@@ -374,7 +377,7 @@ qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
     log.det.H <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
     res <- (log.det.iSigma - log.det.H - y.aXiVXa.y)/2
     if(estimator == "REML"){
-        log.det.XiVX <- 2*log(diag(chol(XiVX)))
+        log.det.XiVX <- log.Det(XiVX)
         res <- res - log.det.XiVX/2
     }
     as.vector(res)
@@ -394,6 +397,7 @@ grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
 
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
     XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
+    XiVX <- symmpart(XiVX)
 
     if(estimator=="REML"){
         iA <- solve(XiVX)
@@ -436,6 +440,8 @@ info_func_psi <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
     T <- iSigma - K
 
     if(estimator=="REML"){
+        XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
+        XiVX <- symmpart(XiVX)
         iA <- solve(XiVX)
         XWZK <- bMatCrsProd(ZWX,K)
         iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
@@ -477,6 +483,8 @@ info_func <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
     T <- iSigma - K
 
     if(estimator=="REML"){
+        XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
+        XiVX <- symmpart(XiVX)
         iA <- solve(XiVX)
         XWZK <- bMatCrsProd(ZWX,K)
         iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
