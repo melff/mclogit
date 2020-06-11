@@ -36,7 +36,7 @@
 mclogit(formula, data=parent.frame(), random=NULL,
         subset, weights = NULL, offset=NULL, na.action = getOption("na.action"),
         model = TRUE, x = FALSE, y = TRUE, contrasts=NULL,
-        method = NULL,
+        method = NULL, estimator=c("ML","REML"),
         dispersion = FALSE,
         start=NULL,
         control=if(length(random))
@@ -110,6 +110,9 @@ mclogit(formula, data=parent.frame(), random=NULL,
       the type of the quasilikelihood approximation to be used if
       a random-effects model is to be estimated.}
 
+  \item{estimator}{a character string; either "ML" or "REML",
+    specifies which estimator is to be used/approximated.}
+    
   \item{dispersion}{a real number used as dispersion parameter;
     a character vector that specifies the method to compute the dispersion;
     a logical value -- if \code{TRUE} the default method

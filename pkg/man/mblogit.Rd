@@ -26,7 +26,10 @@ mblogit(
   y = TRUE,
   contrasts = NULL,
   method = NULL,
+  estimator = c("ML", "REML"),
   dispersion = FALSE,
+  from.table = FALSE,
+  groups = NULL,
   control = if (length(random)) mmclogit.control(...) else mclogit.control(...),
   ...
 )
@@ -71,8 +74,21 @@ of \code{model.matrix.default}.}
 the type of the quasilikelihood approximation to be used if
 a random-effects model is to be estimated.}
 
+\item{estimator}{a character string; either "ML" or "REML",
+specifies which estimator is to be used/approximated.}
+
 \item{dispersion}{a logical value or a character string; whether and how
 a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.}
+
+\item{from.table}{a logical value; do the data represent a contingency table, e.g. were created
+by applying \code{as.data.frame()} a the result of \code{table()} or \code{xtabs()}.
+This relevant only if the response is a factor. This argument should be set to \code{TRUE}
+if the data do come from a contingency table. Correctly setting \code{from.table=TRUE} in this case,
+will lead to efficiency gains in computing, but more importantly overdispersion will correctly
+be computed if present.}
+
+\item{groups}{an optional formula that specifies groups of observations relevant for
+the specification of overdispersed response counts.}
 
 \item{control}{a list of parameters for the fitting process.
 See \code{\link{mclogit.control}}}

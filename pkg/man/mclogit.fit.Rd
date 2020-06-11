@@ -16,6 +16,7 @@ mclogit.fit(y, s, w, X,
 
 mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
                    offset = NULL, method=c("PQL","MQL"),
+                   estimator = c("ML","REML"),
                    control = mmclogit.control())
 }
 \arguments{
@@ -34,6 +35,8 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
     for models without random effects.}
   \item{method}{a character string, either "PQL" or "MQL", specifies
     the type of the quasilikelihood approximation.}
+  \item{estimator}{a character string; either "ML" or "REML",
+    specifies which estimator is to be used/approximated.}
   \item{control}{a list of parameters for the fitting process.
     See \code{\link{mclogit.control}} }
 

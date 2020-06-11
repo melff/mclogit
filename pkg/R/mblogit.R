@@ -32,8 +32,18 @@
 #' @param method \code{NULL} or a character string, either "PQL" or "MQL", specifies
 #' the type of the quasilikelihood approximation to be used if
 #' a random-effects model is to be estimated.
+#' @param estimator a character string; either "ML" or "REML",
+#' specifies which estimator is to be used/approximated.
 #' @param dispersion a logical value or a character string; whether and how
 #' a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.
+#' @param from.table a logical value; do the data represent a contingency table, e.g. were created
+#' by applying \code{as.data.frame()} a the result of \code{table()} or \code{xtabs()}.
+#' This relevant only if the response is a factor. This argument should be set to \code{TRUE}
+#' if the data do come from a contingency table. Correctly setting \code{from.table=TRUE} in this case,
+#' will lead to efficiency gains in computing, but more importantly overdispersion will correctly
+#' be computed if present.
+#' @param groups an optional formula that specifies groups of observations relevant for
+#' the specification of overdispersed response counts.
 #' @param control a list of parameters for the fitting process.
 #' See \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
