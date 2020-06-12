@@ -1,3 +1,33 @@
+2020-06-11:
+  - Implemented (approximate) REML estimator.
+
+2020-06-07:
+  - Added a 'simulate()' method for "mblogit" and "mclogit" models.
+
+2020-05-24:
+  - Adapt the package NAMESPACE file to explicitly export S3 methods as methods,
+    even if they are export as functions, as newly required by R 4.0.
+
+2020-05-23:
+  - Added documentation of (over-)dispersion parameter estimation, rename
+    'overdispersion=' arguments into 'dispersion=' arguments.
+
+2020-05-22:
+  - Added support for estimation of (over-)dispersion parameters
+
+2020-05-21:
+  - Implemented MQL technique as an alternative to PQL estimation
+
+2020-05-19:
+  - Improve handling of numerical difficulties
+
+2020-05-11:
+  - Use a Cholesky-factor parameterisation to make sure that covariance matrices
+    are positive (semi-)definite
+
+2020-03-30:
+  - Refactored the algorithm for fitting mixed-effects models
+
 2020-01-09:
   - Document getSummary.mmclogit, getSummary.mmblogit
   - Make 'mblogit' handle matrix responses with zero-sum rows
@@ -7,7 +37,7 @@
 2019-10-23:
   - Merge pull request #3 from skyborla/fix-mblogit
     Fix mblogit for responses with only two levels
-  - Export getSummary.mmclogit, getSummary.mmblogit  
+  - Export getSummary.mmclogit, getSummary.mmblogit
 
 2019-04-20:
   - Let 'mmblogit' models inherit from class 'mblogit'
@@ -15,7 +45,7 @@
 2019-02-04:
   - Merged pull request #2 from pmcharrison/ftt-fix:
     Fixed typo (ftt -> fit)
-		
+
 2018-09-26:
   - Fixed matrix column selection in predict.mclogit if there is only one
     predictor (also PR from skyborla)

@@ -2,6 +2,51 @@
 \title{\emph{mclogit} News}
 \encoding{UTF-8}
 
+\section{Version 0.8}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item It is now possible to use the MQL estimation technique as an
+      alternative to PQL.
+      \item As an alternative to extending a logit model with random
+      effects, it is now possible to add an over-dispersion parameter to
+      logit model.
+      \item In addition to approximate the ML estimator, MQL and PQL
+      have a variant that approximates the REML estimator.
+      \item There is now a \code{simulate()} method for objects returned
+      by \code{mblogit()} or \code{mclogit()} (but only for those
+      without random effects).
+    }
+  }
+}
+
+\section{Version 0.7}{
+  \subsection{IMPROVEMENTS}{
+    \itemize{
+      \item The algorithm for fitting random-effects models tended to
+      stop prematurely returning the starting values obtained using a
+      methods of moments. It has been completely refactored and proceeds
+      similar to the PQL algorithm in Professor Brian Ripley's MASS
+      package:
+      
+      Now an inner step, in which a linear mixed model is fitted to a
+      working dependent variable is nested into outer step iterations,
+      in which the the working dependent variable is
+      updated.
+
+      \item Also, the PQL algorithm no longer builds on starting values from a
+      no-random-effects model, because surprisingly this makes the
+      algorithm more stable and not less.
+      
+      As a consequence, the algorithm does a much better job at avoiding
+      divergence or running into numerical difficulties.
+
+      \item The PQL estimator for random-effects model uses a (inverse)
+      Cholesky factor parametrisation, which makes sure that
+      random-effects (Co-)Variance matrices are always positive (semi-)definite.
+    }
+  }
+}
+
 \section{Version 0.6}{
   \subsection{NEW FEATURES}{
     \itemize{
