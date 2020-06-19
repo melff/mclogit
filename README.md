@@ -1,5 +1,5 @@
 
-# mclogit: Mixed conditional logit models in R 
+#  mclogit: Multinomial Logit Models, with or without Random Effects or Overdispersion 
 
 [![CRAN](http://www.r-pkg.org/badges/version/mclogit)](http://cran.rstudio.com/package=mclogit)
 [![Total downloads from RStudio CRAN mirror](http://cranlogs.r-pkg.org/badges/grand-total/mclogit)](http://cran.r-project.org/web/packages/mclogit/index.html)
