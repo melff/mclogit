@@ -35,6 +35,8 @@ dispersion(object,method, \dots)
 \examples{
 library(MASS) # For 'housing' data
 
+# Note that with a factor response and frequency weighted data,
+# Overdispersion will be overestimated:
 house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
                          data = housing)
 
@@ -48,4 +50,11 @@ summary(house.mblogit, dispersion=phi.Afroz)
 
 summary(update(house.mblogit, dispersion="Afroz"))
 
+# In order to be able to estimate overdispersion accurately,
+# data like the above (which usually comes from applying
+# 'as.data.frame' to a contingency table) the model has to be
+# fitted with the optional argument 'from.table=TRUE':
+house.mblogit.corrected <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
+                                   data = housing, from.table=TRUE)
+dispersion(house.mblogit.corrected,method="Afroz")
 }
