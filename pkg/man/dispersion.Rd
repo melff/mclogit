@@ -55,6 +55,9 @@ summary(update(house.mblogit, dispersion="Afroz"))
 # 'as.data.frame' to a contingency table) the model has to be
 # fitted with the optional argument 'from.table=TRUE':
 house.mblogit.corrected <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
-                                   data = housing, from.table=TRUE)
-dispersion(house.mblogit.corrected,method="Afroz")
+                                   data = housing, from.table=TRUE,
+                                   dispersion="Afroz")
+# Now the estimated dispersion parameter is no longer larger than 20,
+# but just bit over 1.0.
+summary(house.mblogit.corrected)
 }
