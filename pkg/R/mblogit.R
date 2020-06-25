@@ -414,12 +414,11 @@ fitted.mblogit <- function(object,type=c("probabilities","counts"),...){
   longfit <- switch(type,
                 probabilities=res,
                 counts=weights*res)
-  
-  if(!is.null(na.act))
-    longfit <- napredict(na.act,longfit)
-  
   ncat <- nrow(object$D)
   fit <- t(matrix(longfit,nrow=ncat))
+  
+  if(!is.null(na.act))
+    fit <- napredict(na.act,fit)
   fit
 }
 
