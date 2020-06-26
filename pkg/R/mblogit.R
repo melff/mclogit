@@ -638,39 +638,47 @@ simulate.mblogit <- function(object, nsim = 1, seed = NULL, ...){
 
     if(object$response.type=="matrix" || object$from.table){
         yy <- NextMethod()
+        seed_attr <- attr(yy,"seed")
         nm <- nrow(yy)
         m <- nrow(object$D)
         n <- nm %/% m
-        yy <- array(yy, dim=c(m,n,nsim),
-                    dimnames=list(rownames(object$D),
-                                  NULL,#rownames(object$model),
-                                  paste0("sim_",1:nsim)))
+        yy <- lapply(yy,array,
+                     dim=c(m,n),
+                     dimnames=list(rownames(object$D),
+                                   NULL))
+        yy <- lapply(yy,t)
+        names(yy) <- paste0("sim_",1:nsim)
+        
         if(object$response.type=="matrix"){
-            return(aperm(yy,c(2,1,3)))
+            class(yy) <- "data.frame"
+            attr(yy,"row.names") <- rownames(object$model)
+            attr(yy,"seed") <- seed_attr
+            return(yy)
         }
         else {
             ij <- attr(object$model,"ij")
             n <- nrow(ij)
-            ijk <- cbind(rep(ij[,1],nsim),
-                         rep(ij[,2],nsim),
-                         rep(1:nsim,each=n))
-            yy <- aperm(yy,c(2,1,3))
-            yy <- yy[ijk]
-            yy <-array(yy,dim=c(n,nsim))
-            colnames(yy) <- paste0("sim_",1:nsim)
-            rownames(yy) <- rownames(object$model)
+            yy <- lapply(yy,"[",ij)
+            yy <- as.data.frame(yy)
+            attr(yy,"seed") <- seed_attr
             return(yy)
         }
     }
-    else {
+    else { # response.type == "factor"
         probs <- object$fitted.values
+        response <- model.response(object$model)
         nm <- length(probs)
         m <- nrow(object$D)
         n <- nm %/% m
         dim(probs) <- c(m,n)
         yy <- sample_factor(probs,nsim=nsim,seed=seed)
+        seed_attr <- attr(yy,"seed")
         colnames(yy) <- paste0("sim_",1:nsim)
         rownames(yy) <- rownames(object$model)
+        yy <- as.data.frame(yy)
+        yy <- lapply(yy,factor,labels=levels(response))
+        yy <- as.data.frame(yy)
+        attr(yy,"seed") <- seed_attr
         return(yy)
     }
 }
@@ -690,5 +698,7 @@ sample_factor <- function(probs, nsim =1, seed = NULL, ...){
         on.exit(assign(".Random.seed", R.seed, envir = .GlobalEnv))
     }
     yy <- apply(probs,2,sample.int,size=nsim,n=nrow(probs),replace=TRUE)
-    return(t(yy))
+    yy <- t(yy)
+    attr(yy,"seed") <- RNGstate
+    return(yy)
 }

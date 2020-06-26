@@ -800,6 +800,8 @@ simulate.mclogit <- function(object, nsim = 1, seed = NULL, ...){
     yy[i,] <- yy
     rownames(yy) <- names(object$working.residuals)
     colnames(yy) <- paste0("sim_",1:nsim)
+    yy <- as.data.frame(yy)
+    attr(yy,"seed") <- RNGstate
     yy
 }
 
