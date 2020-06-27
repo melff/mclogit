@@ -132,7 +132,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
     \code{mblogit()}, \emph{without} random effects.
   }
   \item{formula.}{a changes to the model formula,
-    see \code{\link[stats]{update}} and
+    see \code{\link[stats:update]{update.default}} and
     \code{\link[stats]{update.formula}}.}
   \item{correlation}{logical; see \code{\link[stats]{summary.lm}}.}
   \item{symbolic.cor}{logical; see \code{\link[stats]{summary.lm}}.}
