@@ -266,7 +266,8 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 }
 
 vcov.mclogit <- function(object,...){
-    return(object$covmat * object$phi)
+    phi <- if(length(object$phi)) else 1
+    return(object$covmat * phi)
 }
 
 weights.mclogit <- function(object,...){
