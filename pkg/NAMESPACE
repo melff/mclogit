@@ -31,6 +31,7 @@ S3method(anova,mclogit)
 S3method(update,mclogit)
 
 S3method(print,mmclogit)
+S3method(vcov,mmclogit)
 S3method(summary,mmclogit)
 S3method(print,summary.mmclogit)
 
@@ -60,3 +61,5 @@ S3method(simulate,mblogit)
 
 S3method(simulate,mmclogit)
 S3method(simulate,mmblogit)
+
+S3method(predict,mmblogit)

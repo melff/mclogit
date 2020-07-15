@@ -549,6 +549,14 @@ print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     invisible(x)
 }
 
+vcov.mmclogit <- function(object,...){
+    info.coef <- object$info.coef
+    vcov.cf <- solve(info.coef)
+    return(vcov.cf)
+}
+
+
+
 summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic.cor = FALSE,...){
 
     ## calculate coef table
