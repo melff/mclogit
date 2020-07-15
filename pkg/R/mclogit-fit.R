@@ -114,7 +114,6 @@ mclogit.fit <- function(
         phi = phi,
         linear.predictors = eta,
         working.residuals = (y-pi)/pi,
-        working.weights = w,
         response.residuals = y-pi,
         df.residual = resid.df,
         model.df = model.df,

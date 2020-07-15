@@ -209,10 +209,10 @@ mmclogit.fitPQLMQL <- function(
     resid.df <- resid.df - model.df
     return(list(
         coefficients = coef$fixed,
+        random.effects = coef$random,
         VarCov = Phi,
         linear.predictors = eta,
         working.residuals = (y-pi)/pi,
-        working.weights = w,
         response.residuals = y-pi,
         df.residual = resid.df,
         model.df = model.df,
@@ -220,6 +220,8 @@ mmclogit.fitPQLMQL <- function(
         deviance=deviance,
         deviance.residuals=dev.resids,
         null.deviance=null.deviance,
+        method = method,
+        estimator = estimator,
         iter = iter,
         y = y,
         s = s,

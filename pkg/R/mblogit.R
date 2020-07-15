@@ -281,7 +281,7 @@ mblogit <- function(formula,
     }
     fit <- c(fit,list(call = call, formula = formula,
                       terms = mt,
-                      random = NULL,
+                      random = random,
                       data = data,
                       contrasts = contrasts,
                       xlevels = xlevels,
@@ -294,8 +294,9 @@ mblogit <- function(formula,
                       response.type=response.type,
                       from.table=from.table))
 
-    if(length(random))
+    if(length(random)){
         class(fit) <- c("mmblogit","mblogit","mmclogit","mclogit","lm")
+    }
     else
         class(fit) <- c("mblogit","mclogit","lm")
     fit
@@ -701,4 +702,162 @@ sample_factor <- function(probs, nsim =1, seed = NULL, ...){
     yy <- t(yy)
     attr(yy,"seed") <- RNGstate
     return(yy)
+}
+
+lenuniq <- function(x) length(unique(x))
+
+predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
+    
+    type <- match.arg(type)
+    rhs <- object$formula[-2]
+    random <- object$random  
+    groups <- random$groups
+    rf <- random$formula
+    rt <- terms(rf)
+    if(missing(newdata)){
+        mf <- object$model
+        na.act <- object$na.action
+        w <- object$weights
+        sqrt.w <- sqrt(w)
+    }
+    else{
+        weights <- object$call$weights
+        vars <- unique(c(all.vars(rhs),all.vars(object$call$random),all.vars(weights)))
+        fo <- paste("~",paste(vars,collapse=" + "))
+        fo <- as.formula(fo,env=parent.frame())
+        mf <- model.frame(fo,data=newdata,na.action=na.exclude)
+        na.act <- attr(mf,"na.action")
+        w <- eval(weights,env=parent.frame())
+        if(!length(w))
+            w <- rep(1,nrow(mf))
+        sqrt.w <- sqrt(w)
+    }
+    X <- model.matrix(rhs,mf,
+                      contrasts.arg=object$contrasts,
+                      xlev=object$xlevels
+                      )
+    D <- object$D
+    XD <- X%x%D
+
+    Z <- model.matrix(rt,mf,contrasts)
+    ZD <- Z%x%D
+
+    colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
+                               "~",
+                               rep(colnames(Z),each=ncol(D)))
+    colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
+
+    groups <- mf[groups]
+    groups <- lapply(groups,rep,each=nrow(D))
+    
+    ZD <- lapply(groups,mkZ,rX=ZD)
+    ZD <- blockMatrix(ZD)
+    
+    eta <- c(XD %*% coef(object))
+    Phi <- object$VarCov
+
+    nlevs <- length(groups)
+    random.effects <- object$random.effects
+    if(object$method == "PQL"){
+        for(k in 1:nlevs)
+            eta <- eta +  as.vector(ZD[[k]]%*%random.effects[[k]])
+    }
+    
+    rspmat <- function(x){
+        y <- t(matrix(x,nrow=nrow(D)))
+        colnames(y) <- rownames(D)
+        y
+    }
+    eta <- rspmat(eta)
+
+    nvar <- ncol(X)
+    nobs <- nrow(X)
+    
+    if(se.fit || type=="response"){
+        exp.eta <- exp(eta)
+        sum.exp.eta <- rowSums(exp.eta)
+        p <- exp.eta/sum.exp.eta
+    }
+    if(se.fit){
+        ncat <- ncol(p)
+        W <- Matrix(0,nrow=nobs*ncat,ncol=nobs)
+        i <- seq.int(ncat*nobs)
+        j <- rep(1:nobs,each=ncat)
+        pv <- as.vector(t(p))
+        W[cbind(i,j)] <- sqrt.w*pv
+        W <- Diagonal(x=w*pv)-tcrossprod(W)
+        WX <- W%*%XD
+        if(object$method=="PQL"){
+            XWX <- crossprod(XD,WX)
+            WZ <- bMatProd(W,ZD)
+            ZWZ <- bMatCrsProd(WZ,ZD)
+            ZWX <- bMatCrsProd(WZ,blockMatrix(XD))
+            Psi <- lapply(Phi,solve)
+            m <- lapply(groups,lenuniq)
+            iSigma <- Psi2iSigma(Psi,m)
+            ZWZiSigma <- ZWZ + iSigma
+            A <- rbind(blockMatrix(XWX),ZWX)
+            B <- rbind(bMatTrns(ZWX),ZWZiSigma)
+            H <- structure(cbind(A,B),class="blockMatrix")
+            K <- solve(H)
+        }
+    }
+    
+    if(type=="response") {
+        if(se.fit){
+            iw <- Diagonal(x=1/w)
+            if(object$method=="PQL"){
+                WXZ <- structure(cbind(blockMatrix(WX),WZ),class="blockMatrix")
+                dm <- dim(WXZ)
+                WXZ <- structure(lapply(WXZ,`%*%`,x=iw),class="blockMatrix",dim=dm)
+                var.p <- bMatProd(WXZ,K)
+                var.p <- Map(`*`,WXZ,var.p)
+                var.p <- lapply(var.p,rowSums)
+                var.p <- Reduce(`+`,var.p)
+            }
+            else {
+                vcov.coef <- vcov(object)
+                var.p <- rowSums(WX*(WX%*%vcov.coef))
+            }
+            se.p <- sqrt(var.p)
+            se.p <- rspmat(se.p)
+            if(is.null(na.act))
+                list(fit=p,se.fit=se.p) 
+            else
+                list(fit=napredict(na.act,p),
+                     se.fit=napredict(na.act,se.p))
+        }
+        else{
+            if(is.null(na.act)) p
+            else napredict(na.act,p)
+        }
+    }
+    else {
+        eta <- eta[,-1,drop=FALSE]
+        if(se.fit){
+            if(object$method=="PQL"){
+                XZ <- structure(cbind(blockMatrix(XD),ZD),class="blockMatrix")
+                var.eta <- bMatProd(XZ,K)
+                var.eta <- Map(`*`,XZ,var.eta)
+                var.eta <- lapply(var.eta,rowSums)
+                var.eta <- Reduce(`+`,var.eta)
+            }
+            else {
+                vcov.coef <- vcov(object)
+                var.eta <- rowSums(XD*(XD%*%vcov.coef))
+            }
+            se.eta <- sqrt(var.eta)
+            se.eta <- rspmat(se.eta)
+            se.eta <- se.eta[,-1,drop=FALSE]
+            if(is.null(na.act))
+                list(fit=eta,se.fit=se.eta) 
+            else
+                list(fit=napredict(na.act,eta),
+                     se.fit=napredict(na.act,se.eta))
+        }
+        else {
+            if(is.null(na.act)) eta
+            else napredict(na.act,eta)
+        }
+    }
 }
