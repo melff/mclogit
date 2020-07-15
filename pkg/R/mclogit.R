@@ -266,7 +266,8 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 }
 
 vcov.mclogit <- function(object,...){
-    phi <- if(length(object$phi)) else 1
+    phi <- object$phi
+    if(!length(phi)) phi <- 1
     return(object$covmat * phi)
 }
 
