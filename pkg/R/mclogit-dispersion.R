@@ -24,7 +24,7 @@ mclogit.dispersion <- function(y,w,s,pi,coef,method){
 
 update_mclogit_dispersion <- function(object,dispersion){
 
-    if(!isFALSE(dispersion)){
+    if(!missing(dispersion)){
         if(is.numeric(dispersion))
             phi <- dispersion
         else {
