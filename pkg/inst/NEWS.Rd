@@ -15,6 +15,9 @@
       \item There is now a \code{simulate()} method for objects returned
       by \code{mblogit()} or \code{mclogit()} (but only for those
       without random effects).
+      \item Predictions from random-effects models estimated using the
+      PQL technique now are now conditional on the random effects
+      (unless requested otherwise).
     }
   }
 }
@@ -42,7 +45,8 @@
 
       \item The PQL estimator for random-effects model uses a (inverse)
       Cholesky factor parametrisation, which makes sure that
-      random-effects (Co-)Variance matrices are always positive (semi-)definite.
+      random-effects (Co-)Variance matrices are always positive
+      (semi-)definite.
     }
   }
 }
