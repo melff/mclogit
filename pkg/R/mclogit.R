@@ -766,9 +766,9 @@ format_Mat <- function(x,title="",rownames=NULL){
 }
 
 update.mclogit <-  function(object, formula., dispersion, ...) {
-    if(inherits(object,"mmclogit") ||
-       missing(formula.) ||
-       formula. == object$formula && !missing(dispersion))
+    if(!inherits(object,"mmclogit") &&
+       (missing(formula.) || formula. == object$formula)
+       && !missing(dispersion))
         update_mclogit_dispersion(object,dispersion)
     else NextMethod()
 }

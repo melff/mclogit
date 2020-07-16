@@ -1,5 +1,7 @@
-2020-07-15:
+2020-07-16:
   - Bugfix: Make 'update' work with missing 'dispersion=' argument.
+
+2020-07-15:
   - Bugfix: Make 'vcov' work for objects without 'phi' component.
   - Add 'vcov' method for 'mmclogit' objects.
 
