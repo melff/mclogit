@@ -706,7 +706,8 @@ sample_factor <- function(probs, nsim =1, seed = NULL, ...){
 
 lenuniq <- function(x) length(unique(x))
 
-predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
+predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,
+                             conditional=TRUE, ...){
     
     type <- match.arg(type)
     rhs <- object$formula[-2]
@@ -717,20 +718,13 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     if(missing(newdata)){
         mf <- object$model
         na.act <- object$na.action
-        w <- object$weights
-        sqrt.w <- sqrt(w)
     }
     else{
-        weights <- object$call$weights
         vars <- unique(c(all.vars(rhs),all.vars(object$call$random),all.vars(weights)))
         fo <- paste("~",paste(vars,collapse=" + "))
         fo <- as.formula(fo,env=parent.frame())
         mf <- model.frame(fo,data=newdata,na.action=na.exclude)
         na.act <- attr(mf,"na.action")
-        w <- eval(weights,env=parent.frame())
-        if(!length(w))
-            w <- rep(1,nrow(mf))
-        sqrt.w <- sqrt(w)
     }
     X <- model.matrix(rhs,mf,
                       contrasts.arg=object$contrasts,
@@ -758,7 +752,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
 
     nlevs <- length(groups)
     random.effects <- object$random.effects
-    if(object$method == "PQL"){
+    if(object$method == "PQL" && conditional){
         for(k in 1:nlevs)
             eta <- eta +  as.vector(ZD[[k]]%*%random.effects[[k]])
     }
@@ -784,32 +778,20 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         i <- seq.int(ncat*nobs)
         j <- rep(1:nobs,each=ncat)
         pv <- as.vector(t(p))
-        W[cbind(i,j)] <- sqrt.w*pv
-        W <- Diagonal(x=w*pv)-tcrossprod(W)
+        W[cbind(i,j)] <- pv
+        W <- Diagonal(x=pv)-tcrossprod(W)
         WX <- W%*%XD
         if(object$method=="PQL"){
-            XWX <- crossprod(XD,WX)
             WZ <- bMatProd(W,ZD)
-            ZWZ <- bMatCrsProd(WZ,ZD)
-            ZWX <- bMatCrsProd(WZ,blockMatrix(XD))
-            Psi <- lapply(Phi,solve)
-            m <- lapply(groups,lenuniq)
-            iSigma <- Psi2iSigma(Psi,m)
-            ZWZiSigma <- ZWZ + iSigma
-            A <- rbind(blockMatrix(XWX),ZWX)
-            B <- rbind(bMatTrns(ZWX),ZWZiSigma)
-            H <- structure(cbind(A,B),class="blockMatrix")
+            H <- object$info.fixed.random
             K <- solve(H)
         }
     }
     
     if(type=="response") {
         if(se.fit){
-            iw <- Diagonal(x=1/w)
-            if(object$method=="PQL"){
+            if(object$method=="PQL" && conditional){
                 WXZ <- structure(cbind(blockMatrix(WX),WZ),class="blockMatrix")
-                dm <- dim(WXZ)
-                WXZ <- structure(lapply(WXZ,`%*%`,x=iw),class="blockMatrix",dim=dm)
                 var.p <- bMatProd(WXZ,K)
                 var.p <- Map(`*`,WXZ,var.p)
                 var.p <- lapply(var.p,rowSums)
@@ -835,7 +817,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     else {
         eta <- eta[,-1,drop=FALSE]
         if(se.fit){
-            if(object$method=="PQL"){
+            if(object$method=="PQL" && conditional){
                 XZ <- structure(cbind(blockMatrix(XD),ZD),class="blockMatrix")
                 var.eta <- bMatProd(XZ,K)
                 var.eta <- Map(`*`,XZ,var.eta)

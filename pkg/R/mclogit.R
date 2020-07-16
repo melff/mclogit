@@ -417,7 +417,7 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     cf <- coef(object)
     X <- X[,names(cf), drop=FALSE]
     
-    eta <- c(X %*% coef(object))
+    eta <- c(X %*% cf)
     if(se.fit){
         V <- vcov(object)
         stopifnot(ncol(X)==ncol(V))
@@ -660,6 +660,132 @@ print.summary.mmclogit <-
     invisible(x)
 }
 
+predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,
+                             conditional=TRUE, ...){
+    
+    type <- match.arg(type)
+    lhs <- object$formula[[2]]
+    rhs <- object$formula[-2]
+    random <- object$random  
+    groups <- random$groups
+    if(length(lhs)==3)
+        sets <- lhs[[3]]
+    else stop("no way to determine choice set ids")
+    rf <- random$formula
+    rt <- terms(rf)
+    if(missing(newdata)){
+        mf <- object$model
+        sets <- mf[[1]][,2]
+        na.act <- object$na.action
+    }
+    else{
+        vars <- unique(c(all.vars(sets),all.vars(rhs),all.vars(object$call$random),all.vars(weights)))
+        fo <- paste("~",paste(vars,collapse=" + "))
+        fo <- as.formula(fo,env=parent.frame())
+        mf <- model.frame(fo,data=newdata,na.action=na.exclude)
+        sets <- mf[[sets]]
+        na.act <- attr(mf,"na.action")
+    }
+    X <- model.matrix(rhs,mf,
+                      contrasts.arg=object$contrasts,
+                      xlev=object$xlevels
+                      )
+
+    if(object$method=="PQL" && conditional){
+        
+        Z <- model.matrix(rt,mf,contrasts)
+        groups <- mf[groups]
+        groups <- lapply(groups,as.integer)
+        Z <- lapply(groups,mkZ,rX=Z)
+        Z <- blockMatrix(Z)
+    }
+    
+    cf <- coef(object)
+    X <- X[,names(cf), drop=FALSE]
+    eta <- c(X %*% cf)
+    Phi <- object$VarCov
+
+    nlevs <- length(groups)
+    random.effects <- object$random.effects
+    if(object$method == "PQL" && conditional){
+        for(k in 1:nlevs)
+            eta <- eta +  as.vector(Z[[k]]%*%random.effects[[k]])
+    }
+    
+    nvar <- ncol(X)
+    nobs <- nrow(X)
+    
+    if(se.fit || type=="response"){
+        j <- match(sets,unique(sets))
+        exp.eta <- exp(eta)
+        sum.exp.eta <- rowsum(exp.eta,j)
+        p <- exp.eta/sum.exp.eta[j]
+    }
+    if(se.fit){
+        nsets <- j[length(j)]
+        W <- Matrix(0,nrow=nobs,ncol=nsets)
+        i <- 1:nobs
+        W[cbind(i,j)] <- p
+        W <- Diagonal(x=p)-tcrossprod(W)
+        WX <- W%*%X
+        if(object$method=="PQL" && conditional){
+            WZ <- bMatProd(W,Z)
+            H <- object$info.fixed.random
+            K <- solve(H)
+        }
+    }
+    
+    if(type=="response") {
+        if(se.fit){
+            if(object$method=="PQL" && conditional){
+                WXZ <- structure(cbind(blockMatrix(WX),WZ),class="blockMatrix")
+                var.p <- bMatProd(WXZ,K)
+                var.p <- Map(`*`,WXZ,var.p)
+                var.p <- lapply(var.p,rowSums)
+                var.p <- Reduce(`+`,var.p)
+            }
+            else {
+                vcov.coef <- vcov(object)
+                var.p <- rowSums(WX*(WX%*%vcov.coef))
+            }
+            se.p <- sqrt(var.p)
+            if(is.null(na.act))
+                list(fit=p,se.fit=se.p) 
+            else
+                list(fit=napredict(na.act,p),
+                     se.fit=napredict(na.act,se.p))
+        }
+        else{
+            if(is.null(na.act)) p
+            else napredict(na.act,p)
+        }
+    }
+    else {
+        if(se.fit){
+            if(object$method=="PQL" && conditional){
+                XZ <- structure(cbind(blockMatrix(X),Z),class="blockMatrix")
+                var.eta <- bMatProd(XZ,K)
+                var.eta <- Map(`*`,XZ,var.eta)
+                var.eta <- lapply(var.eta,rowSums)
+                var.eta <- Reduce(`+`,var.eta)
+            }
+            else {
+                vcov.coef <- vcov(object)
+                var.eta <- rowSums(X*(X%*%vcov.coef))
+            }
+            se.eta <- sqrt(var.eta)
+            if(is.null(na.act))
+                list(fit=eta,se.fit=se.eta) 
+            else
+                list(fit=napredict(na.act,eta),
+                     se.fit=napredict(na.act,se.eta))
+        }
+        else {
+            if(is.null(na.act)) eta
+            else napredict(na.act,eta)
+        }
+    }
+}
 
 
 
@@ -817,3 +943,4 @@ simulate.mclogit <- function(object, nsim = 1, seed = NULL, ...){
 
 simulate.mmclogit <- function(object, nsim = 1, seed = NULL, ...)
     stop("Simulating responses from random-effects models is not supported yet")
+

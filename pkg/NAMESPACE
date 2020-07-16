@@ -63,3 +63,4 @@ S3method(simulate,mmclogit)
 S3method(simulate,mmblogit)
 
 S3method(predict,mmblogit)
+S3method(predict,mmclogit)

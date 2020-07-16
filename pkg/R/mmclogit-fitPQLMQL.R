@@ -192,6 +192,7 @@ mmclogit.fitPQLMQL <- function(
     
     coef <- fit$coefficients
     info.coef <- fit$info.fixed
+    info.fixed.random <- fit$info.fixed.random
     info.lambda <- fit$info.lambda
     info.psi <- fit$info.psi
     
@@ -229,6 +230,7 @@ mmclogit.fitPQLMQL <- function(
         converged = converged,
         control=control,
         info.coef = info.coef,
+        info.fixed.random = info.fixed.random,
         info.lambda = info.lambda,
         info.psi = info.psi
         ))
@@ -318,12 +320,12 @@ Correcting, but expect the unexpected",k))
 
     Phi <- lapply(Psi,solve)
     
-    H <- ZWZ + iSigma
-    K <- solve(H)
+    ZWZiSigma <- ZWZ + iSigma
+    K <- solve(ZWZiSigma)
 
     log.det.iSigma <- Lambda2log.det.iSigma(Lambda,m)
     
-    log.det.ZWZiSigma <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
+    log.det.ZWZiSigma <- 2*sum(log(diag(chol_blockMatrix(ZWZiSigma,resplit=FALSE))))
 
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
     XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
@@ -332,6 +334,9 @@ Correcting, but expect the unexpected",k))
     alpha <- drop(as.matrix(alpha))
     b <- bMatProd(K,ZWy-bMatProd(ZWX,alpha))
     b[] <- lapply(b[],as.matrix) 
+
+    XZWiSZX <- structure(rbind(cbind(blockMatrix(XWX),bMatTrns(ZWX)),
+                               cbind(ZWX,ZWZiSigma)),class="blockMatrix")
     
     list(
         lambda = lambda,
@@ -340,11 +345,12 @@ Correcting, but expect the unexpected",k))
         Psi = Psi,
         Phi = Phi,
         info.fixed = as.matrix(XiVX),
+        info.fixed.random = XZWiSZX,
         info.lambda = info.lambda,
         info.psi = info.psi,
         log.det.iSigma   = log.det.iSigma,
         log.det.ZWZiSigma = log.det.ZWZiSigma,
-        ZWZiSigma = H
+        ZWZiSigma = ZWZiSigma
     )
  }
 

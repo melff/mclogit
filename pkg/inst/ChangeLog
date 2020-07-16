@@ -1,5 +1,5 @@
 2020-07-16:
-  - Implement reasonable 'predict' method for mmblogit objects.
+  - Implement reasonable 'predict' method for mmblogit and mmclogit objects.
 
 2020-07-15:
   - Bugfix: Make 'update' work with missing 'dispersion=' argument.
