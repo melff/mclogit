@@ -1,6 +1,5 @@
 \name{mclogit}
 \alias{mclogit}
-\alias{predict.mclogit}
 \alias{anova.mclogit}
 \alias{print.mclogit}
 \alias{vcov.mclogit}
@@ -9,7 +8,6 @@
 \alias{summary.mclogit}
 \alias{print.summary.mclogit}
 \alias{fitted.mclogit}
-\alias{predict.mclogit}
 \alias{residuals.mclogit}
 \alias{weights.mclogit}
 \alias{AIC.mclogit}

@@ -77,8 +77,8 @@
 #'    \url{https://doi.org/10.1080/01621459.1993.10594284}
 #'
 #' 
-#' @aliases predict.mblogit print.mblogit summary.mblogit print.summary.mblogit fitted.mblogit
-#' predict.mblogit, weights.mblogit
+#' @aliases print.mblogit summary.mblogit print.summary.mblogit fitted.mblogit
+#' weights.mblogit
 #' print.mmblogit summary.mmblogit print.summary.mmblogit
 mblogit <- function(formula,
                     data=parent.frame(),

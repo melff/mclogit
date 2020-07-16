@@ -4,7 +4,7 @@
 \alias{simulate.mmclogit}
 \alias{simulate.mmblogit}
 \title{
-  Simulating responses from baseline-category and conditional logit models.
+  Simulating responses from baseline-category and conditional logit models
 }
 \description{
   The \code{simulate()} methods allow to simulate responses from models

@@ -2,12 +2,10 @@
 % Please edit documentation in R/mblogit.R
 \name{mblogit}
 \alias{mblogit}
-\alias{predict.mblogit}
 \alias{print.mblogit}
 \alias{summary.mblogit}
 \alias{print.summary.mblogit}
 \alias{fitted.mblogit}
-\alias{predict.mblogit,}
 \alias{weights.mblogit}
 \alias{print.mmblogit}
 \alias{summary.mmblogit}
