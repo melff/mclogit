@@ -739,7 +739,10 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         groups <- random$groups
         all.groups <- object$groups
 
-        Z <- model.matrix(rt,mf,contrasts)
+        Z <- model.matrix(rt,mf,
+                      contrasts.arg=object$contrasts,
+                      xlev=object$xlevels
+                      )
         ZD <- Z%x%D
 
         colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),

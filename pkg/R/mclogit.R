@@ -702,7 +702,10 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         groups <- random$groups
         all.groups <- object$groups
 
-        Z <- model.matrix(rt,mf,contrasts)
+        Z <- model.matrix(rt,mf,
+                      contrasts.arg=object$contrasts,
+                      xlev=object$xlevels
+                      )
         groups <- mf[groups]
         groups <- lapply(groups,as.integer)
         nlev <- length(groups)
