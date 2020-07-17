@@ -49,9 +49,7 @@ artifacts:
 
 version: 0.8-{build}
 
-branches:
-  only:
-  - master
+skip_non_tags: true
 
 notifications:
   - provider: Email
@@ -65,9 +63,8 @@ deploy:
     secure: dmzZ4ohXYLWbEtp4RW9xBSEFtIirUua57jeak2h6yu/g90RoxnVwLxwpkeVPKrdh
   artifact: source,binary 
 
-  draft: false
-  prerelease: false
-  on:
-    branch: master                 # release from master branch only
-    appveyor_repo_tag: true        # deploy on tag push only
+  draft: true
+  prerelease: true
+  # on:
+  #  appveyor_repo_tag: true        # deploy on tag push only
   
