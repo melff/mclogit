@@ -1,5 +1,6 @@
 2020-07-17:
   - Documented prediction methods.
+  - Improved flexibility of prediction methods. 
 
 2020-07-16:
   - Implemented reasonable 'predict' method for mmblogit and mmclogit objects.

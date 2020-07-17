@@ -282,6 +282,7 @@ mblogit <- function(formula,
     fit <- c(fit,list(call = call, formula = formula,
                       terms = mt,
                       random = random,
+                      groups = groups,
                       data = data,
                       contrasts = contrasts,
                       xlevels = xlevels,
@@ -712,9 +713,6 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     type <- match.arg(type)
     rhs <- object$formula[-2]
     random <- object$random  
-    groups <- random$groups
-    rf <- random$formula
-    rt <- terms(rf)
     if(missing(newdata)){
         mf <- object$model
         na.act <- object$na.action
@@ -732,28 +730,44 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                       )
     D <- object$D
     XD <- X%x%D
+    eta <- c(XD %*% coef(object))
 
-    Z <- model.matrix(rt,mf,contrasts)
-    ZD <- Z%x%D
+    if(object$method=="PQL" && conditional){
 
-    colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
+        rf <- random$formula
+        rt <- terms(rf)
+        groups <- random$groups
+        all.groups <- object$groups
+
+        Z <- model.matrix(rt,mf,contrasts)
+        ZD <- Z%x%D
+
+        colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
                                "~",
                                rep(colnames(Z),each=ncol(D)))
-    colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
+        colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
 
-    groups <- mf[groups]
-    groups <- lapply(groups,rep,each=nrow(D))
-    
-    ZD <- lapply(groups,mkZ,rX=ZD)
-    ZD <- blockMatrix(ZD)
-    
-    eta <- c(XD %*% coef(object))
-    Phi <- object$VarCov
+        groups <- mf[groups]
+        groups <- lapply(groups,as.integer)
+        nlev <- length(groups)
+        if(nlev > 1){
+            for(i in 2:nlev){
+                mm <- attr(all.groups[[i]],"unique")
+                mmm <- cumprod(mm)
+                groups[[i]] <- mmm[i]*groups[[i-1]]+groups[[i]]
+            }
+        }
 
-    nlevs <- length(groups)
-    random.effects <- object$random.effects
-    if(object$method == "PQL" && conditional){
-        for(k in 1:nlevs)
+        groups <- lapply(groups,rep,each=nrow(D))
+        
+        ZD <- Map(mkZ2,
+                  all.groups=all.groups,
+                  groups=groups,
+                  rX=list(ZD))
+        ZD <- blockMatrix(ZD)
+
+        random.effects <- object$random.effects
+        for(k in 1:nlev)
             eta <- eta +  as.vector(ZD[[k]]%*%random.effects[[k]])
     }
     

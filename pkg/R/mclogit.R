@@ -134,12 +134,14 @@ mclogit <- function(
     if(ncol(X)<1)
         stop("No predictor variable remains in model")
     
-    if(!length(random))
-    fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
+    if(!length(random)){
+        fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
                        dispersion=dispersion,
                        control=control,
                        start = start,
                        offset = offset)
+        groups <- NULL
+    }
     else { ## random effects
         
         if(!length(method)) method <- "PQL"
@@ -189,6 +191,7 @@ mclogit <- function(
     fit <- c(fit,list(call = call, formula = formula,
                       terms = mt,
                       random = random,
+                      groups = groups,
                       data = data,
                       contrasts = contrasts,
                       xlevels = xlevels,
@@ -667,12 +670,9 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     lhs <- object$formula[[2]]
     rhs <- object$formula[-2]
     random <- object$random  
-    groups <- random$groups
     if(length(lhs)==3)
         sets <- lhs[[3]]
     else stop("no way to determine choice set ids")
-    rf <- random$formula
-    rt <- terms(rf)
     if(missing(newdata)){
         mf <- object$model
         sets <- mf[[1]][,2]
@@ -690,25 +690,37 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                       contrasts.arg=object$contrasts,
                       xlev=object$xlevels
                       )
-
-    if(object$method=="PQL" && conditional){
-        
-        Z <- model.matrix(rt,mf,contrasts)
-        groups <- mf[groups]
-        groups <- lapply(groups,as.integer)
-        Z <- lapply(groups,mkZ,rX=Z)
-        Z <- blockMatrix(Z)
-    }
     
     cf <- coef(object)
     X <- X[,names(cf), drop=FALSE]
     eta <- c(X %*% cf)
-    Phi <- object$VarCov
 
-    nlevs <- length(groups)
-    random.effects <- object$random.effects
-    if(object$method == "PQL" && conditional){
-        for(k in 1:nlevs)
+    if(object$method=="PQL" && conditional){
+        
+        rf <- random$formula
+        rt <- terms(rf)
+        groups <- random$groups
+        all.groups <- object$groups
+
+        Z <- model.matrix(rt,mf,contrasts)
+        groups <- mf[groups]
+        groups <- lapply(groups,as.integer)
+        nlev <- length(groups)
+        if(nlev > 1){
+            for(i in 2:nlev){
+                mm <- attr(all.groups[[i]],"unique")
+                mmm <- cumprod(mm)
+                groups[[i]] <- mmm[i]*groups[[i-1]]+groups[[i]]
+            }
+        }
+        Z <- Map(mkZ2,
+                 all.groups=all.groups,
+                 groups=groups,
+                 rX=list(Z))
+        Z <- blockMatrix(Z)
+
+        random.effects <- object$random.effects
+        for(k in 1:nlev)
             eta <- eta +  as.vector(Z[[k]]%*%random.effects[[k]])
     }
     
@@ -812,6 +824,30 @@ mkZ <- function(groups,rX){
     Z[i.jk] <- rX
     Z
 }
+
+mkZ2 <- function(all.groups,
+                groups,
+                rX){
+    n <- length(groups)
+    ug <- unique(all.groups)
+    m <- length(ug)
+    p <- ncol(rX)
+    
+    Z <- Matrix(0,nrow=n,ncol=m*p)
+
+    i <- 1:n
+    k <- 1:p
+    j <- groups
+    
+    i <- rep(i,p)
+    jk <- rep((j-1)*p,p)+rep(k,each=n)
+    i.jk <- cbind(i,jk)
+
+    Z[i.jk] <- rX
+    Z
+}
+
+
 
 mkG <- function(rX){
 
