@@ -84,8 +84,8 @@ bMatTrns <- function(x){
     m <- nrow(x)
     n <- ncol(x)
     res <- blockMatrix(nrow=n,ncol=m)
-    for(i in 1:m)
-        for(j in 1:n){
+    for(i in 1:n)
+        for(j in 1:m){
             res[[i,j]] <- t(x[[j,i]])
         }
     res
