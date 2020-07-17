@@ -1,5 +1,0 @@
-list(searchpath = c("package:memisc", "package:lattice", "package:nnet", 
-"package:MASS", "package:mclogit", "package:Matrix", "package:png", 
-"package:Cairo", "package:crayon", "package:stats", "package:graphics", 
-"package:grDevices", "package:utils", "package:datasets", "package:methods", 
-"package:base"))
