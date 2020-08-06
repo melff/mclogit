@@ -93,6 +93,7 @@ mclogit <- function(
         stop("'weights' must be a numeric vector")
     
     Y <- as.matrix(model.response(mf, "any"))
+    if(!is.numeric(Y)) stop("The response matrix has to be numeric.")
     if(ncol(Y)<2) stop("need response counts and choice set indicators")
     sets <- Y[,2]
     sets <- match(sets,unique(sets))
