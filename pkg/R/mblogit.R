@@ -174,6 +174,13 @@ mblogit <- function(formula,
             Y[cbind(i,j)] <- prior.weights
             w <- rowSums(Y)
             Y <- Y/w
+            if(any(w==0)){
+                Y[w==0,] <- 0
+                N <- sum(weights[w>0])
+                warning(sprintf("ignoring %d observerations with counts that sum to zero",
+                                sum(w==0)),
+                        call. = FALSE, immediate. = TRUE)
+            }
             Y <- as.vector(t(Y))
             weights <- rep(w,each=m)
             D <- diag(m)[,-1, drop=FALSE]
