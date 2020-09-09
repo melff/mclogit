@@ -680,7 +680,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         na.act <- object$na.action
     }
     else{
-        vars <- unique(c(all.vars(sets),all.vars(rhs),all.vars(object$call$random),all.vars(weights)))
+        vars <- unique(c(all.vars(sets),all.vars(rhs),all.vars(object$call$random),all.vars(object$call$weights)))
         fo <- paste("~",paste(vars,collapse=" + "))
         fo <- as.formula(fo,env=parent.frame())
         mf <- model.frame(fo,data=newdata,na.action=na.exclude)
