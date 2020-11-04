@@ -28,19 +28,20 @@ summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
   data=electors))
 
+\donttest{# This takes a bit longer.
 summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
   random=~1|party.time,
   data=within(electors,party.time<-interaction(party,time))))
 
-\donttest{summary(mclogit(
+summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/(class*time)+welfare/class+auth/class,
   random=~1|party.time,
   data=within(electors,{
         party.time <-interaction(party,time)
         econ.left.sq <- (econ.left-mean(econ.left))^2
-        })))}
-
+        })))
+}
 }
 
 \keyword{datasets}

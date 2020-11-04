@@ -9,7 +9,7 @@
       alternative to PQL.
       \item As an alternative to extending a logit model with random
       effects, it is now possible to add an over-dispersion parameter to
-      logit model.
+      the model.
       \item In addition to approximate the ML estimator, MQL and PQL
       have a variant that approximates the REML estimator.
       \item There is now a \code{simulate()} method for objects returned
@@ -18,6 +18,13 @@
       \item Predictions from random-effects models estimated using the
       PQL technique now are now conditional on the random effects
       (unless requested otherwise).
+    }
+  }
+  \subsection{BUGFIXES}{
+    \itemize{
+      \item \code{mclogit} now handles empty responses (i.e. counts that
+      sum to zero) correclty.
+      \item \code{mclogit} now flags non-numeric response vectors as an error.
     }
   }
 }

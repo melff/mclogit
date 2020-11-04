@@ -193,12 +193,14 @@ summary(mclogit(
   data=Transport
   ))
 
+\donttest{ # This takes a bit longer.
 data(electors)
 
 summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
   random=~1|party.time,
   data=within(electors,party.time<-interaction(party,time))))
+}
 }
 \keyword{models}
 \keyword{regression}

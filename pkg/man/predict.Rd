@@ -57,7 +57,7 @@ head(pred.house.mblogit <- predict(house.mblogit,
                                    type="response"))
 str(pred.house.mblogit <- predict(house.mblogit,se=TRUE,
                                   type="response"))
-
+\donttest{ # This takes a bit longer.
 data(electors)
 (mcre <- mclogit(
     cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
@@ -69,5 +69,5 @@ str(predict(mcre,type="response"))
 
 str(predict(mcre,se.fit=TRUE))
 str(predict(mcre,type="response",se.fit=TRUE))
-
+}
 }
