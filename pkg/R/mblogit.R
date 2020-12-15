@@ -121,7 +121,7 @@ mblogit <- function(formula,
     }
     else if(length(groups)){
         gf <- paste(c(".~.",all.vars(groups)),collapse="+")
-        gf <- as.formula(rf)
+        gf <- as.formula(gf)
         mff <- structure(mf$formula,class="formula")
         mf$formula <- update(mff,gf)
     }
