@@ -4,7 +4,7 @@ mmclogit.fitPQLMQL <- function(
                                w,
                                X,
                                Z,
-                               groups,
+                               d,
                                start = NULL,
                                offset = NULL,
                                method = c("PQL","MQL"),
@@ -17,10 +17,8 @@ mmclogit.fitPQLMQL <- function(
     nvar <- ncol(X)
     nobs <- length(y)
     nsets <- length(unique(s))
-    nlevs <- length(groups)
+    nlevs <- length(Z)
 
-    Znm <- colnames(Z)
-    
     sqrt.w <- sqrt(w)
 
     i <- 1:nobs
@@ -43,12 +41,6 @@ mmclogit.fitPQLMQL <- function(
       last.coef <- start
     else last.coef <- NULL
 
-    Z0 <- Z
-    d <- ncol(Z0)
-    # Expand random effects design matrix from intecepts and slopes for random effects
-    # for each level
-    Z <- lapply(groups,mkZ,rX=Z0)
-    Z <- blockMatrix(Z,ncol=length(Z))
     # Outer iterations: update non-linear part of the model
     converged <- FALSE
     fit <- NULL
@@ -66,8 +58,7 @@ mmclogit.fitPQLMQL <- function(
 
         last.fit <- fit
         
-        fit <- PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,estimator,control)
-        # fit <- try(PQLMQL_innerFit(y.star,X,Z,W,d,groups,offset,method,estimator,control),silent=TRUE)
+        fit <- PQLMQL_innerFit(y.star,X,Z,W,d,offset,method,estimator,control)
         if(inherits(fit,"try-error")){
             message(fit)
             fit <- last.fit
@@ -197,8 +188,6 @@ mmclogit.fitPQLMQL <- function(
     info.psi <- fit$info.psi
     
     Phi <- fit$Phi
-    for(k in seq_along(Phi))
-        dimnames(Phi[[k]]) <- list(Znm,Znm)
 
     ntot <- length(y)
     pi0 <- mclogitP(offset,s)
@@ -238,13 +227,12 @@ mmclogit.fitPQLMQL <- function(
 
 matrank <- function(x) qr(x)$rank
 
-PQLMQL_innerFit <- function(y,X,Z,W,d,groups,offset,method,estimator,control){
+PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
 
-    nlevs <- length(groups)
-    m <- lapply(groups,lunq)
+    nlevs <- length(Z)
+    m <- sapply(Z,ncol) %/% d
 
     # Naive starting values
-    
     Wy <- W%*%y
     WX <- W%*%X
     XWX <- crossprod(X,WX)
@@ -259,15 +247,12 @@ PQLMQL_innerFit <- function(y,X,Z,W,d,groups,offset,method,estimator,control){
     for(k in 1:nlevs){
         Z.k <- Z[[k]]
         b.k <- solve(crossprod(Z.k),crossprod(Z.k,y.Xalpha))
-        m.k <- m[[k]]
+        m.k <- m[k]
         dim(b.k) <- c(d,m.k)
         S.k <- tcrossprod(b.k)
         if(matrank(S.k) < d){
-            warning(sprintf("Singular initial covariance matrix at level %d.
-This may indicate that the number of groups is too small.
-Correcting, but expect the unexpected",k))
-            S.k <- diag(x=S.k)
-            S.k <- diag(S.k,nrow=d)
+            # warning(sprintf("Singular initial covariance matrix at level %d in inner fitting routine",k))
+            S.k <- diag(x=S.k,nrow=d)
         }
         Phi.start[[k]] <- S.k/(m.k-1)
     }
@@ -281,27 +266,10 @@ Correcting, but expect the unexpected",k))
     ZWX <- bMatCrsProd(WZ,X)
     ZWy <- bMatCrsProd(WZ,y)
 
-    # qval <- qfunc(lambda.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    # qfunc1 <- function(lambda) qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
     nqfunc1 <- function(lambda) -qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator)
-    # qfuncv <- Vectorize(qfunc1)
-
-    # gval <- grfunc(lambda.start,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
-    # grfunc1 <- function(lambda) grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ)
     ngrfunc1 <- function(lambda) -grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator)
 
-    # grfuncv <- Vectorize(grfunc1)
-    # layout(1:3)
-    # curve(qfuncv(x),from=1.5,to=2)
-    # points(lambda.start,qval)
-    # curve(grfuncv(x),from=1.5,to=2)
-    # points(lambda.start,gval)
-    # abline(h=0)
-
     info_func1 <- function(lambda) info_func(lambda,d,XWX,ZWX,ZWZ,estimator)
-    # hess_func1 <- function(lambda) -info_func(lambda,d,ZWZ)
-    # info_funcv <- function(lambda) {s1 <- lapply(lambda,info_func1);sapply(s1,as.vector)}
-    # curve(info_funcv(x),from=1.5,to=2)
 
     if(control$trace.inner) cat("\n")
     res.port <- nlminb(lambda.start,

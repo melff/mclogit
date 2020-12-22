@@ -1,3 +1,8 @@
+2020-12-23:
+  - Refactored computations
+  - Fixed predictions from random-effects models where group indices are not 
+    a sequence of integers starting at 1.
+
 2020-11-03:
   - Correct URLs in DESCRIPTION
 

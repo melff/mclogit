@@ -241,33 +241,38 @@ mblogit <- function(formula,
         random <- setupRandomFormula(random)
         rt <- terms(random$formula)
 
-        groups <- random$groups
         Z <- model.matrix(rt,mf,contrasts)
 
         ZD <- Z%x%D
-
+        d <- ncol(ZD)
+        
         colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
                                "~",
                                rep(colnames(Z),each=ncol(D)))
         colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
+        VarCov.names <- colnames(ZD)
         
+        groups <- random$groups
         groups <- mf[groups]
-        groups <- lapply(groups,rep,each=nrow(D))
-        
+        groups <- lapply(groups,as.factor)
         nlev <- length(groups)
-        groups[[1]] <- quickInteraction(groups[1])
 
         if(nlev > 1){
             for(i in 2:nlev)
-                groups[[i]] <- quickInteraction(groups[c(i-1,i)])
+                groups[[i]] <- interaction(groups[c(i-1,i)])
         }
-
+        groups <- lapply(groups,rep,each=nrow(D))
+        
+        ZD <- lapply(groups,mkZ,rX=ZD)
+        ZD <- blockMatrix(ZD)
         fit <- mmclogit.fitPQLMQL(y=Y,s=s,w=weights,
-                                  X=XD,Z=ZD,groups=groups,
+                                  X=XD,Z=ZD,d=d,
                                   method=method,
                                   estimator=estimator,
                                   control=control,
                                   offset = offset)
+        for(k in 1:nlev)
+            dimnames(fit$VarCov[[k]]) <- list(VarCov.names,VarCov.names)
     }
     
     coefficients <- fit$coefficients
@@ -743,8 +748,6 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
 
         rf <- random$formula
         rt <- terms(rf)
-        groups <- random$groups
-        all.groups <- object$groups
 
         Z <- model.matrix(rt,mf,
                       contrasts.arg=object$contrasts,
@@ -757,23 +760,20 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                                rep(colnames(Z),each=ncol(D)))
         colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
 
+        groups <- random$groups
+        orig.groups <- object$groups
+        olevels <- lapply(orig.groups,levels)
         groups <- mf[groups]
-        groups <- lapply(groups,as.integer)
+        groups <- Map(factor,x=groups,levels=olevels)
+        groups <- lapply(groups,rep,each=nrow(D))
         nlev <- length(groups)
+
         if(nlev > 1){
-            for(i in 2:nlev){
-                mm <- attr(all.groups[[i]],"unique")
-                mmm <- cumprod(mm)
-                groups[[i]] <- mmm[i]*groups[[i-1]]+groups[[i]]
-            }
+            for(i in 2:nlev)
+                groups[[i]] <- interaction(groups[c(i-1,i)])
         }
 
-        groups <- lapply(groups,rep,each=nrow(D))
-        
-        ZD <- Map(mkZ2,
-                  all.groups=all.groups,
-                  groups=groups,
-                  rX=list(ZD))
+        ZD <- lapply(groups,mkZ,rX=ZD)
         ZD <- blockMatrix(ZD)
 
         random.effects <- object$random.effects

@@ -14,7 +14,7 @@ mclogit.fit(y, s, w, X,
             start = NULL, offset = NULL,
             control = mclogit.control())
 
-mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
+mmclogit.fitPQLMQL(y, s, w, X, Z, d, start,
                    offset = NULL, method=c("PQL","MQL"),
                    estimator = c("ML","REML"),
                    control = mmclogit.control())
@@ -27,7 +27,8 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, groups, start,
   \item{dispersion}{a logical value or a character string; whether and how
      a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.}
   \item{Z}{the random effects design matrix.}
-  \item{groups}{a list of grouping factors.}
+  \item{d}{dimension of random effects. Typically $d=1$ for random intercepts
+  only, $d>1$ for models with random intercepts.}
   \item{start}{an optional numerical vector of starting values
     for the coefficients.
   }

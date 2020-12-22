@@ -42,6 +42,18 @@ listConstInSets <- function(X,sets){
     ans
 }
 
+groupConstInSets <- function(X,sets){
+    ans <- logical(length(X))
+    for(i in 1:length(X)){
+        v <- tapply(X[[i]],sets,varies)
+        ans[i] <- !all(v) 
+    }
+    ans
+}
+
+varies <- function(x)
+    !all(duplicated(x)[-1L])
+
 
 mclogit <- function(
                 formula,
@@ -150,19 +162,21 @@ mclogit <- function(
         random <- setupRandomFormula(random)
         rt <- terms(random$formula)
         
-        groups <- random$groups
         Z <- model.matrix(rt,mf,contrasts)
+        d <- ncol(Z)
+        VarCov.names <- colnames(Z)
+
+        groups <- random$groups
         groups <- mf[groups]
-        
+        groups <- lapply(groups,as.factor)
         nlev <- length(groups)
-        groups[[1]] <- quickInteraction(groups[1])
 
         if(nlev > 1){
             for(i in 2:nlev)
-                groups[[i]] <- quickInteraction(groups[c(i-1,i)])
+                groups[[i]] <- interaction(groups[c(i-1,i)])
         }
 
-        gconst <- listConstInSets(groups,sets)
+        gconst <- groupConstInSets(groups,sets)
         if(any(gconst)){
             rconst <- matConstInSets(Z,sets)
             if(any(rconst)){
@@ -175,12 +189,18 @@ mclogit <- function(
             if(ncol(Z)<1)
                 stop("No predictor variable remains in random part of the model.\nPlease reconsider your model specification.")
         }
+
+        Z <- lapply(groups,mkZ,rX=Z)
+        Z <- blockMatrix(Z)
         
-        fit <- mmclogit.fitPQLMQL(Y,sets,weights,X,Z,groups,
+        fit <- mmclogit.fitPQLMQL(Y,sets,weights,X,Z,
+                                  d=d,
                                   method = method,
                                   estimator=estimator,
                                   control=control,
                                   offset = offset)
+        for(k in 1:nlev)
+            dimnames(fit$VarCov[[k]]) <- list(VarCov.names,VarCov.names)
     }
     
     if(x) fit$x <- X
@@ -567,7 +587,7 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
 
     coef <- object$coefficients
     info.coef <- object$info.coef
-    vcov.cf <- solve(info.coef)
+    vcov.cf <- solve2(info.coef)
     var.cf <- diag(vcov.cf)
     s.err <- sqrt(var.cf)
     zvalue <- coef/s.err
@@ -810,16 +830,14 @@ tr <- function(x) sum(diag(x))
 mkZ <- function(groups,rX){
 
     n <- length(groups)
-    ug <- unique(groups)
-    m <- length(ug)
+    m <- nlevels(groups)
     p <- ncol(rX)
-    n.j <- tabulate(groups,m)
     
     Z <- Matrix(0,nrow=n,ncol=m*p)
 
     i <- 1:n
     k <- 1:p
-    j <- groups
+    j <- as.integer(groups)
     
     i <- rep(i,p)
     jk <- rep((j-1)*p,p)+rep(k,each=n)
@@ -984,3 +1002,17 @@ simulate.mclogit <- function(object, nsim = 1, seed = NULL, ...){
 simulate.mmclogit <- function(object, nsim = 1, seed = NULL, ...)
     stop("Simulating responses from random-effects models is not supported yet")
 
+eigen.solve <- function(x){
+    ev <- eigen(x)
+    d <- ev$values
+    V <- ev$vectors
+    id <- 1/d
+    V %*% (id*t(V))
+}
+
+solve2 <- function(x){
+    ix <- try(solve(x))
+    if(inherits(ix,"try-error"))
+        return(eigen.solve(x))
+    else return(ix)
+}
