@@ -727,20 +727,19 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                       contrasts.arg=object$contrasts,
                       xlev=object$xlevels
                       )
+        groups <- random$groups
+        orig.groups <- object$groups
+        olevels <- lapply(orig.groups,levels)
         groups <- mf[groups]
-        groups <- lapply(groups,as.integer)
+        groups <- Map(factor,x=groups,levels=olevels)
         nlev <- length(groups)
         if(nlev > 1){
             for(i in 2:nlev){
-                mm <- attr(all.groups[[i]],"unique")
-                mmm <- cumprod(mm)
-                groups[[i]] <- mmm[i]*groups[[i-1]]+groups[[i]]
+                groups[[i]] <- interaction(groups[c(i-1,i)])
             }
         }
-        Z <- Map(mkZ2,
-                 all.groups=all.groups,
-                 groups=groups,
-                 rX=list(Z))
+        Z <- lapply(groups,mkZ,
+                    rX=Z)
         Z <- blockMatrix(Z)
 
         random.effects <- object$random.effects

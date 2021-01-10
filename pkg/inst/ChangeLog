@@ -1,3 +1,6 @@
+2021-01-10:
+  - Fixed prediction method also for mmclogit objects
+
 2020-12-23:
   - Refactored computations
   - Fixed predictions from random-effects models where group indices are not 
