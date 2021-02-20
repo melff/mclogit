@@ -1,3 +1,9 @@
+2021-02-21:
+  - Fixed predictions from models with scaled independent variables etc.
+
+2021-01-28:
+  - Another prediction fix. Do not refer to weights that are not needed.
+
 2021-01-10:
   - Fixed prediction method also for mmclogit objects
 

@@ -114,21 +114,27 @@ mblogit <- function(formula,
     mf[[1]] <- as.name("model.frame")
 
     if(length(random)){
+        mf0 <- eval(mf, parent.frame())
+        mt <- attr(mf0,"terms")
         rf <- paste(c(".~.",all.vars(random)),collapse="+")
         rf <- as.formula(rf)
         mff <- structure(mf$formula,class="formula")
         mf$formula <- update(mff,rf)
+        mf <- eval(mf, parent.frame())
     }
     else if(length(groups)){
+        mf0 <- eval(mf, parent.frame())
+        mt <- attr(mf0,"terms")
         gf <- paste(c(".~.",all.vars(groups)),collapse="+")
         gf <- as.formula(gf)
         mff <- structure(mf$formula,class="formula")
         mf$formula <- update(mff,gf)
+        mf <- eval(mf, parent.frame())
     }
-    
-    mf <- eval(mf, parent.frame())
-    mt <- terms(formula)
-    attr(mf,"terms") <- mt
+    else {
+        mf <- eval(mf, parent.frame())
+        mt <- attr(mf,"terms")
+    }
     
     na.action <- attr(mf,"na.action")
     weights <- as.vector(model.weights(mf))
@@ -440,7 +446,8 @@ fitted.mblogit <- function(object,type=c("probabilities","counts"),...){
 predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
   
   type <- match.arg(type)
-  rhs <- object$formula[-2]
+  mt <- terms(object)
+  rhs <- delete.response(mt)
   if(missing(newdata)){
     m <- model.frame(rhs,data=object$model)
     na.act <- object$na.action
@@ -453,6 +460,7 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
                     contrasts.arg=object$contrasts,
                     xlev=object$xlevels
   )
+  rn <- rownames(X)
   D <- object$D
   XD <- X%x%D
   rspmat <- function(x){
@@ -463,6 +471,7 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
   
   eta <- c(XD %*% coef(object))
   eta <- rspmat(eta)
+  rownames(eta) <- rn
   if(se.fit){
     V <- vcov(object)
     stopifnot(ncol(XD)==ncol(V))
@@ -480,7 +489,7 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
       wX <- p.long*(XD - rowsum(p.long*XD,s)[s,,drop=FALSE])
       se.p.long <- sqrt(rowSums(wX * (wX %*% V)))
       se.p <- rspmat(se.p.long)
-      
+      rownames(se.p) <- rownames(p)
       if(is.null(na.act))
         list(fit=p,se.fit=se.p)
       else
@@ -730,7 +739,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         na.act <- object$na.action
     }
     else{
-        vars <- unique(c(all.vars(rhs),all.vars(object$call$random),all.vars(object$call$weights)))
+        vars <- unique(c(all.vars(rhs),all.vars(object$call$random)))
         fo <- paste("~",paste(vars,collapse=" + "))
         fo <- as.formula(fo,env=parent.frame())
         mf <- model.frame(fo,data=newdata,na.action=na.exclude)

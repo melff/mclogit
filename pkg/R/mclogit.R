@@ -89,21 +89,25 @@ mclogit <- function(
     mf[[1]] <- as.name("model.frame")
 
     if(length(random)){
+        mf0 <- eval(mf, parent.frame())
+        mt <- attr(mf0,"terms")
         rf <- paste(c(".~.",all.vars(random)),collapse="+")
         rf <- as.formula(rf)
         mff <- structure(mf$formula,class="formula")
         mf$formula <- update(mff,rf)
+        mf <- eval(mf, parent.frame())
     }
-    
-    mf <- eval(mf, parent.frame())
-    mt <- terms(formula)
+    else {
+        mf <- eval(mf, parent.frame())
+        mt <- attr(mf,"terms")
+    }
     
     na.action <- attr(mf,"na.action")
     weights <- as.vector(model.weights(mf))
     offset <- as.vector(model.offset(mf))
     if(!is.null(weights) && !is.numeric(weights))
         stop("'weights' must be a numeric vector")
-    
+
     Y <- as.matrix(model.response(mf, "any"))
     if(!is.numeric(Y)) stop("The response matrix has to be numeric.")
     if(ncol(Y)<2) stop("need response counts and choice set indicators")
@@ -416,7 +420,8 @@ fitted.mclogit <- function(object,type=c("probabilities","counts"),...){
 predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
 
     type <- match.arg(type)
-    rhs <- object$formula[-2]
+    mt <- terms(object)
+    rhs <- delete.response(mt)
     if(missing(newdata)){
         m <- model.frame(object$formula,data=object$data)
         set <- m[[1]][,2]
