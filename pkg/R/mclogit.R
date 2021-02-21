@@ -562,6 +562,7 @@ print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
+    names(VarCov) <- names(x$groups)
     for(k in 1:length(VarCov)){
         cat("Grouping level:",names(VarCov)[k],"\n")
         VarCov.k <- VarCov[[k]]
@@ -609,10 +610,12 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     VarCov <- object$VarCov
     info.lambda <- object$info.lambda
     se_VarCov <- se_Phi(VarCov,info.lambda)
+
+    names(VarCov) <- names(object$groups)
     
     ans <- c(object[c("call","terms","deviance","contrasts",
                       "null.deviance","iter","na.action","model.df",
-                      "df.residual","N","converged")],
+                      "df.residual","groups","N","converged")],
               list(coefficients = coef.table,
                    vcov.coef = vcov.cf,
                    VarCov    = VarCov,
@@ -665,9 +668,21 @@ print.summary.mmclogit <-
 
     cat("\nNull Deviance:    ", format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
-        "\nNumber of Fisher Scoring iterations: ", x$iter,
-        "\nNumber of observations: ",x$N,
+        "\nNumber of Fisher Scoring iterations: ", x$iter)
+
+    cat("\nNumber of Groups:")
+    for(i in seq_along(x$groups)){
+        g <- nlevels(x$groups[[i]])
+        nm.group <- names(x$groups)[i]
+        cat(" ",
+            paste0(nm.group,": ",format(g)))
+        if(i < length(x$groups))
+            cat(", ")
+    }
+    
+    cat("\nNumber of observations: ",x$N,
         "\n")
+
     correl <- x$correlation
     if(!is.null(correl)) {
         p <- NCOL(correl)
