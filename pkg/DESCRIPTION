@@ -22,6 +22,6 @@ Suggests:
     MASS,
     nnet
 LazyLoad: Yes
-URL: http://www.elff.eu/software/mclogit/,https://github.com/melff/mclogit/
+URL: http://mclogit.elff.eu,https://github.com/melff/mclogit/
 BugReports: https://github.com/melff/mclogit/issues
 RoxygenNote: 7.1.0
