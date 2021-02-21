@@ -65,9 +65,9 @@ mclogit.fit <- function(
              if (control$trace)
                   cat("Step halved: new deviance =", deviance, "\n")
           } ## inner loop
-        if(control$trace)
-            cat("\nIteration",iter,"- Deviance =",deviance)
         crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
+        if(control$trace)
+            cat("\nIteration",iter,"- deviance =",deviance,"- criterion =",crit)
         if(crit < control$eps){
           converged <- TRUE
           if(control$trace)
