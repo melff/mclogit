@@ -22,9 +22,17 @@
   }
   \subsection{BUGFIXES}{
     \itemize{
-      \item \code{mclogit} now handles empty responses (i.e. counts that
+      \item \code{mclogit()} now handles empty responses (i.e. counts that
       sum to zero) correclty.
-      \item \code{mclogit} now flags non-numeric response vectors as an error.
+      \item \code{mclogit()} now flags non-numeric response vectors as an
+      error.
+      \item \code{predict()} now handles scaled independent variables correcty.
+    }
+  }
+  \subsection{IMPROVEMENTS}{
+    \itemize{
+      \item \code{summary()} shows the number of groups per random
+      effects level (if present).
     }
   }
 }

@@ -1,5 +1,6 @@
 2021-02-21:
   - Fixed predictions from models with scaled independent variables etc.
+  - 'summary()' now reports the number of groups per random effects level.      
 
 2021-01-28:
   - Another prediction fix. Do not refer to weights that are not needed.
