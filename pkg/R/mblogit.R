@@ -628,11 +628,23 @@ print.summary.mmblogit <-
         writeLines(VarCov.k)
     }
 
-    cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
+    cat("\nNull Deviance:    ", format(signif(x$null.deviance, digits)),
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
-        "\nNumber of Fisher Scoring iterations: ", x$iter,
-        "\nNumber of observations: ",x$N,
+        "\nNumber of Fisher Scoring iterations: ", x$iter)
+
+    cat("\nNumber of Groups:")
+    for(i in seq_along(x$groups)){
+        g <- nlevels(x$groups[[i]])
+        nm.group <- names(x$groups)[i]
+        cat(" ",
+            paste0(nm.group,": ",format(g)))
+        if(i < length(x$groups))
+            cat(", ")
+    }
+    
+    cat("\nNumber of observations: ",x$N,
         "\n")
+
     correl <- x$correlation
     if(!is.null(correl)) {
       p <- NCOL(correl)
