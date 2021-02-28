@@ -12,14 +12,6 @@ getSummary.mclogit <- function(obj,
   upper.cf <- qnorm(p=1-alpha/2,mean=coef[,1],sd=coef[,2])
   coef <- cbind(coef,lower.cf,upper.cf)
   colnames(coef) <- c("est","se","stat","p","lwr","upr")
-  if(length(varPar)){
-    se.log.varPar <- varPar[,1]*varPar[,2]
-    lower.log.varPar <- qnorm(p=alpha/2,mean=log(varPar[,1]),sd=se.log.varPar[2])
-    upper.log.varPar <- qnorm(p=1-alpha/2,mean=log(varPar[,1]),sd=se.log.varPar[2])
-    varPar <- cbind(varPar,exp(lower.log.varPar),exp(upper.log.varPar))
-    colnames(varPar) <- c("est","se","stat","p","lwr","upr")
-    rownames(varPar) <- paste("Var(",rownames(varPar),")",sep="")
-  }
   if(length(rearrange)){
     coef.grps <- lapply(rearrange,function(ii){
       if(is.character(ii) && !all(ii %in% rownames(coef)))
@@ -44,17 +36,35 @@ getSummary.mclogit <- function(obj,
       grp.titles
     )
   }
-  else {
-    .coef <- coef
-    coef <- matrix(NA,nrow=nrow(.coef)+NROW(varPar),ncol=ncol(.coef))
-    coef[seq(nrow(.coef)),] <- .coef
-    if(length(varPar))
-      coef[nrow(.coef)+seq(nrow(varPar)),] <- varPar
-    rownames(coef) <- c(rownames(.coef),rownames(varPar))
-    colnames(coef) <- colnames(.coef)
+  
+  VarPar <- NULL
+  VarCov <- smry$VarCov
+  se_VarCov <- smry$se_VarCov
+
+  for(i in seq_along(VarCov)){
+    lv.i <- names(VarCov)[i]
+    vc.i <- VarCov[[i]]
+    vr.i <- diag(vc.i)
+    cv.i <- vc.i[lower.tri(vc.i)]
+    se_vc.i <- se_VarCov[[i]]
+    se_vr.i <- diag(se_vc.i)
+    se_cv.i <- se_vc.i[lower.tri(se_vc.i)]   
+    nms.i <- rownames(vc.i)
+    nms.i <- gsub("(Intercept)","1",nms.i,fixed=TRUE)
+    vrnames.i <- paste0("Var(~",nms.i,"|",lv.i,")")
+    cvnames.i <- t(outer(nms.i,nms.i,FUN=paste,sep=":"))
+    cvnames.i <- cvnames.i[lower.tri(cvnames.i)]
+    if(length(cvnames.i))
+      cvnames.i <- paste0("Cov(~",cvnames.i,"|",lv.i,")")
+    vp.i <- matrix(NA,nrow=length(vr.i)+length(cv.i),ncol=6)
+    vp.i[,1] <- c(vr.i,cv.i)
+    vp.i[,2] <- c(se_vr.i,se_cv.i)
+    dimnames(vp.i) <- list(c(vrnames.i,cvnames.i),
+                           c("est","se","stat","p","lwr","upr"))
+    VarPar <- c(VarPar,structure(list(vp.i),names=lv.i))
   }
-  
-  
+
+    
   phi <- smry$phi
   LR <- smry$null.deviance - smry$deviance
   df <- obj$model.df
@@ -94,14 +104,26 @@ getSummary.mclogit <- function(obj,
     Nagelkerke    = Nagelkerke,
     AIC           = AIC,
     BIC           = BIC,
-    N             = N
+    N = N
   )
-  
-  list(call=obj$call,
-       coef=coef,
-       contrasts = obj$contrasts,
-       xlevels = obj$xlevels,
-       sumstat=sumstat)
+
+  ans <- list(coef= coef)
+  ans <- c(ans,VarPar)
+
+  if(length(smry$ngrps)){
+      G <-as.integer(smry$ngrps)
+      names(G) <- names(smry$ngrps)
+      names(G) <- paste("Groups by",names(G))
+  }
+  else
+      G <- NULL
+    
+  c(ans,
+    list(Groups=G,
+         sumstat=sumstat,
+         call=obj$call,
+         contrasts = obj$contrasts,
+         xlevels = obj$xlevels))
 }
 
 getSummary.mmclogit <- getSummary.mclogit

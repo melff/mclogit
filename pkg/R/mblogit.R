@@ -632,18 +632,14 @@ print.summary.mmblogit <-
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher Scoring iterations: ", x$iter)
 
-    cat("\nNumber of Groups:")
+    cat("\nNumber of observations")
     for(i in seq_along(x$groups)){
         g <- nlevels(x$groups[[i]])
         nm.group <- names(x$groups)[i]
-        cat(" ",
+        cat("\n  Groups by",
             paste0(nm.group,": ",format(g)))
-        if(i < length(x$groups))
-            cat(", ")
     }
-    
-    cat("\nNumber of observations: ",x$N,
-        "\n")
+    cat("\n  Individual observations: ",x$N)
 
     correl <- x$correlation
     if(!is.null(correl)) {

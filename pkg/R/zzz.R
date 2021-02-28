@@ -11,7 +11,7 @@
         BIC           = "($BIC:f1#)",
         N             = "($N:d)"
       ),
-      mclogitRandeff = c(
+      mmclogit = c(
         #"Likelihood-ratio" = "($LR:f1#)",
         #p             = "($p:#)",
         #"Log-likelihood" = "($logLik:f1#)",
@@ -32,6 +32,7 @@
   
   options(mblogit.basecat.sep="/")
   options(mblogit.show.basecat=TRUE)
-  
+  options(summary.stats.mclogit=c("Deviance","N"))
+  options(summary.stats.mmclogit=c("Deviance","N"))
 }
 

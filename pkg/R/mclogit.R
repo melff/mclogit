@@ -612,6 +612,7 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
     se_VarCov <- se_Phi(VarCov,info.lambda)
 
     names(VarCov) <- names(object$groups)
+    names(se_VarCov) <- names(VarCov)
     
     ans <- c(object[c("call","terms","deviance","contrasts",
                       "null.deviance","iter","na.action","model.df",
@@ -628,7 +629,8 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
         ans$symbolic.cor <- symbolic.cor
     }
 
- 
+    ans$ngrps <- sapply(object$groups,nlevels)
+    
     class(ans) <- "summary.mmclogit"
     return(ans)
 }
@@ -670,18 +672,14 @@ print.summary.mmclogit <-
         "\nResidual Deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher Scoring iterations: ", x$iter)
 
-    cat("\nNumber of Groups:")
+    cat("\nNumber of observations")
     for(i in seq_along(x$groups)){
         g <- nlevels(x$groups[[i]])
         nm.group <- names(x$groups)[i]
-        cat(" ",
+        cat("\n  Groups by",
             paste0(nm.group,": ",format(g)))
-        if(i < length(x$groups))
-            cat(", ")
     }
-    
-    cat("\nNumber of observations: ",x$N,
-        "\n")
+    cat("\n  Individual observations: ",x$N)
 
     correl <- x$correlation
     if(!is.null(correl)) {
