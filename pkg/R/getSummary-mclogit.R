@@ -63,8 +63,7 @@ getSummary.mclogit <- function(obj,
                            c("est","se","stat","p","lwr","upr"))
     VarPar <- c(VarPar,structure(list(vp.i),names=lv.i))
   }
-
-    
+   
   phi <- smry$phi
   LR <- smry$null.deviance - smry$deviance
   df <- obj$model.df
@@ -114,13 +113,11 @@ getSummary.mclogit <- function(obj,
       G <-as.integer(smry$ngrps)
       names(G) <- names(smry$ngrps)
       names(G) <- paste("Groups by",names(G))
+      ans <- c(ans,list(Groups=G))
   }
-  else
-      G <- NULL
     
   c(ans,
-    list(Groups=G,
-         sumstat=sumstat,
+    list(sumstat=sumstat,
          call=obj$call,
          contrasts = obj$contrasts,
          xlevels = obj$xlevels))
