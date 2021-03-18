@@ -1,3 +1,6 @@
+2021-03-18:
+  - Improved support 'mtable()' for multinomial logit models with random effects.
+
 2021-02-21:
   - Fixed predictions from models with scaled independent variables etc.
   - 'summary()' now reports the number of groups per random effects level.      
