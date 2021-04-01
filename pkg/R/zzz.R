@@ -30,6 +30,9 @@
     )    
   }
   
+  if (requireNamespace("emmeans", quietly = TRUE))
+    emmeans::.emm_register(c("mblogit"), pkg)
+  
   options(mblogit.basecat.sep="/")
   options(mblogit.show.basecat=TRUE)
   options(summary.stats.mclogit=c("Deviance","N"))
