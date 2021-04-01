@@ -19,6 +19,7 @@ Imports:
     memisc,
     methods
 Suggests:
+    emmeans,
     MASS,
     nnet
 LazyLoad: Yes
