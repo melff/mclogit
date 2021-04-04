@@ -93,7 +93,13 @@ mclogit <- function(
         mt <- attr(mf0,"terms")
         rf <- paste(c(".~.",all.vars(random)),collapse="+")
         rf <- as.formula(rf)
-        mff <- structure(mf$formula,class="formula")
+        if (typeof(mf$formula) == "symbol") {
+          mff <- formula
+        }
+        else {
+          mff <- structure(mf$formula,class="formula")
+        }
+        mff <- eval(mff, parent.frame())
         mf$formula <- update(mff,rf)
         mf <- eval(mf, parent.frame())
     }

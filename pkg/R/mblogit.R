@@ -133,7 +133,13 @@ mblogit <- function(formula,
         mt <- attr(mf0,"terms")
         gf <- paste(c(".~.",all.vars(groups)),collapse="+")
         gf <- as.formula(gf)
-        mff <- structure(mf$formula,class="formula")
+        if (typeof(mf$formula) == "symbol") {
+          mff <- formula
+        }
+        else {
+          mff <- structure(mf$formula,class="formula")
+        }
+        mff <- eval(mff, parent.frame())
         mf$formula <- update(mff,gf)
         mf <- eval(mf, parent.frame())
     }
