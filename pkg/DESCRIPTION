@@ -1,8 +1,8 @@
 Package: mclogit
 Type: Package
 Title: Multinomial Logit Models, with or without Random Effects or Overdispersion
-Version: 0.8.7.3
-Date: 2021-03-19
+Version: 0.8.7.4
+Date: 2021-04-04
 Author: Martin Elff
 Maintainer: Martin Elff <mclogit@elff.eu>
 Description: Provides estimators for multinomial logit models in their
