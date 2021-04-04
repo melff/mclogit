@@ -28,9 +28,9 @@ dispersion(object,method, \dots)
   \item{\dots}{other arguments, ignored or passed to other methods.}
 }
 \references{
-  Afroz, Farzana, Matt Parry, and David Fletcher. (2019).
+  Afroz, Farzana, Matt Parry, and David Fletcher. (2020).
   "Estimating Overdispersion in Sparse Multinomial Data."
-  \emph{Biometrics}, early view. \url{https://doi.org/10.1111/biom.13194}.
+  \emph{Biometrics} 76(3): 834-842. \doi{10.1111/biom.13194}.
 }
 \examples{
 library(MASS) # For 'housing' data
