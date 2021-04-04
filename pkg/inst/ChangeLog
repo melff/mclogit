@@ -1,3 +1,10 @@
+2021-04-04:
+  - Apply patch suggested by Ilya Yalchyk to improve formula argument
+    of 'mclogit()' and 'mblogit()'.
+
+2021-03-19:
+  - Last fixes for CRAN
+
 2021-03-18:
   - Improved support 'mtable()' for multinomial logit models with random effects.
 

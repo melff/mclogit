@@ -33,6 +33,8 @@
     \itemize{
       \item \code{summary()} shows the number of groups per random
       effects level (if present).
+      \item \code{mclogit()} and \code{mblogit()} with random effects now work with
+      \code{formula=}-argumements passed in variables.
     }
   }
 }
