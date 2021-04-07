@@ -20,7 +20,9 @@ Imports:
     methods
 Suggests:
     emmeans,
+    estimability,
     MASS,
+    mvtnorm,
     nnet
 LazyLoad: Yes
 URL: http://mclogit.elff.eu,https://github.com/melff/mclogit/
