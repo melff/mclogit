@@ -1,3 +1,4 @@
+## Added by Russel V. Lenth
 ### emmeans support for mblogit and mmblogit models
 
 recover_data.mblogit <- function(object, ...) {
@@ -21,5 +22,4 @@ emm_basis.mblogit <- function(object, trms, xlev, grid,
     emb(object, trms = trms, xlev = xlev, grid = grid, mode = mode, vcov. = vcov., ...)
 }
 
-### Documentation & example: See emmeans-support.Rd
 
