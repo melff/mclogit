@@ -1,6 +1,7 @@
 2021-05-25:
   - Fixed serious bug in the handling of multilevel random effects models.
-
+  - Detect some misspecified models with too many groups.
+        
 2021-04-17:
   - Merged pull request by Russel V. Lenth that adds support for "emmeans".
 
