@@ -201,7 +201,7 @@ mclogit <- function(
         }
 
         Z <- lapply(groups,mkZ,rX=Z)
-        Z <- blockMatrix(Z)
+        Z <- blockMatrix(Z,ncol=length(Z))
         
         fit <- mmclogit.fitPQLMQL(Y,sets,weights,X,Z,
                                   d=d,

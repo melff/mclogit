@@ -282,7 +282,7 @@ mblogit <- function(formula,
         groups <- lapply(groups,rep,each=nrow(D))
         
         ZD <- lapply(groups,mkZ,rX=ZD)
-        ZD <- blockMatrix(ZD)
+        ZD <- blockMatrix(ZD,ncol=length(ZD))
         fit <- mmclogit.fitPQLMQL(y=Y,s=s,w=weights,
                                   X=XD,Z=ZD,d=d,
                                   method=method,
