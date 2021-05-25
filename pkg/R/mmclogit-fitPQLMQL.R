@@ -46,6 +46,17 @@ mmclogit.fitPQLMQL <- function(
     fit <- NULL
     do.backup <- FALSE
     step.truncated <- FALSE
+
+    msg <- "Random effects design matrix at index %d has fewer rows than columns (%d < %d).
+This will almost certainly lead to noncovergence or other numerical problems.
+Please reconsider your model specification."
+    
+    for(k in 1:nlevs){
+        Z.k <- Z[[k]]
+        if(nrow(Z.k) < ncol(Z.k))
+           warning(sprintf(msg,k,nrow(Z.k),ncol(Z.k)))
+    }
+    
     for(iter in 1:control$maxit){
 
         W <- Matrix(0,nrow=nobs,ncol=nsets)
@@ -246,7 +257,10 @@ PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
     Phi.start <- list()
     for(k in 1:nlevs){
         Z.k <- Z[[k]]
-        b.k <- solve(crossprod(Z.k),crossprod(Z.k,y.Xalpha))
+        ZZ.k <- crossprod(Z.k)
+        ZyXa.k <- crossprod(Z.k,y.Xalpha)
+        ZZ.k <- ZZ.k + Diagonal(ncol(ZZ.k))
+        b.k <- solve(ZZ.k,ZyXa.k)
         m.k <- m[k]
         dim(b.k) <- c(d,m.k)
         S.k <- tcrossprod(b.k)
