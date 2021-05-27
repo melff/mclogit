@@ -47,7 +47,7 @@ artifacts:
   - path: 'pkg\*_*.zip'
     name: binary
 
-version: 0.8-{build}
+version: 0.9-{build}
 
 skip_non_tags: true
 
@@ -59,8 +59,6 @@ notifications:
 
 deploy:
   provider: GitHub
-  auth_token:
-    secure: dmzZ4ohXYLWbEtp4RW9xBSEFtIirUua57jeak2h6yu/g90RoxnVwLxwpkeVPKrdh
   artifact: source,binary 
 
   draft: true
