@@ -56,7 +56,6 @@ Please reconsider your model specification."
         if(nrow(Z.k) < ncol(Z.k))
            warning(sprintf(msg,k,nrow(Z.k),ncol(Z.k)))
     }
-    
     for(iter in 1:control$maxit){
 
         W <- Matrix(0,nrow=nobs,ncol=nsets)
@@ -77,7 +76,7 @@ Please reconsider your model specification."
             warning("Numeric problems in inner iteration, bailing out")
             break
         }
-
+        
         coef <- fit$coefficients
         last.eta <- eta
         eta <- as.vector(X%*%coef$fixed) + offset
@@ -87,9 +86,9 @@ Please reconsider your model specification."
             for(k in 1:nlevs){
                 eta <- eta +  as.vector(Z[[k]]%*%coef$random[[k]])
                 B.k <- coef$random[[k]]
-                B.k <- matrix(B.k,nrow=d)
+                B.k <- matrix(B.k,nrow=d[k])
                 Psi.k <- fit$Psi[[k]]
-                penalty <- penalty - sum(B.k * (Psi.k%*%B.k))
+                penalty <- penalty + sum(B.k * (Psi.k%*%B.k))
             }
         } else {
             ZWZiSigma <- fit$ZWZiSigma
@@ -105,7 +104,7 @@ Please reconsider your model specification."
                 0)
         log.det.iSigma <- fit$log.det.iSigma
         log.det.ZWZiSigma <- fit$log.det.ZWZiSigma
-        deviance <- sum(dev.resids) - penalty - log.det.iSigma + log.det.ZWZiSigma
+        deviance <- sum(dev.resids) + penalty - log.det.iSigma + log.det.ZWZiSigma
         #crit <- abs(deviance-last.deviance)/abs(0.1+deviance)
         crit <- sum((eta - last.eta)^2) /sum(eta^2)
 
@@ -163,7 +162,7 @@ Please reconsider your model specification."
         else step.truncated <- FALSE
         
         if(control$trace){
-            cat("Iteration",iter,"- deviance =",deviance,"- criterion =",crit)
+            cat("\nIteration",iter,"- deviance =",deviance,"- criterion =",crit)
         }
         
         if(crit <= control$eps){
@@ -172,7 +171,6 @@ Please reconsider your model specification."
             cat("\nconverged\n")
           break
         }
-        else if(control$trace)cat("\n")
     }
     if(!converged && !do.backup){
         # if(control$trace) cat("\n")
@@ -241,7 +239,8 @@ matrank <- function(x) qr(x)$rank
 PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
 
     nlevs <- length(Z)
-    m <- sapply(Z,ncol) %/% d
+
+    m <- sapply(Z,ncol)/d
 
     # Naive starting values
     Wy <- W%*%y
@@ -262,15 +261,16 @@ PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
         ZZ.k <- ZZ.k + Diagonal(ncol(ZZ.k))
         b.k <- solve(ZZ.k,ZyXa.k)
         m.k <- m[k]
-        dim(b.k) <- c(d,m.k)
+        d.k <- d[k]
+        dim(b.k) <- c(d.k,m.k)
         S.k <- tcrossprod(b.k)
-        if(matrank(S.k) < d){
+        if(matrank(S.k) < d.k){
             # warning(sprintf("Singular initial covariance matrix at level %d in inner fitting routine",k))
             S.k <- diag(x=S.k,nrow=d)
         }
         Phi.start[[k]] <- S.k/(m.k-1)
     }
-#browser()
+
     Psi.start <- lapply(Phi.start,solve)
     Lambda.start <- lapply(Psi.start,chol)
     lambda.start <- unlist(lapply(Lambda.start,uvech))
@@ -299,7 +299,6 @@ PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
     Lambda <- lambda2Mat(lambda,m,d)
     Psi <- lapply(Lambda,crossprod)
     iSigma <- Psi2iSigma(Psi,m)
-
     Phi <- lapply(Psi,solve)
     
     ZWZiSigma <- ZWZ + iSigma
@@ -403,11 +402,10 @@ grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
         M <- bMatCrsProd(XWZK,iAXWZK)
         K <- K + M
     }
-    
     Phi <- lapply(Psi,solve)
-    S <- mapply(v_bCrossprod,b,d)
+    S <- mapply(v_bCrossprod,b,d,SIMPLIFY=FALSE)
     K.kk <- diag(K)
-    SumK.k <- mapply(sum_blockDiag,K.kk,d)
+    SumK.k <- mapply(sum_blockDiag,K.kk,d,SIMPLIFY=FALSE)
     Gr <- list()
     for(k in 1:nlevs)
         Gr[[k]] <- Lambda[[k]]%*%(m[k]*Phi[[k]] - SumK.k[[k]] - S[[k]])
@@ -523,7 +521,8 @@ lambda2Mat <- function(lambda,m,d){
     nlevs <- length(m)
     dd2 <- d*(d+1)/2
     lambda <- split_(lambda,dd2)
-    lapply(lambda,set_uvech,x=diag(d))
+    D <- lapply(d,diag)
+    Map(set_uvech,D,lambda)
 }
 
 Psi2iSigma <- function(Psi,m){
@@ -535,17 +534,11 @@ mk.iSigma.k <- function(Psi,m){
     Diagonal(m) %x% Psi
 }
 
-split_ <- function(x,n){
+split_ <- function(x,d){
     m <- length(x)
-    m <- m%/%n
-    i <- rep(1:m,each=n)
+    n <- length(d)
+    i <- rep(1:n,d)
     split(x,i)
-}
-
-Gfunc <- function(d,m){
-    x <- Diagonal(n=m)
-    dim(x) <- c(m*m,1)
-    x %x% Diagonal(n=d*d)
 }
 
 mmclogit.control <- function(
@@ -571,7 +564,7 @@ mmclogit.control <- function(
          )
 }
 
-split_bdiag <- function(x,n){
+split_bdiag1 <- function(x,n){
     m0 <- ncol(x)
     stopifnot(nrow(x)==m0)
     m <- m0%/%n
@@ -586,8 +579,24 @@ split_bdiag <- function(x,n){
     y
 }
 
+split_bdiag <- function(x,d){
+    m <- length(d)
+    n <- ncol(x)
+    s <- 1:m
+    s <- rep(s,d)
+    j <- 1:n
+    j <- split(j,s)
+    y <- list()
+    for(k in 1:m){
+        j.k <- j[[k]]
+        y[[k]] <- x[j.k,j.k]
+    }
+    y
+}
+
+
 se_Phi <- function(Phi,info.lambda){
-    d <- ncol(Phi[[1]])
+    d <- sapply(Phi,ncol)
     dd2 <- d*(d+1)/2
     info.lambda <- split_bdiag(info.lambda,dd2)
     Map(se_Phi_,Phi,info.lambda)
@@ -658,4 +667,20 @@ Lambda2log.det.iSigma_1 <- function(Lambda,m){
         dLambda <- diag(Lambda)
     }
     m*sum(log(dLambda))
+}
+
+
+reff <- function(object){
+    b <- object$random.effects
+    Phi <- object$VarCov
+    nlev <- length(b)
+    B <- list()
+    for(k in 1:nlev){
+        d <- ncol(Phi[[k]])
+        B_k <- matrix(b[[k]],nrow=d)
+        B_k <- t(B_k)
+        colnames(B_k) <- colnames(Phi[[k]])
+        B[[k]] <- B_k
+    }
+    B
 }

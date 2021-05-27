@@ -4,82 +4,88 @@
 #' and multinomial count responses with fixed alternatives. 
 #'
 #' @param formula the model formula. The response must be a factor or a matrix
-#' of counts.
-#' @param data an optional data frame, list or environment (or object 
-#' coercible by \code{\link{as.data.frame}} to a data frame) containing 
-#' the variables in the model.  If not found in \code{data}, the 
-#' variables are taken from \code{environment(formula)}, 
-#' typically the environment from which \code{glm} is called.
-#' @param random an optional formula that specifies the random-effects structure or
-#' NULL.
-#' @param subset an optional vector specifying a subset of observations to be 
-#' used in the fitting process.
+#'     of counts.
+#' @param data an optional data frame, list or environment (or object coercible
+#'     by \code{\link{as.data.frame}} to a data frame) containing the variables
+#'     in the model.  If not found in \code{data}, the variables are taken from
+#'     \code{environment(formula)}, typically the environment from which
+#'     \code{glm} is called.
+#' @param random an optional formula or list of formulas that specify the
+#'     random-effects structure or NULL.
+#' @param subset an optional vector specifying a subset of observations to be
+#'     used in the fitting process.
 #' @param weights an optional vector of weights to be used in the fitting
-#' process.  Should be \code{NULL} or a numeric vector.
-#' @param na.action a function which indicates what should happen 
-#' when the data contain \code{NA}s.  The default is set by 
-#' the \code{na.action} setting of \code{\link{options}}, and is
-#' \code{\link{na.fail}} if that is unset.  The \sQuote{factory-fresh}
-#' default is \code{\link{na.omit}}.  Another possible value is
-#' \code{NULL}, no action.  Value \code{\link{na.exclude}} can be useful.
-#' @param model a logical value indicating whether \emph{model frame}
-#' should be included as a component of the returned value.
+#'     process.  Should be \code{NULL} or a numeric vector.
+#' @param na.action a function which indicates what should happen when the data
+#'     contain \code{NA}s.  The default is set by the \code{na.action} setting
+#'     of \code{\link{options}}, and is \code{\link{na.fail}} if that is unset.
+#'     The \sQuote{factory-fresh} default is \code{\link{na.omit}}.  Another
+#'     possible value is \code{NULL}, no action.  Value \code{\link{na.exclude}}
+#'     can be useful.
+#' @param model a logical value indicating whether \emph{model frame} should be
+#'     included as a component of the returned value.
 #' @param x,y logical values indicating whether the response vector and model
-#' matrix used in the fitting process should be returned as components
-#' of the returned value.
-#' @param contrasts an optional list. See the \code{contrasts.arg}
-#' of \code{model.matrix.default}.
-#' @param method \code{NULL} or a character string, either "PQL" or "MQL", specifies
-#' the type of the quasilikelihood approximation to be used if
-#' a random-effects model is to be estimated.
-#' @param estimator a character string; either "ML" or "REML",
-#' specifies which estimator is to be used/approximated.
-#' @param dispersion a logical value or a character string; whether and how
-#' a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.
-#' @param from.table a logical value; do the data represent a contingency table, e.g. were created
-#' by applying \code{as.data.frame()} a the result of \code{table()} or \code{xtabs()}.
-#' This relevant only if the response is a factor. This argument should be set to \code{TRUE}
-#' if the data do come from a contingency table. Correctly setting \code{from.table=TRUE} in this case,
-#' will lead to efficiency gains in computing, but more importantly overdispersion will correctly
-#' be computed if present.
-#' @param groups an optional formula that specifies groups of observations relevant for
-#' the specification of overdispersed response counts.
-#' @param control a list of parameters for the fitting process.
-#' See \code{\link{mclogit.control}}
-#' @param \dots arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}
+#'     matrix used in the fitting process should be returned as components of
+#'     the returned value.
+#' @param contrasts an optional list. See the \code{contrasts.arg} of
+#'     \code{model.matrix.default}.
+#' @param method \code{NULL} or a character string, either "PQL" or "MQL",
+#'     specifies the type of the quasilikelihood approximation to be used if a
+#'     random-effects model is to be estimated.
+#' @param estimator a character string; either "ML" or "REML", specifies which
+#'     estimator is to be used/approximated.
+#' @param dispersion a logical value or a character string; whether and how a
+#'     dispersion parameter should be estimated. For details see
+#'     \code{\link{dispersion}}.
+#' @param from.table a logical value; do the data represent a contingency table,
+#'     e.g. were created by applying \code{as.data.frame()} a the result of
+#'     \code{table()} or \code{xtabs()}.  This relevant only if the response is
+#'     a factor. This argument should be set to \code{TRUE} if the data do come
+#'     from a contingency table. Correctly setting \code{from.table=TRUE} in
+#'     this case, will lead to efficiency gains in computing, but more
+#'     importantly overdispersion will correctly be computed if present.
+#' @param groups an optional formula that specifies groups of observations
+#'     relevant for the specification of overdispersed response counts.
+#' @param control a list of parameters for the fitting process.  See
+#'     \code{\link{mclogit.control}}
+#' @param \dots arguments to be passed to \code{mclogit.control} or
+#'     \code{mmclogit.control}
 #'
-#' @return   \code{mblogit} returns an object of class "mblogit", which has almost the
-#' same structure as an object of class "\link[stats]{glm}". The difference are
-#' the components \code{coefficients}, \code{residuals}, \code{fitted.values},
-#' \code{linear.predictors}, and \code{y}, which are matrices with
-#' number of columns equal to the number of response categories minus one.
+#' @return \code{mblogit} returns an object of class "mblogit", which has almost
+#'     the same structure as an object of class "\link[stats]{glm}". The
+#'     difference are the components \code{coefficients}, \code{residuals},
+#'     \code{fitted.values}, \code{linear.predictors}, and \code{y}, which are
+#'     matrices with number of columns equal to the number of response
+#'     categories minus one.
 #' 
-#' @details The function \code{mblogit} internally rearranges the data
-#' into a 'long' format and uses \code{\link{mclogit.fit}} to compute
-#' estimates. Nevertheless, the 'user data' is unaffected.
+#' @details The function \code{mblogit} internally rearranges the data into a
+#'     'long' format and uses \code{\link{mclogit.fit}} to compute
+#'     estimates. Nevertheless, the 'user data' are unaffected.
 #'
-#' @seealso The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also fits multinomial
-#' baseline-category logit models, but has a slightly less convenient output and does not support
-#' overdispersion or random effects. However, it provides some other options. Baseline-category logit models are
-#' also supported by the package \pkg{VGAM}, as well as some reduced-rank and (semi-parametric) additive generalisations.
-#' The package \pkg{mnlogit} estimates logit models in a way optimized for large numbers of alternatives.
+#' @seealso The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also
+#'     fits multinomial baseline-category logit models, but has a slightly less
+#'     convenient output and does not support overdispersion or random
+#'     effects. However, it provides some other options. Baseline-category logit
+#'     models are also supported by the package \pkg{VGAM}, as well as some
+#'     reduced-rank and (semi-parametric) additive generalisations.  The package
+#'     \pkg{mnlogit} estimates logit models in a way optimized for large numbers
+#'     of alternatives.
 #' 
 #' @example examples/mblogit-ex.R
 #' 
 #' @references
-#'    Agresti, Alan (2002).
+#'    Agresti, Alan. 2002.
 #'    \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
 #'    \url{https://doi.org/10.1002/0471249688}
 #'
-#'    Breslow, N.E. and D.G. Clayton (1993).
+#'    Breslow, N.E. and D.G. Clayton. 1993.
 #'    "Approximate Inference in Generalized Linear Mixed Models".
 #'    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
 #'    \url{https://doi.org/10.1080/01621459.1993.10594284}
 #'
 #' 
 #' @aliases print.mblogit summary.mblogit print.summary.mblogit fitted.mblogit
-#' weights.mblogit
-#' print.mmblogit summary.mmblogit print.summary.mmblogit
+#'     weights.mblogit print.mmblogit summary.mmblogit print.summary.mmblogit
 mblogit <- function(formula,
                     data=parent.frame(),
                     random=NULL,
@@ -116,7 +122,14 @@ mblogit <- function(formula,
     if(length(random)){
         mf0 <- eval(mf, parent.frame())
         mt <- attr(mf0,"terms")
-        rf <- paste(c(".~.",all.vars(random)),collapse="+")
+        if(inherits(random,"formula")){
+            rf <- paste(c(".~.",all.vars(random)),collapse="+")
+        }
+        else if(inherits(random,"list")) {
+            rf <- paste(c(".~.",unlist(lapply(random,all.vars))),collapse="+")
+        }
+        else
+            stop("'random' argument must be either a formula or a list of formulae")
         rf <- as.formula(rf)
         if (typeof(mf$formula) == "symbol") {
           mff <- formula
@@ -255,33 +268,55 @@ mblogit <- function(formula,
     else { ## random effects
 
         if(!length(method)) method <- "PQL"
-        
-        random <- setupRandomFormula(random)
-        rt <- terms(random$formula)
 
-        Z <- model.matrix(rt,mf,contrasts)
+        if(inherits(random,"formula"))
+            random <- list(random)
 
-        ZD <- Z%x%D
-        d <- ncol(ZD)
+        random <- lapply(random,setupRandomFormula)
+        rt <- lapply(random,"[[","formula")
+        rt <- lapply(rt,terms)
+        suppressWarnings(Z <- lapply(rt,model.matrix,mf,
+                                     contrasts.arg=contrasts))
+        # Use suppressWarnings() to stop complaining about unused contasts
         
-        colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
-                               "~",
-                               rep(colnames(Z),each=ncol(D)))
-        colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
-        VarCov.names <- colnames(ZD)
-        
-        groups <- random$groups
-        groups <- mf[groups]
-        groups <- lapply(groups,as.factor)
-        nlev <- length(groups)
+        ZD <- lapply(Z,`%x%`,D)
+        d <- sapply(ZD,ncol)
 
-        if(nlev > 1){
-            for(i in 2:nlev)
-                groups[[i]] <- interaction(groups[c(i-1,i)])
+        nn <- length(ZD)
+        for(k in 1:nn){
+            colnames(ZD[[k]]) <- paste0(rep(colnames(D),ncol(Z[[k]])),
+                                        "~",
+                                        rep(colnames(Z[[k]]),each=ncol(D)))
+            colnames(ZD[[k]]) <- gsub("(Intercept)","1",colnames(ZD[[k]]),fixed=TRUE)
         }
-        groups <- lapply(groups,rep,each=nrow(D))
-        
-        ZD <- lapply(groups,mkZ,rX=ZD)
+
+        randstruct <- lapply(1:nn,function(k){
+            group.labels <- random[[k]]$groups
+            groups <- mf[group.labels]
+            groups <- lapply(groups,as.factor)
+            nlev <- length(groups)
+            if(nlev > 1){
+                for(i in 2:nlev){
+                    groups[[i]] <- interaction(groups[c(i-1,i)])
+                    group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
+                }
+            }
+            groups <- lapply(groups,rep,each=nrow(D))
+            
+            VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
+            ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
+            d <- rep(d[k],nlev)
+            names(groups) <- group.labels
+            list(ZD_k,groups,d,VarCov.names.k)
+        })
+        ZD <- lapply(randstruct,`[[`,1)
+        groups <- lapply(randstruct,`[[`,2)
+        d <- lapply(randstruct,`[[`,3)
+        VarCov.names <- lapply(randstruct,`[[`,4)
+        ZD <- unlist(ZD,recursive=FALSE)
+        groups <- unlist(groups,recursive=FALSE)
+        VarCov.names <- unlist(VarCov.names,recursive=FALSE)
+        d <- unlist(d)
         ZD <- blockMatrix(ZD,ncol=length(ZD))
         fit <- mmclogit.fitPQLMQL(y=Y,s=s,w=weights,
                                   X=XD,Z=ZD,d=d,
@@ -289,8 +324,10 @@ mblogit <- function(formula,
                                   estimator=estimator,
                                   control=control,
                                   offset = offset)
+        nlev <- length(fit$VarCov)
         for(k in 1:nlev)
-            dimnames(fit$VarCov[[k]]) <- list(VarCov.names,VarCov.names)
+            dimnames(fit$VarCov[[k]]) <- list(VarCov.names[[k]],VarCov.names[[k]])
+        names(fit$VarCov) <- names(groups)
     }
     
     coefficients <- fit$coefficients
@@ -569,6 +606,7 @@ print.mmblogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
     for(k in 1:length(VarCov)){
+        if(k > 1) cat("\n")
         cat("Grouping level:",names(VarCov)[k],"\n")
         VarCov.k <- VarCov[[k]]
         VarCov.k[] <- format(VarCov.k, digits=digits)
@@ -624,6 +662,7 @@ print.summary.mmblogit <-
     VarCov <- x$VarCov
     se_VarCov <- x$se_VarCov
     for(k in 1:length(VarCov)){
+        if(k > 1) cat("\n")
         cat("Grouping level:",names(VarCov)[k],"\n")
         VarCov.k <- VarCov[[k]]
         VarCov.k[] <- format(VarCov.k, digits=digits)
@@ -775,39 +814,60 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
 
     if(object$method=="PQL" && conditional){
 
-        rf <- random$formula
-        rt <- terms(rf)
+        rf <- lapply(random,"[[","formula")
+        rt <- lapply(rf,terms)
+        suppressWarnings(Z <- lapply(rt,model.matrix,mf,
+                                     contrasts.arg=object$contrasts,
+                                     xlev=object$xlevels))
+        
+        ZD <- lapply(Z,`%x%`,D)
+        d <- sapply(ZD,ncol)
 
-        Z <- model.matrix(rt,mf,
-                      contrasts.arg=object$contrasts,
-                      xlev=object$xlevels
-                      )
-        ZD <- Z%x%D
-
-        colnames(ZD) <- paste0(rep(colnames(D),ncol(Z)),
-                               "~",
-                               rep(colnames(Z),each=ncol(D)))
-        colnames(ZD) <- gsub("(Intercept)","1",colnames(ZD),fixed=TRUE)
-
-        groups <- random$groups
-        orig.groups <- object$groups
-        olevels <- lapply(orig.groups,levels)
-        groups <- mf[groups]
-        groups <- Map(factor,x=groups,levels=olevels)
-        groups <- lapply(groups,rep,each=nrow(D))
-        nlev <- length(groups)
-
-        if(nlev > 1){
-            for(i in 2:nlev)
-                groups[[i]] <- interaction(groups[c(i-1,i)])
+        nn <- length(ZD)
+        for(k in 1:nn){
+            colnames(ZD[[k]]) <- paste0(rep(colnames(D),ncol(Z[[k]])),
+                                        "~",
+                                        rep(colnames(Z[[k]]),each=ncol(D)))
+            colnames(ZD[[k]]) <- gsub("(Intercept)","1",colnames(ZD[[k]]),fixed=TRUE)
         }
 
-        ZD <- lapply(groups,mkZ,rX=ZD)
-        ZD <- blockMatrix(ZD)
+        orig.groups <- object$groups
+        olevels <- lapply(orig.groups,levels)
+        randstruct <- lapply(1:nn,function(k){
+            group.labels <- random[[k]]$groups
+            groups <- mf[group.labels]
+            groups <- lapply(groups,as.factor)
+            nlev <- length(groups)
+            if(nlev > 1){
+                for(i in 2:nlev){
+                    groups[[i]] <- interaction(groups[c(i-1,i)])
+                    group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
+                }
+            }
+            groups <- lapply(groups,rep,each=nrow(D))
+            olevels <- olevels[group.labels]
+            groups <- Map(factor,x=groups,levels=olevels)
+            
+            VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
+            ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
+            d <- rep(d[k],nlev)
+            names(groups) <- group.labels
+            list(ZD_k,groups,d,VarCov.names.k)
+        })
 
-        random.effects <- object$random.effects
+        ZD <- lapply(randstruct,`[[`,1)
+        groups <- lapply(randstruct,`[[`,2)
+        ZD <- unlist(ZD,recursive=FALSE)
+        d <- lapply(randstruct,`[[`,3)
+        groups <- unlist(groups,recursive=FALSE)
+        d <- unlist(d)
+        
+        ZD <- blockMatrix(ZD)
+        b <- object$random.effects
+        nlev <- length(ZD)
+        
         for(k in 1:nlev)
-            eta <- eta +  as.vector(ZD[[k]]%*%random.effects[[k]])
+            eta <- eta +  as.vector(ZD[[k]]%*%b[[k]])
     }
     
     rspmat <- function(x){

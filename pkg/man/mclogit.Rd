@@ -69,8 +69,8 @@ mclogit(formula, data=parent.frame(), random=NULL,
     variables are taken from \code{environment(formula)},
     typically the environment from which \code{glm} is called.}
 
-  \item{random}{an optional formula that specifies the random-effects structure or
-    NULL.}
+  \item{random}{an optional formula or list of formulas that specify the
+    random-effects structure or NULL.}
 
   \item{weights}{an optional vector of weights to be used in the fitting
     process.  Should be \code{NULL} or a numeric vector.}
@@ -196,9 +196,16 @@ summary(mclogit(
 \donttest{ # This takes a bit longer.
 data(electors)
 
+# Time points nested within parties
 summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
-  random=~1|party.time,
+  random=~1|party/time,
+  data=within(electors,party.time<-interaction(party,time))))
+
+# Party-level random intercepts and random slopes varying over time points
+summary(mclogit(
+  cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
+  random=list(~1|party,~econ.left+0|time),
   data=within(electors,party.time<-interaction(party,time))))
 }
 }

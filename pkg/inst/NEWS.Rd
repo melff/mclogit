@@ -2,6 +2,17 @@
 \title{\emph{mclogit} News}
 \encoding{UTF-8}
 
+\section{Version 0.9}{
+  \subsection{NEW FEATURES}{
+    \itemize{
+      \item It is now possible to estimate models with non-nested
+      (e.g. crossed) random effects. Such models can be specified
+      by providing a list of formulas as \code{random=} argument to the
+      \code{mclogit()} or \code{mblogit()} function. 
+    }
+  }
+}
+
 \section{Version 0.8}{
   \subsection{NEW FEATURES}{
     \itemize{

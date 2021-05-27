@@ -36,78 +36,82 @@ mblogit(
 \item{formula}{the model formula. The response must be a factor or a matrix
 of counts.}
 
-\item{data}{an optional data frame, list or environment (or object 
-coercible by \code{\link{as.data.frame}} to a data frame) containing 
-the variables in the model.  If not found in \code{data}, the 
-variables are taken from \code{environment(formula)}, 
-typically the environment from which \code{glm} is called.}
+\item{data}{an optional data frame, list or environment (or object coercible
+by \code{\link{as.data.frame}} to a data frame) containing the variables
+in the model.  If not found in \code{data}, the variables are taken from
+\code{environment(formula)}, typically the environment from which
+\code{glm} is called.}
 
-\item{random}{an optional formula that specifies the random-effects structure or
-NULL.}
+\item{random}{an optional formula or list of formulas that specify the
+random-effects structure or NULL.}
 
-\item{subset}{an optional vector specifying a subset of observations to be 
+\item{subset}{an optional vector specifying a subset of observations to be
 used in the fitting process.}
 
 \item{weights}{an optional vector of weights to be used in the fitting
 process.  Should be \code{NULL} or a numeric vector.}
 
-\item{na.action}{a function which indicates what should happen 
-when the data contain \code{NA}s.  The default is set by 
-the \code{na.action} setting of \code{\link{options}}, and is
-\code{\link{na.fail}} if that is unset.  The \sQuote{factory-fresh}
-default is \code{\link{na.omit}}.  Another possible value is
-\code{NULL}, no action.  Value \code{\link{na.exclude}} can be useful.}
+\item{na.action}{a function which indicates what should happen when the data
+contain \code{NA}s.  The default is set by the \code{na.action} setting
+of \code{\link{options}}, and is \code{\link{na.fail}} if that is unset.
+The \sQuote{factory-fresh} default is \code{\link{na.omit}}.  Another
+possible value is \code{NULL}, no action.  Value \code{\link{na.exclude}}
+can be useful.}
 
-\item{model}{a logical value indicating whether \emph{model frame}
-should be included as a component of the returned value.}
+\item{model}{a logical value indicating whether \emph{model frame} should be
+included as a component of the returned value.}
 
 \item{x, y}{logical values indicating whether the response vector and model
-matrix used in the fitting process should be returned as components
-of the returned value.}
+matrix used in the fitting process should be returned as components of
+the returned value.}
 
-\item{contrasts}{an optional list. See the \code{contrasts.arg}
-of \code{model.matrix.default}.}
+\item{contrasts}{an optional list. See the \code{contrasts.arg} of
+\code{model.matrix.default}.}
 
-\item{method}{\code{NULL} or a character string, either "PQL" or "MQL", specifies
-the type of the quasilikelihood approximation to be used if
-a random-effects model is to be estimated.}
+\item{method}{\code{NULL} or a character string, either "PQL" or "MQL",
+specifies the type of the quasilikelihood approximation to be used if a
+random-effects model is to be estimated.}
 
-\item{estimator}{a character string; either "ML" or "REML",
-specifies which estimator is to be used/approximated.}
+\item{estimator}{a character string; either "ML" or "REML", specifies which
+estimator is to be used/approximated.}
 
-\item{dispersion}{a logical value or a character string; whether and how
-a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.}
+\item{dispersion}{a logical value or a character string; whether and how a
+dispersion parameter should be estimated. For details see
+\code{\link{dispersion}}.}
 
-\item{from.table}{a logical value; do the data represent a contingency table, e.g. were created
-by applying \code{as.data.frame()} a the result of \code{table()} or \code{xtabs()}.
-This relevant only if the response is a factor. This argument should be set to \code{TRUE}
-if the data do come from a contingency table. Correctly setting \code{from.table=TRUE} in this case,
-will lead to efficiency gains in computing, but more importantly overdispersion will correctly
-be computed if present.}
+\item{from.table}{a logical value; do the data represent a contingency table,
+e.g. were created by applying \code{as.data.frame()} a the result of
+\code{table()} or \code{xtabs()}.  This relevant only if the response is
+a factor. This argument should be set to \code{TRUE} if the data do come
+from a contingency table. Correctly setting \code{from.table=TRUE} in
+this case, will lead to efficiency gains in computing, but more
+importantly overdispersion will correctly be computed if present.}
 
-\item{groups}{an optional formula that specifies groups of observations relevant for
-the specification of overdispersed response counts.}
+\item{groups}{an optional formula that specifies groups of observations
+relevant for the specification of overdispersed response counts.}
 
-\item{control}{a list of parameters for the fitting process.
-See \code{\link{mclogit.control}}}
+\item{control}{a list of parameters for the fitting process.  See
+\code{\link{mclogit.control}}}
 
-\item{\dots}{arguments to be passed to \code{mclogit.control} or  \code{mmclogit.control}}
+\item{\dots}{arguments to be passed to \code{mclogit.control} or
+\code{mmclogit.control}}
 }
 \value{
-\code{mblogit} returns an object of class "mblogit", which has almost the
-same structure as an object of class "\link[stats]{glm}". The difference are
-the components \code{coefficients}, \code{residuals}, \code{fitted.values},
-\code{linear.predictors}, and \code{y}, which are matrices with
-number of columns equal to the number of response categories minus one.
+\code{mblogit} returns an object of class "mblogit", which has almost
+    the same structure as an object of class "\link[stats]{glm}". The
+    difference are the components \code{coefficients}, \code{residuals},
+    \code{fitted.values}, \code{linear.predictors}, and \code{y}, which are
+    matrices with number of columns equal to the number of response
+    categories minus one.
 }
 \description{
 The function \code{mblogit} fits baseline-category logit models for categorical
 and multinomial count responses with fixed alternatives.
 }
 \details{
-The function \code{mblogit} internally rearranges the data
-into a 'long' format and uses \code{\link{mclogit.fit}} to compute
-estimates. Nevertheless, the 'user data' is unaffected.
+The function \code{mblogit} internally rearranges the data into a
+    'long' format and uses \code{\link{mclogit.fit}} to compute
+    estimates. Nevertheless, the 'user data' are unaffected.
 }
 \examples{
 library(MASS) # For 'housing' data
@@ -128,19 +132,22 @@ summary(house.mblogit)
 mtable(house.mblogit)
 }
 \references{
-Agresti, Alan (2002).
+Agresti, Alan. 2002.
    \emph{Categorical Data Analysis.} 2nd ed, Hoboken, NJ: Wiley.
-   \doi{10.1002/0471249688}
+   \url{https://doi.org/10.1002/0471249688}
 
-   Breslow, N.E. and D.G. Clayton (1993).
+   Breslow, N.E. and D.G. Clayton. 1993.
    "Approximate Inference in Generalized Linear Mixed Models".
    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
-   \doi{10.1080/01621459.1993.10594284}
+   \url{https://doi.org/10.1080/01621459.1993.10594284}
 }
 \seealso{
-The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also fits multinomial
-baseline-category logit models, but has a slightly less convenient output and does not support
-overdispersion or random effects. However, it provides some other options. Baseline-category logit models are
-also supported by the package \pkg{VGAM}, as well as some reduced-rank and (semi-parametric) additive generalisations.
-The package \pkg{mnlogit} estimates logit models in a way optimized for large numbers of alternatives.
+The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also
+    fits multinomial baseline-category logit models, but has a slightly less
+    convenient output and does not support overdispersion or random
+    effects. However, it provides some other options. Baseline-category logit
+    models are also supported by the package \pkg{VGAM}, as well as some
+    reduced-rank and (semi-parametric) additive generalisations.  The package
+    \pkg{mnlogit} estimates logit models in a way optimized for large numbers
+    of alternatives.
 }
