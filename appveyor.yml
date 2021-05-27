@@ -59,6 +59,8 @@ notifications:
 
 deploy:
   provider: GitHub
+  auth_token:
+    secure: IYtxvmAVA0yYUgxvOxBhWo2TMyfGtqhTDnjSXh3qc4KRUGBZOrUPm4R85FFn9umV
   artifact: source,binary 
 
   draft: true
