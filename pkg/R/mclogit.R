@@ -466,19 +466,21 @@ fitted.mclogit <- function(object,type=c("probabilities","counts"),...){
 predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fit=FALSE,...){
 
     type <- match.arg(type)
-    mt <- terms(object)
-    rhs <- delete.response(mt)
+    fo <- object$formula
+    if(as.character(fo[[2]][[1]])=="|")
+        fo[[2]][[1]] <- as.name("cbind")
+    lhs <- fo[[2]]
+    rhs <- fo[-2]
+    if(length(lhs)==3)
+        sets <- lhs[[3]]
+    else stop("no way to determine choice set ids")
     if(missing(newdata)){
-        m <- model.frame(object$formula,data=object$data)
+        m <- model.frame(fo,data=object$data)
         set <- m[[1]][,2]
         na.act <- object$na.action
     }
     else{
-        fo <- object$formula
-        lhs <- fo[[2]]
-        if(deparse(lhs[[1]])=="cbind"){
-            lhs <- lhs[[3]]
-        }
+        lhs <- lhs[[3]]
         fo[[2]] <- lhs
         m <- model.frame(fo,data=newdata)
         set <- m[[1]]
@@ -754,8 +756,11 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                              conditional=TRUE, ...){
     
     type <- match.arg(type)
-    lhs <- object$formula[[2]]
-    rhs <- object$formula[-2]
+    fo <- object$formula
+    if(as.character(fo[[2]][[1]])=="|")
+        fo[[2]][[1]] <- as.name("cbind")
+    lhs <- fo[[2]]
+    rhs <- fo[-2]
     random <- object$random  
     if(length(lhs)==3)
         sets <- lhs[[3]]
