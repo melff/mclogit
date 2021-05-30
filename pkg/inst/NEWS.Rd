@@ -8,7 +8,10 @@
       \item It is now possible to estimate models with non-nested
       (e.g. crossed) random effects. Such models can be specified
       by providing a list of formulas as \code{random=} argument to the
-      \code{mclogit()} or \code{mblogit()} function. 
+      \code{mclogit()} or \code{mblogit()} function.
+      \item The left-hand side of conditional logit models can now
+      more conveniently specified using the vertical-bar (\code{|})
+      operator.
     }
   }
 }

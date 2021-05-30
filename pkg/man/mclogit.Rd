@@ -48,15 +48,18 @@ mclogit(formula, data=parent.frame(), random=NULL,
 }
 \arguments{
   \item{formula}{a model formula: a symbolic description of the
-    model to be fitted. The left-hand side contains is expected
-    to be a two-column matrix. The first column contains
+    model to be fitted. The left-hand side should result in
+    a two-column matrix. The first column contains
     the choice counts or choice indicators (alternative is
     chosen=1, is not chosen=0). The second column contains
     unique numbers for each choice set.
 
+    The left-hand side can either take the form \code{cbind(choice,set)}
+    or (from version 0.9.1) \code{choice|set}
+
     If individual-level data is used, choice sets correspond
-    to the individuals, if aggregated data with choice counts are used,
-    choice sets may e.g. correspond to covariate classes within clusters.
+    to individuals, if aggregated data with choice counts are used,
+    choice sets usually correspond to covariate classes.
 
     The right-hand of the formula contains choice predictors. It should be noted
     that constants are deleted from the formula as are predictors that do not vary
@@ -192,21 +195,32 @@ summary(mclogit(
   cbind(resp,suburb)~distance+cost,
   data=Transport
   ))
+# New syntactic sugar:
+summary(mclogit(
+  resp|suburb~distance+cost,
+  data=Transport
+  ))
+
 
 \donttest{ # This takes a bit longer.
 data(electors)
 
+electors <- within(electors,{
+    party.time <-interaction(party,time)
+    time.class <- interaction(time,class)
+})
+
 # Time points nested within parties
 summary(mclogit(
-  cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
+  Freq|time.class~econ.left/class+welfare/class+auth/class,
   random=~1|party/time,
-  data=within(electors,party.time<-interaction(party,time))))
+  data=electors))
 
 # Party-level random intercepts and random slopes varying over time points
 summary(mclogit(
-  cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
+  Freq|time.class~econ.left/class+welfare/class+auth/class,
   random=list(~1|party,~econ.left+0|time),
-  data=within(electors,party.time<-interaction(party,time))))
+  data=electors))
 }
 }
 \keyword{models}

@@ -87,6 +87,8 @@ mclogit <- function(
     mf <- mf[c(1, m)]
     mf$drop.unused.levels <- TRUE
     mf[[1]] <- as.name("model.frame")
+    if(as.character(formula[[2]][[1]])=="|")
+        mf$formula[[2]][[1]] <- as.name("cbind")
 
     if(length(random)){
         mf0 <- eval(mf, parent.frame())
