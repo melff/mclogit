@@ -27,8 +27,8 @@ quickInteraction <- function(by){
 matConstInSets <- function(X,sets){
     ans <- logical(ncol(X))
     for(i in 1:ncol(X)){
-        v <- tapply(X[,i],sets,var)
-        ans[i] <- all(v[is.finite(v)]==0) 
+        v <- tapply(X[,i],sets,varies)
+        ans[i] <- !any(v) 
     }
     ans
 }
@@ -36,8 +36,8 @@ matConstInSets <- function(X,sets){
 listConstInSets <- function(X,sets){
     ans <- logical(length(X))
     for(i in 1:length(X)){
-        v <- tapply(X[[i]],sets,var)
-        ans[i] <- all(v[is.finite(v)]==0) 
+        v <- tapply(X[[i]],sets,varies)
+        ans[i] <- !any(v) 
     }
     ans
 }
@@ -46,7 +46,7 @@ groupConstInSets <- function(X,sets){
     ans <- logical(length(X))
     for(i in 1:length(X)){
         v <- tapply(X[[i]],sets,varies)
-        ans[i] <- !all(v) 
+        ans[i] <- !any(v) 
     }
     ans
 }
@@ -188,7 +188,6 @@ mclogit <- function(
                                      contrasts.arg=contrasts))
         # Use suppressWarnings() to stop complaining about unused contasts
 
-        d <- sapply(Z,ncol)
         nn <- length(Z)
         randstruct <- lapply(1:nn,function(k){
             group.labels <- random[[k]]$groups
@@ -201,9 +200,11 @@ mclogit <- function(
                     group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
                 }
             }
-            gconst <- groupConstInSets(groups,sets)
             Z_k <- Z[[k]]
+            gconst <- groupConstInSets(groups,sets) # Is grouping factor constant within choice sets?
             if(any(gconst)){
+                # If grouping factor is constant within choice sets, remove covariates that
+                # are constants within choice sets
                 rconst <- matConstInSets(Z_k,sets)
                 if(any(rconst)){
                     cat("\n")
@@ -215,10 +216,11 @@ mclogit <- function(
                 if(ncol(Z_k)<1)
                     stop("No predictor variable remains in random part of the model.\nPlease reconsider your model specification.")
             }
+            d <- ncol(Z_k)
             colnames(Z_k) <- gsub("(Intercept)","(Const.)",colnames(Z_k),fixed=TRUE)
             VarCov.names.k <- rep(list(colnames(Z_k)),nlev)
             Z_k <- lapply(groups,mkZ,rX=Z_k)
-            d <- rep(d[k],nlev)
+            d <- rep(d,nlev)
             names(groups) <- group.labels
             list(Z_k,groups,d,VarCov.names.k)
         })
