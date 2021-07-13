@@ -197,19 +197,21 @@ Please reconsider your model specification."
     info.psi <- fit$info.psi
     
     Phi <- fit$Phi
-
+    lambda <- fit$lambda
+    
     ntot <- length(y)
     pi0 <- mclogitP(offset,s)
     null.deviance <- sum(ifelse(y>0,
                     2*w*y*(log(y)-log(pi0)),
                     0))
-    resid.df <- length(y)#-length(unique(s))
-    model.df <- ncol(X)
+    resid.df <- length(y) - length(unique(s))
+    model.df <- ncol(X) + length(lambda)
     resid.df <- resid.df - model.df
     return(list(
         coefficients = coef$fixed,
         random.effects = coef$random,
         VarCov = Phi,
+        lambda = lambda,
         linear.predictors = eta,
         working.residuals = (y-pi)/pi,
         response.residuals = y-pi,
