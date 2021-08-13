@@ -845,7 +845,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         sum.exp.eta <- rowsum(exp.eta,j)
         p <- exp.eta/sum.exp.eta[j]
     }
-    if(se.fit){
+    if(se.fit && (type=="response" || object$method=="PQL" && conditional)){
         nsets <- j[length(j)]
         W <- Matrix(0,nrow=nobs,ncol=nsets)
         i <- 1:nobs
