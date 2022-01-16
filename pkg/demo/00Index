@@ -1,1 +1,2 @@
-mclogit.test        Test run of mclogit with simulated data
+mclogit.test                            Test run of mclogit with simulated data
+test-mblogit-random-nonnested.R         Test run of mblogit with simulated data, model with non-nested random effects

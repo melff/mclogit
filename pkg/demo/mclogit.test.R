@@ -54,3 +54,6 @@ print(test.mc)
 
 summary(test.mc)
 
+p0 <- predict(test.mc0)
+
+p <- predict(test.mc)
