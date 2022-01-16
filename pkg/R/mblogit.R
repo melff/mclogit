@@ -498,7 +498,7 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
   mt <- terms(object)
   rhs <- delete.response(mt)
   if(missing(newdata)){
-    m <- model.frame(rhs,data=object$model)
+    m <- object$model
     na.act <- object$na.action
   }
   else{
@@ -796,12 +796,19 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     if(missing(newdata)){
         mf <- object$model
         na.act <- object$na.action
+        rmf <- mf
     }
     else{
-        vars <- unique(c(all.vars(rhs),all.vars(object$call$random)))
-        fo <- paste("~",paste(vars,collapse=" + "))
-        fo <- as.formula(fo,env=parent.frame())
-        mf <- model.frame(fo,data=newdata,na.action=na.exclude)
+        mf <- model.frame(rhs,data=newdata,na.action=na.exclude)
+        rnd <- object$random
+        for(i in seq_along(rnd)){
+            rf_i <- random2formula(rnd[[i]])
+            if(i == 1)
+                rfo <- rf_i
+            else
+                rfo <- c_formulae(rfo,rf_i)
+        }
+        rmf <- model.frame(rfo,data=newdata,na.action=na.exclude)
         na.act <- attr(mf,"na.action")
     }
     X <- model.matrix(rhs,mf,
@@ -816,7 +823,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
 
         rf <- lapply(random,"[[","formula")
         rt <- lapply(rf,terms)
-        suppressWarnings(Z <- lapply(rt,model.matrix,mf,
+        suppressWarnings(Z <- lapply(rt,model.matrix,rmf,
                                      contrasts.arg=object$contrasts,
                                      xlev=object$xlevels))
         

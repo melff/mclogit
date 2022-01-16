@@ -93,10 +93,10 @@ mclogit <- function(
     if(length(random)){
         mf0 <- eval(mf, parent.frame())
         mt <- attr(mf0,"terms")
-        if(inherits(random,"formula")){
+        if(is_formula(random)){
             rf <- paste(c(".~.",all.vars(random)),collapse="+")
         }
-        else if(inherits(random,"list")) {
+        else if(is.list(random)) {
             rf <- paste(c(".~.",unlist(lapply(random,all.vars))),collapse="+")
         }
         else
@@ -771,20 +771,26 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         mf <- object$model
         sets <- mf[[1]][,2]
         na.act <- object$na.action
+        rmf <- mf
     }
     else{
-        vars <- unique(c(all.vars(sets),all.vars(rhs),all.vars(object$call$random),all.vars(object$call$weights)))
-        fo <- paste("~",paste(vars,collapse=" + "))
-        fo <- as.formula(fo,env=parent.frame())
-        mf <- model.frame(fo,data=newdata,na.action=na.exclude)
-        sets <- mf[[sets]]
+        mf <- model.frame(rhs,data=newdata,na.action=na.exclude)
+        rnd <- object$random
+        for(i in seq_along(rnd)){
+            rf_i <- random2formula(rnd[[i]])
+            if(i == 1)
+                rfo <- rf_i
+            else
+                rfo <- c_formulae(rfo,rf_i)
+        }
+        rmf <- model.frame(rfo,data=newdata,na.action=na.exclude)
+        sets <- eval(sets,newdata)
         na.act <- attr(mf,"na.action")
     }
     X <- model.matrix(rhs,mf,
                       contrasts.arg=object$contrasts,
                       xlev=object$xlevels
                       )
-    
     cf <- coef(object)
     X <- X[,names(cf), drop=FALSE]
     eta <- c(X %*% cf)
@@ -793,7 +799,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         
         rf <- lapply(random,"[[","formula")
         rt <- lapply(rf,terms)
-        suppressWarnings(Z <- lapply(rt,model.matrix,mf,
+        suppressWarnings(Z <- lapply(rt,model.matrix,rmf,
                                      contrasts.arg=object$contrasts,
                                      xlev=object$xlevels))
         d <- sapply(Z,ncol)
@@ -870,9 +876,8 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
             }
             else {
                 vcov.coef <- vcov(object)
-                var.p <- rowSums(WX*(WX%*%vcov.coef))
+                se.p <- sqrt(rowSums(WX*(WX%*%vcov.coef)))
             }
-            se.p <- sqrt(var.p)
             if(is.null(na.act))
                 list(fit=p,se.fit=se.p) 
             else
