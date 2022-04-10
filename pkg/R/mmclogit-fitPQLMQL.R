@@ -267,7 +267,8 @@ PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
         dim(b.k) <- c(d.k,m.k)
         S.k <- tcrossprod(b.k)
         if(matrank(S.k) < d.k){
-            # warning(sprintf("Singular initial covariance matrix at level %d in inner fitting routine",k))
+            #warning(sprintf("Singular initial covariance matrix at level %d in inner fitting routine",k))
+            S.k <- diag(S.k)
             S.k <- diag(x=S.k,nrow=d)
         }
         Phi.start[[k]] <- S.k/(m.k-1)

@@ -845,7 +845,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     nvar <- ncol(X)
     nobs <- nrow(X)
     
-    if(se.fit || type=="response"){
+    if(type=="response"){
         j <- match(sets,unique(sets))
         exp.eta <- exp(eta)
         sum.exp.eta <- rowsum(exp.eta,j)

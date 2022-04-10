@@ -1,3 +1,13 @@
+2022-04-10:
+  - Fix handling of singular initial covariance matrices in PQLMQL_innerFit
+
+2022-01-16:
+  - Fix prediction with complicated terms in the model
+  - Add some more demos
+
+2021-08-13:
+  - predict.mmclogit: create W-Matrix only when really needed
+
 2021-07-13:
   - Include variance parameters in the computation of degrees of freedom
 
