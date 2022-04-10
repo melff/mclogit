@@ -34,7 +34,10 @@ anova.mclogitlist <- function (object, ..., dispersion = NULL, test = NULL)
     stop("models were not all fitted to the same size of dataset")
   nmodels <- length(object)
   if (nmodels == 1) stop("'anova.mclogit' can only be used to compare fitted models")
-    
+   
+  hasRE <- sapply(object,inherits,"mmclogit")
+  if(any(hasRE)) warning("Results are unreliable, since deviances from quasi-likelihoods are not comparable.")
+ 
   resdf <- as.numeric(lapply(object, function(x) x$df.residual))
   resdev <- as.numeric(lapply(object, function(x) x$deviance))
   table <- data.frame(resdf, resdev, c(NA, -diff(resdf)), c(NA, 
