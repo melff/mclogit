@@ -14,6 +14,13 @@
       operator.
     }
   }
+  \subsection{BUGFIXES}{
+    \itemize{
+      \item Singular initial covariance matrices no longer cause errors.
+      \item A warning about unreliable results is issued if
+      \code{anova()} is applied to models with random effects.
+    }
+  }
 }
 
 \section{Version 0.8}{

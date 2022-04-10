@@ -1,6 +1,8 @@
 2022-04-10:
   - Fix handling of singular initial covariance matrices in PQLMQL_innerFit
   - Issue a warning if models with random effects are compared using anova
+  - Fix predict methods for mmclogit models
+  - Handle DOIs in documentation as required by new guidelines
 
 2022-01-16:
   - Fix prediction with complicated terms in the model
