@@ -845,7 +845,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     nvar <- ncol(X)
     nobs <- nrow(X)
     
-    if(type=="response"){
+    if(type=="response" || object$method=="PQL" && conditional ){
         j <- match(sets,unique(sets))
         exp.eta <- exp(eta)
         sum.exp.eta <- rowsum(exp.eta,j)
@@ -873,6 +873,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                 var.p <- Map(`*`,WXZ,var.p)
                 var.p <- lapply(var.p,rowSums)
                 var.p <- Reduce(`+`,var.p)
+                se.p <- sqrt(var.p)
             }
             else {
                 vcov.coef <- vcov(object)
