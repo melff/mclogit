@@ -842,7 +842,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         olevels <- lapply(orig.groups,levels)
         randstruct <- lapply(1:nn,function(k){
             group.labels <- random[[k]]$groups
-            groups <- mf[group.labels]
+            groups <- rmf[group.labels]
             groups <- lapply(groups,as.factor)
             nlev <- length(groups)
             if(nlev > 1){

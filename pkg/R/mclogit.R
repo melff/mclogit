@@ -809,7 +809,7 @@ predict.mmclogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         olevels <- lapply(orig.groups,levels)
         randstruct <- lapply(1:nn,function(k){
             group.labels <- random[[k]]$groups
-            groups <- mf[group.labels]
+            groups <- rmf[group.labels]
             groups <- lapply(groups,as.factor)
             nlev <- length(groups)
             if(nlev > 1){
@@ -1026,7 +1026,14 @@ fuseMat <- function(x){
     else
         y <- x
     
-    do.call(rbind,y)
+    y <- do.call(rbind,y)
+    # The following looks redundant, but appears to
+    # be necessary to avoid a bug that prevents the 
+    # resulting matrix be correctly inverted
+    sparse.x <- sapply(x,inherits,"sparseMatrix")
+    if(any(sparse.x))
+        y <- as(y,"sparseMatrix")
+    return(y)
 }
 
 cbindList <- function(x) do.call(cbind,x)

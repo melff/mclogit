@@ -1,3 +1,6 @@
+2022-04-11:
+  - Hotfix of prediction method
+
 2022-04-10:
   - Fix handling of singular initial covariance matrices in PQLMQL_innerFit
   - Issue a warning if models with random effects are compared using anova
