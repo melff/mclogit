@@ -28,7 +28,7 @@ summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
   data=electors))
 
-\donttest{# This takes a bit longer.
+\dontrun{# This takes a bit longer.
 summary(mclogit(
   cbind(Freq,interaction(time,class))~econ.left/class+welfare/class+auth/class,
   random=~1|party.time,

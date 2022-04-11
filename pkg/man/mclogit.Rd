@@ -202,7 +202,7 @@ summary(mclogit(
   ))
 
 
-\donttest{ # This takes a bit longer.
+\dontrun{ # This takes a bit longer.
 data(electors)
 
 electors <- within(electors,{
