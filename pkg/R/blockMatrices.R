@@ -1,6 +1,24 @@
-blockMatrix <- function(x=list(),nrow=1,ncol=1){
+all_equal <- function(x) length(unique(x)) == 1
+
+blockMatrix <- function(x=list(),nrow,ncol,horizontal=TRUE){
     if(!is.list(x)) x <- list(x)
+    if(horizontal){
+        if(missing(nrow)) nrow <- 1
+        if(missing(ncol)) ncol <- length(x)
+    }
+    else {
+        if(missing(nrow)) nrow <- length(x)
+        if(missing(ncol)) ncol <- 1
+    }
     y <- matrix(x,nrow=nrow,ncol=ncol)
+    ncols <- apply(y,1:2,ncol)
+    nrows <- apply(y,1:2,nrow)
+    ncols <- array(sapply(y,ncol),dim=dim(y))
+    nrows <- array(sapply(y,nrow),dim=dim(y))
+    nrows_equal <- apply(nrows,1,all_equal)
+    ncols_equal <- apply(ncols,2,all_equal)
+    if(!all(nrows_equal)) stop("Non-matching numbers of rows")
+    if(!all(ncols_equal)) stop("Non-matching numbers of columns")
     structure(y,class="blockMatrix")
 }
 

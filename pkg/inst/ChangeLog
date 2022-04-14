@@ -1,3 +1,6 @@
+2022-04-13:
+  - Fixed bug in 'blockMatrix' and make it check for argument validity
+
 2022-04-11:
   - Hotfix of prediction method
 
