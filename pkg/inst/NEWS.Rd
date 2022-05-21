@@ -21,6 +21,13 @@
       \code{anova()} is applied to models with random effects.
     }
   }
+  \subsection{IMPROVEMENTS}{
+    \itemize{
+      \item \code{mclogit()} and \code{mblogit()} check whether the list
+      passed as \code{control} is complete i.e. contains all the relevant
+      named arguments.
+    }
+  }
 }
 
 \section{Version 0.8}{

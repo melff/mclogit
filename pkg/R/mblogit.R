@@ -140,6 +140,13 @@ mblogit <- function(formula,
         mff <- eval(mff, parent.frame())
         mf$formula <- update(mff,rf)
         mf <- eval(mf, parent.frame())
+        check.names(control,
+                    "epsilon","maxit",
+                    "trace","trace.inner",
+                    "avoid.increase",
+                    "break.on.increase",
+                    "break.on.infinite",
+                    "break.on.negative")
     }
     else if(length(groups)){
         mf0 <- eval(mf, parent.frame())
@@ -155,10 +162,20 @@ mblogit <- function(formula,
         mff <- eval(mff, parent.frame())
         mf$formula <- update(mff,gf)
         mf <- eval(mf, parent.frame())
+        check.names(control,
+                    "epsilon","maxit",
+                    "trace","trace.inner",
+                    "avoid.increase",
+                    "break.on.increase",
+                    "break.on.infinite",
+                    "break.on.negative")
     }
     else {
         mf <- eval(mf, parent.frame())
         mt <- attr(mf,"terms")
+        check.names(control,
+                    "epsilon","maxit",
+                    "trace")
     }
     
     na.action <- attr(mf,"na.action")

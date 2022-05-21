@@ -1,3 +1,6 @@
+2022-05-21:
+  - Add checks of 'control=' argument of 'mclogit()' and 'mblogit()'.
+
 2022-04-13:
   - Fixed bug in 'blockMatrix' and make it check for argument validity
 

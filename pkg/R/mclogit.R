@@ -111,10 +111,20 @@ mclogit <- function(
         mff <- eval(mff, parent.frame())
         mf$formula <- update(mff,rf)
         mf <- eval(mf, parent.frame())
+        check.names(control,
+                    "epsilon","maxit",
+                    "trace","trace.inner",
+                    "avoid.increase",
+                    "break.on.increase",
+                    "break.on.infinite",
+                    "break.on.negative")
     }
     else {
         mf <- eval(mf, parent.frame())
         mt <- attr(mf,"terms")
+        check.names(control,
+                    "epsilon","maxit",
+                    "trace")
     }
     
     na.action <- attr(mf,"na.action")
@@ -1116,4 +1126,17 @@ solve2 <- function(x){
     if(inherits(ix,"try-error"))
         return(eigen.solve(x))
     else return(ix)
+}
+
+check.names <- function(x,...){
+    nms <- c(...)
+    res <- nms %in% names(x)
+    if(!all(res)){
+        mis <- nms[!(nms %in% names(x))]
+        mis <- paste(dQuote(mis),collapse=", ")
+        msg_tmpl <- "Elements with names %s are missing" 
+        msg <- paste(strwrap(sprintf(msg_tmpl,mis),width=80),
+                     collapse="\n")
+        stop(msg)
+    }
 }
