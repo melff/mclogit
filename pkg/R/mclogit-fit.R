@@ -25,8 +25,8 @@ mclogit.fit <- function(
                          0)
     deviance <- sum(dev.resids)
     if(length(start))
-      last.coef <- start
-    else last.coef <- NULL
+      coef <- start
+    else coef <- NULL
     converged <- FALSE
     for(iter in 1:control$maxit){
         y.star <- eta - offset + (y-pi)/pi
@@ -35,6 +35,7 @@ mclogit.fit <- function(
         ww <- w*pi
         good <- ww > 0
         wlsFit <- lm.wfit(x=XP[good,,drop=FALSE],y=yP.star[good],w=ww[good])
+        last.coef <- coef
         coef <- wlsFit$coefficients
         
         eta <- c(X%*%coef) + offset
