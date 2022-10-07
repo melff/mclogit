@@ -33,11 +33,10 @@ mclogit.fit <- function(
         yP.star <- y.star - rowsum(pi*y.star,s)[s]
         XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
         ww <- w*pi
-        good <- ww > 0
+        good <- ww > 0 & is.finite(yP.star)
         wlsFit <- lm.wfit(x=XP[good,,drop=FALSE],y=yP.star[good],w=ww[good])
         last.coef <- coef
         coef <- wlsFit$coefficients
-        
         eta <- c(X%*%coef) + offset
         pi <- mclogitP(eta,s)
         last.deviance <- deviance
@@ -47,12 +46,12 @@ mclogit.fit <- function(
         deviance <- sum(dev.resids)
           ## check for divergence
           boundary <- FALSE
-          if(!is.finite(deviance)){
+          if(!is.finite(deviance) || deviance > last.deviance && iter > 1){
             if(is.null(last.coef))
                 stop("no valid set of coefficients has been found: please supply starting values", call. = FALSE)
              warning("step size truncated due to divergence", call. = FALSE)
              ii <- 1
-             while (!is.finite(deviance)){
+             while (!is.finite(deviance) || deviance > last.deviance){
                 if(ii > control$maxit)
                   stop("inner loop; cannot correct step size")
                 ii <- ii + 1
