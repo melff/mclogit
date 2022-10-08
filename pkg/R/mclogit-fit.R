@@ -83,7 +83,7 @@ mclogit.fit <- function(
 
     XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
     ww <- w*pi
-    Information <- crossprod(XP,ww*XP)
+    XWX <- crossprod(XP,ww*XP)
         
     ntot <- length(y)
     pi0 <- mclogitP(offset,s)
@@ -108,7 +108,8 @@ mclogit.fit <- function(
                                       method=odisp.method)
     }
     else phi <- 1
-    
+
+
     return(list(
         coefficients = drop(coef),
         phi = phi,
@@ -128,7 +129,7 @@ mclogit.fit <- function(
         offset = offset,
         converged = converged,
         control=control,
-        covmat=solve(Information)
+        information.matrix=XWX
         ))
 }
 

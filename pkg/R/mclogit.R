@@ -354,7 +354,8 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 vcov.mclogit <- function(object,...){
     phi <- object$phi
     if(!length(phi)) phi <- 1
-    return(object$covmat * phi)
+    cov.unscaled <- safeInverse(object$information.matrix)
+    return(cov.unscaled * phi)
 }
 
 weights.mclogit <- function(object,...){
@@ -374,7 +375,7 @@ summary.mclogit <- function(object,dispersion=NULL,correlation = FALSE, symbolic
     if(is.null(dispersion))
         dispersion <- object$phi
     
-    covmat.scaled <- object$covmat * dispersion
+    covmat.scaled <- vcov(object)
     
     var.cf <- diag(covmat.scaled)
     s.err <- sqrt(var.cf)
@@ -654,7 +655,7 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
 
     coef <- object$coefficients
     info.coef <- object$info.coef
-    vcov.cf <- solve2(info.coef)
+    vcov.cf <- safeInverse(info.coef)
     var.cf <- diag(vcov.cf)
     s.err <- sqrt(var.cf)
     zvalue <- coef/s.err
