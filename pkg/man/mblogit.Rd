@@ -16,6 +16,7 @@ mblogit(
   formula,
   data = parent.frame(),
   random = NULL,
+  catCov = c("free", "diagonal", "single"),
   subset,
   weights = NULL,
   na.action = getOption("na.action"),
@@ -45,6 +46,12 @@ in the model.  If not found in \code{data}, the variables are taken from
 
 \item{random}{an optional formula or list of formulas that specify the
 random-effects structure or NULL.}
+
+\item{catCov}{a character string that specifies optional restrictions
+on the covariances of random effects between the logit equations.
+"free" means no restrictions, "diagonal" means that random effects
+pertinent to different categories are uncorrelated, while "single" means
+that the random effect variances pertinent to all categories are identical.}
 
 \item{subset}{an optional vector specifying a subset of observations to be
 used in the fitting process.}

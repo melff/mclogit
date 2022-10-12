@@ -12,6 +12,11 @@
 #'     \code{glm} is called.
 #' @param random an optional formula or list of formulas that specify the
 #'     random-effects structure or NULL.
+#' @param catCov a character string that specifies optional restrictions
+#'     on the covariances of random effects between the logit equations.
+#'     "free" means no restrictions, "diagonal" means that random effects
+#'     pertinent to different categories are uncorrelated, while "single" means
+#'     that the random effect variances pertinent to all categories are identical.
 #' @param subset an optional vector specifying a subset of observations to be
 #'     used in the fitting process.
 #' @param weights an optional vector of weights to be used in the fitting
@@ -97,6 +102,7 @@
 mblogit <- function(formula,
                     data=parent.frame(),
                     random=NULL,
+                    catCov=c("free","diagonal","single"),
                     subset,
                     weights=NULL,
                     na.action = getOption("na.action"),
@@ -156,6 +162,7 @@ mblogit <- function(formula,
                     "break.on.increase",
                     "break.on.infinite",
                     "break.on.negative")
+        catCov <- match.arg(catCov)
     }
     else if(length(groups)){
         mf0 <- eval(mf, parent.frame())
@@ -205,6 +212,8 @@ mblogit <- function(formula,
 
     if(is.factor(Y)){
         response.type <- "factor"
+        n.categs <- nlevels(Y)
+        n.obs <- length(Y)
         if(from.table){
             # Create an appropriate response matrix if data
             # come from a table of frequencies
@@ -254,6 +263,8 @@ mblogit <- function(formula,
         }
     } else if(is.matrix(Y)){
         response.type <- "matrix"
+        n.categs <- ncol(Y)
+        n.obs <- nrow(Y)
         
         D <- diag(ncol(Y))[,-1, drop=FALSE]
         if(length(colnames(Y))){
@@ -321,46 +332,137 @@ mblogit <- function(formula,
         suppressWarnings(Z <- lapply(rt,model.matrix,mf,
                                      contrasts.arg=contrasts))
         # Use suppressWarnings() to stop complaining about unused contasts
-        
-        ZD <- lapply(Z,`%x%`,D)
-        d <- sapply(ZD,ncol)
 
-        nn <- length(ZD)
-        for(k in 1:nn){
-            colnames(ZD[[k]]) <- paste0(rep(colnames(D),ncol(Z[[k]])),
-                                        "~",
-                                        rep(colnames(Z[[k]]),each=ncol(D)))
-            colnames(ZD[[k]]) <- gsub("(Intercept)","1",colnames(ZD[[k]]),fixed=TRUE)
+        if(catCov == "free"){
+            ZD <- lapply(Z,`%x%`,D)
+            d <- sapply(ZD,ncol)
+
+            nn <- length(ZD)
+            for(k in 1:nn){
+                colnames(ZD[[k]]) <- paste0(rep(colnames(D),ncol(Z[[k]])),
+                                            "~",
+                                            rep(colnames(Z[[k]]),each=ncol(D)))
+                colnames(ZD[[k]]) <- gsub("(Intercept)","1",colnames(ZD[[k]]),fixed=TRUE)
+            }
+
+            randstruct <- lapply(1:nn,function(k){
+                group.labels <- random[[k]]$groups
+                groups <- mf[group.labels]
+                groups <- lapply(groups,as.factor)
+                nlev <- length(groups)
+                if(nlev > 1){
+                    for(i in 2:nlev){
+                        groups[[i]] <- interaction(groups[c(i-1,i)])
+                        group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
+                    }
+                }
+                groups <- lapply(groups,rep,each=nrow(D))
+                
+                VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
+                ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
+                d <- rep(d[k],nlev)
+                names(groups) <- group.labels
+                list(ZD_k,groups,d,VarCov.names.k)
+            })
+            ZD <- lapply(randstruct,`[[`,1)
+            groups <- lapply(randstruct,`[[`,2)
+            d <- lapply(randstruct,`[[`,3)
+            VarCov.names <- lapply(randstruct,`[[`,4)
+            ZD <- unlist(ZD,recursive=FALSE)
+            groups <- unlist(groups,recursive=FALSE)
+            VarCov.names <- unlist(VarCov.names,recursive=FALSE)
+            d <- unlist(d)
+            ZD <- blockMatrix(ZD,ncol=length(ZD))
+        } else if(catCov =="single"){
+            cc <- rep(1:n.categs,n.obs)
+            stopifnot(length(Y)==length(cc))
+            d <- sapply(Z,ncol)
+
+            nn <- length(Z)
+
+            for(k in 1:nn){
+                colnames(Z[[k]]) <- paste0("~",colnames(Z[[k]]))
+                colnames(Z[[k]]) <- gsub("(Intercept)","1",colnames(Z[[k]]),fixed=TRUE)
+            }
+
+            randstruct <- lapply(1:nn,function(k){
+                group.labels <- random[[k]]$groups
+                groups <- mf[group.labels]
+                groups <- lapply(groups,as.factor)
+                nlev <- length(groups)
+                groups[[1]] <- interaction(cc,groups[[1]])
+                if(nlev > 1){
+                    for(i in 2:nlev){
+                        groups[[i]] <- interaction(groups[c(i-1,i)])
+                        group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
+                    }
+                }
+                
+                VarCov.names.k <- rep(list(colnames(Z[[k]])),nlev)
+                ZD_k <- lapply(groups,mkZ,rX=Z[[k]])
+                d <- rep(d[k],nlev)
+                names(groups) <- group.labels
+                list(ZD_k,groups,d,VarCov.names.k)
+            })
+            ZD <- lapply(randstruct,`[[`,1)
+            groups <- lapply(randstruct,`[[`,2)
+            d <- lapply(randstruct,`[[`,3)
+            VarCov.names <- lapply(randstruct,`[[`,4)
+            ZD <- unlist(ZD,recursive=FALSE)
+            groups <- unlist(groups,recursive=FALSE)
+            VarCov.names <- unlist(VarCov.names,recursive=FALSE)
+            d <- unlist(d)
+            ZD <- blockMatrix(ZD,ncol=length(ZD))
+        } else { # catCov == "diagonal"
+            categs <- 1:n.categs
+            cc <- rep(categs,n.obs)
+            stopifnot(length(Y)==length(cc))
+            randstruct <- list()
+            for(categ in categs){
+                u <- as.integer(categ==categs)
+
+                ZD <- lapply(Z,`%x%`,u)
+                d <- sapply(ZD,ncol)
+
+                nn <- length(ZD)
+
+                for(k in 1:nn){
+                    colnames(ZD[[k]]) <- paste0(rownames(D)[categ],"~",colnames(Z[[k]]))
+                    colnames(ZD[[k]]) <- gsub("(Intercept)","1",colnames(ZD[[k]]),fixed=TRUE)
+                }
+
+                randstruct_c <- lapply(1:nn,function(k){
+                    group.labels <- random[[k]]$groups
+                    groups <- mf[group.labels]
+                    groups <- lapply(groups,as.factor)
+                    nlev <- length(groups)
+                    if(nlev > 1){
+                        for(i in 2:nlev){
+                            groups[[i]] <- interaction(groups[c(i-1,i)])
+                            group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
+                        }
+                    }
+                    groups <- lapply(groups,rep,each=nrow(D))
+                    
+                    VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
+                    ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
+                    d <- rep(d[k],nlev)
+                    names(groups) <- group.labels
+                    list(ZD_k,groups,d,VarCov.names.k)
+                })
+                randstruct <- c(randstruct,randstruct_c)
+            }
+            ZD <- lapply(randstruct,`[[`,1)
+            groups <- lapply(randstruct,`[[`,2)
+            d <- lapply(randstruct,`[[`,3)
+            VarCov.names <- lapply(randstruct,`[[`,4)
+            ZD <- unlist(ZD,recursive=FALSE)
+            groups <- unlist(groups,recursive=FALSE)
+            VarCov.names <- unlist(VarCov.names,recursive=FALSE)
+            d <- unlist(d)
+            ZD <- blockMatrix(ZD,ncol=length(ZD))
         }
 
-        randstruct <- lapply(1:nn,function(k){
-            group.labels <- random[[k]]$groups
-            groups <- mf[group.labels]
-            groups <- lapply(groups,as.factor)
-            nlev <- length(groups)
-            if(nlev > 1){
-                for(i in 2:nlev){
-                    groups[[i]] <- interaction(groups[c(i-1,i)])
-                    group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
-                }
-            }
-            groups <- lapply(groups,rep,each=nrow(D))
-            
-            VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
-            ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
-            d <- rep(d[k],nlev)
-            names(groups) <- group.labels
-            list(ZD_k,groups,d,VarCov.names.k)
-        })
-        ZD <- lapply(randstruct,`[[`,1)
-        groups <- lapply(randstruct,`[[`,2)
-        d <- lapply(randstruct,`[[`,3)
-        VarCov.names <- lapply(randstruct,`[[`,4)
-        ZD <- unlist(ZD,recursive=FALSE)
-        groups <- unlist(groups,recursive=FALSE)
-        VarCov.names <- unlist(VarCov.names,recursive=FALSE)
-        d <- unlist(d)
-        ZD <- blockMatrix(ZD,ncol=length(ZD))
         fit <- mmclogit.fitPQLMQL(y=Y,s=s,w=weights,
                                   X=XD,Z=ZD,d=d,
                                   start=start,
