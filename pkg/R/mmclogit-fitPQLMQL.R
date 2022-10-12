@@ -6,6 +6,8 @@ mmclogit.fitPQLMQL <- function(
                                Z,
                                d,
                                start = NULL,
+                               start.Phi = NULL,
+                               start.b = NULL,
                                offset = NULL,
                                method = c("PQL","MQL"),
                                estimator = c("ML","REML"),
@@ -28,6 +30,13 @@ mmclogit.fitPQLMQL <- function(
     if(length(start)){
       stopifnot(length(start)==ncol(X))
       eta <- c(X%*%start) + offset
+      if(method=="PQL"){
+          if(length(start.b) == nlevs){
+              for(k in 1:nlevs)
+                  eta <- eta +  as.vector(Z[[k]]%*%start.b[[k]])
+          }
+          else stop("PQL requires starting values for random effects")
+      }
     }
     else
       eta <- mclogitLinkInv(y,s,w)
@@ -58,7 +67,8 @@ Please reconsider your model specification."
     prev.last.deviance <- NULL
     last.eta <- eta
     
-    
+    coef <- start
+    Phi <- start.Phi
     for(iter in 1:control$maxit){
 
         W <- Matrix(0,nrow=nobs,ncol=nsets)
@@ -67,16 +77,19 @@ Please reconsider your model specification."
 
         y.star <- eta - offset + (y-pi)/pi
 
+        # cat("\n")
+        # print(head(y.star))
+        
         prev.last.parms <- last.parms
         last.parms <- parms
         
-        parms <- try(PQLMQL_innerFit(y.star,X,Z,W,d,offset,method,estimator,control),
+        parms <- try(PQLMQL_innerFit(y.star,X,alpha.start=coef,Z,Phi.start=Phi,W,d,offset,method,estimator,control),
                    silent=TRUE)
 
         step.back <- FALSE
         if(inherits(parms,"try-error")){
             if(length(prev.last.deviance) && 
-               prev.deviance > prev.last.deviance && 
+               last.deviance > prev.last.deviance && 
                length(prev.last.parms)){
                 # Previous step increased the deviance, so we better step back twice
                 warning("Numeric problems in inner iteration and previous step increased deviance,
@@ -125,6 +138,12 @@ Please reconsider your model specification."
 
         eta <- fit$eta
         pi <- fit$pi
+        coef <- parms$coefficients$fixed
+        Phi <- parms$Phi
+        # print(start)
+        # print(coef)
+        # print(start.Phi)
+        # print(Phi)
         if(step.back) {
             if(control$trace)
                 cat(" - new deviance = ",deviance)
@@ -207,7 +226,7 @@ matrank <- function(x) {
 }
 
 
-PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
+PQLMQL_innerFit <- function(y,X,alpha.start,Z,Phi.start,W,d,offset,method,estimator,control){
 
     nlevs <- length(Z)
 
@@ -220,29 +239,31 @@ PQLMQL_innerFit <- function(y,X,Z,W,d,offset,method,estimator,control){
     XWy <- crossprod(X,Wy)
     yWy <- crossprod(y,Wy)
     
-    alpha.start <- solve(XWX,XWy)
+    if(!length(alpha.start))
+        alpha.start <- solve(XWX,XWy)
 
     y.Xalpha <- as.vector(y - X%*%alpha.start)
 
-    Phi.start <- list()
-    for(k in 1:nlevs){
-        Z.k <- Z[[k]]
-        ZZ.k <- crossprod(Z.k)
-        ZyXa.k <- crossprod(Z.k,y.Xalpha)
-        ZZ.k <- ZZ.k + Diagonal(ncol(ZZ.k))
-        b.k <- solve(ZZ.k,ZyXa.k)
-        m.k <- m[k]
-        d.k <- d[k]
-        dim(b.k) <- c(d.k,m.k)
-        S.k <- tcrossprod(b.k)
-        if(matrank(S.k) < d.k){
+    if(!length(Phi.start)){
+        Phi.start <- list()
+        for(k in 1:nlevs){
+            Z.k <- Z[[k]]
+            ZZ.k <- crossprod(Z.k)
+            ZyXa.k <- crossprod(Z.k,y.Xalpha)
+            ZZ.k <- ZZ.k + Diagonal(ncol(ZZ.k))
+            b.k <- solve(ZZ.k,ZyXa.k)
+            m.k <- m[k]
+            d.k <- d[k]
+            dim(b.k) <- c(d.k,m.k)
+            S.k <- tcrossprod(b.k)
+            if(matrank(S.k) < d.k){
             #warning(sprintf("Singular initial covariance matrix at level %d in inner fitting routine",k))
-            S.k <- diag(S.k)
-            S.k <- diag(x=S.k,nrow=d)
+                S.k <- diag(S.k)
+                S.k <- diag(x=S.k,nrow=d)
+            }
+            Phi.start[[k]] <- S.k/(m.k-1)
         }
-        Phi.start[[k]] <- S.k/(m.k-1)
     }
-
     Psi.start <- lapply(Phi.start,safeInverse)
     Lambda.start <- lapply(Psi.start,chol)
     lambda.start <- unlist(lapply(Lambda.start,uvech))

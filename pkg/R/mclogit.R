@@ -165,17 +165,29 @@ mclogit <- function(
                 " from model due to insufficient within-choice set variance")
         X <- X[,!const,drop=FALSE]
     }
-    if(!length(start)){
-      drop.coefs <- check.mclogit.drop.coefs(Y,sets,weights,X,
-                                             offset = offset)
-      if(any(drop.coefs)){
+    drop.coefs <- check.mclogit.drop.coefs(Y,sets,weights,X,
+                                           offset = offset)
+    if(any(drop.coefs)){
         warning("removing ",paste(colnames(X)[drop.coefs],collapse=",")," from model")
         X <- X[,!drop.coefs,drop=FALSE]
-      }
     }
     if(ncol(X)<1)
         stop("No predictor variable remains in model")
     
+    start.VarCov <- NULL
+    start.randeff <- NULL
+    if(length(start)){
+        start.VarCov <- attr(start,"VarCov")
+        start.randeff <- attr(start,"random.effects")
+        start.names <- names(start)
+        X.names <- colnames(X)
+        if(length(start.names))
+            start <- start[X.names]
+        if(length(start)!=ncol(X))
+            stop("Columns of 'start' argument do not match independent variables.")
+    }
+
+
     if(!length(random)){
         fit <- mclogit.fit(y=Y,s=sets,w=weights,X=X,
                        dispersion=dispersion,
@@ -245,6 +257,9 @@ mclogit <- function(
         Z <- blockMatrix(Z,ncol=length(Z))
         fit <- mmclogit.fitPQLMQL(Y,sets,weights,X,Z,
                                   d=d,
+                                  start=start,
+                                  start.Phi=start.VarCov,
+                                  start.b=start.randeff,
                                   method = method,
                                   estimator=estimator,
                                   control=control,
@@ -331,7 +346,7 @@ checkRandomFormula <- function(x){
 
 
 print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
-    cat(paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
+    cat("\nCall: ",paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
     if(length(coef(x))) {
         cat("Coefficients")
         if(is.character(co <- x$contrasts))

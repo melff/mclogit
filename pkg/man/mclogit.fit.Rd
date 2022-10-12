@@ -14,7 +14,10 @@ mclogit.fit(y, s, w, X,
             start = NULL, offset = NULL,
             control = mclogit.control())
 
-mmclogit.fitPQLMQL(y, s, w, X, Z, d, start,
+mmclogit.fitPQLMQL(y, s, w, X, Z, d, 
+                   start = NULL,
+                   start.Phi = NULL,
+                   start.b = NULL,
                    offset = NULL, method=c("PQL","MQL"),
                    estimator = c("ML","REML"),
                    control = mmclogit.control())
@@ -34,6 +37,10 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, d, start,
   }
   \item{offset}{an optional model offset. Currently only supported
     for models without random effects.}
+  \item{start.Phi}{an optional matrix of strarting values for the
+    (co-)variance parameters.}
+  \item{start.b}{an optional list of vectors with starting values
+    for the random effects.}
   \item{method}{a character string, either "PQL" or "MQL", specifies
     the type of the quasilikelihood approximation.}
   \item{estimator}{a character string; either "ML" or "REML",

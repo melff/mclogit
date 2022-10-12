@@ -91,9 +91,14 @@ mclogit(formula, data=parent.frame(), random=NULL,
     default is \code{\link{na.omit}}.  Another possible value is
     \code{NULL}, no action.  Value \code{\link{na.exclude}} can be useful.}
 
-  \item{start}{an optional numerical vector of starting values
-    for the conditional logit parameters.
-  }
+  \item{start}{an optional numerical vector of starting values for the
+    conditional logit parameters.  If the model has random effects, the
+    vector should have a "VarCov" attribute wtih starting values for the
+    random effects (co-)variances. If the random effects model is
+    estimated with the "PQL" method, the starting values matrix should
+    also have a "random.effects" attribute, which should have the same
+    structure as the "random.effects" component of an object returned by
+    \code{mblogit()}.  }
 
   \item{model}{a logical value indicating whether \emph{model frame}
     should be included as a component of the returned value.}

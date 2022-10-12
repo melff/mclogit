@@ -37,6 +37,14 @@
 #' @param dispersion a logical value or a character string; whether and how a
 #'     dispersion parameter should be estimated. For details see
 #'     \code{\link{dispersion}}.
+#' @param  start an optional matrix of starting values (with as many rows
+#'     as logit equations). If the model has random effects, the matrix
+#'     should have a "VarCov" attribute wtih starting values for
+#'     the random effects (co-)variances. If the random effects model
+#'     is estimated with the "PQL" method, the starting values matrix
+#'     should also have a "random.effects" attribute, which should have
+#'     the same structure as the "random.effects" component of an object
+#'     returned by \code{mblogit()}.
 #' @param from.table a logical value; do the data represent a contingency table,
 #'     e.g. were created by applying \code{as.data.frame()} a the result of
 #'     \code{table()} or \code{xtabs()}.  This relevant only if the response is
@@ -97,6 +105,7 @@ mblogit <- function(formula,
                     method = NULL,
                     estimator=c("ML","REML"),
                     dispersion = FALSE,
+                    start = NULL,
                     from.table = FALSE,
                     groups = NULL,
                     control=if(length(random))
@@ -269,6 +278,22 @@ mblogit <- function(formula,
         Y <- as.vector(t(Y))
     }
     else stop("response must either be a factor or a matrix of counts or dummies")
+
+    start.VarCov <- NULL
+    start.randeff <- NULL
+    if(length(start)){
+        start.VarCov <- attr(start,"VarCov")
+        start.randeff <- attr(start,"random.effects")
+        if(nrow(start)!=ncol(D))
+            stop("Rows of 'start' argument do not match dependent variable.")
+        start.names <- colnames(start)
+        X.names <- colnames(X)
+        if(length(start.names))
+            start <- start[,X.names,drop=FALSE]
+        if(ncol(start)!=ncol(X))
+             stop("Columns of 'start' argument do not match independent variables.")
+        start <- as.vector(start)
+    }
     
     s <- rep(seq_len(nrow(X)),each=nrow(D))
     
@@ -281,6 +306,7 @@ mblogit <- function(formula,
     if(!length(random))
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
                            dispersion=dispersion,
+                           start=start,
                            control=control)
     else { ## random effects
 
@@ -337,6 +363,9 @@ mblogit <- function(formula,
         ZD <- blockMatrix(ZD,ncol=length(ZD))
         fit <- mmclogit.fitPQLMQL(y=Y,s=s,w=weights,
                                   X=XD,Z=ZD,d=d,
+                                  start=start,
+                                  start.Phi=start.VarCov,
+                                  start.b=start.randeff,
                                   method=method,
                                   estimator=estimator,
                                   control=control,
@@ -371,6 +400,7 @@ mblogit <- function(formula,
                       contrasts = contrasts,
                       xlevels = xlevels,
                       na.action = na.action,
+                      start = start,
                       prior.weights=prior.weights,
                       weights=weights,
                       model=mf,
@@ -389,7 +419,7 @@ mblogit <- function(formula,
 
 
 print.mblogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
-  cat("\nCall: ", deparse(x$call), "\n\n")
+  cat("\nCall: ",paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
   
   D <- x$D
   
