@@ -285,6 +285,10 @@ PQLMQL_innerFit <- function(y,X,alpha.start,Z,Phi.start,W,d,offset,method,estima
                        gradient = ngrfunc1,
                        control = list(trace = as.integer(control$trace.inner))
                        )
+    if(res.port$convergence != 0){
+        warning(sprintf("Inner iterations did not coverge - nlminb message: %s",res.port$message),
+                call.=FALSE,immediate.=TRUE)
+    }
 
     lambda <- res.port$par
     info.lambda <- info_func1(lambda)
