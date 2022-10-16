@@ -15,7 +15,8 @@ mmclogit.fitPQLMQL <- function(
                                ){
 
     method <- match.arg(method)
-    
+    estimator <- match.arg(estimator)
+
     nvar <- ncol(X)
     nobs <- length(y)
     nsets <- length(unique(s))
@@ -696,7 +697,7 @@ Lambda2log.det.iSigma_1 <- function(Lambda,m){
         svd.Psi <- svd(Psi)
         dLambda <- svd.Psi$d/2
     }
-    m*sum(log(dLambda))
+    2*m*sum(log(dLambda))
 }
 
 

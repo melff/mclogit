@@ -648,8 +648,7 @@ print.mmclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
         print.default(VarCov.k, print.gap = 2, quote = FALSE)
     }
     
-    cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
-        "\nResidual Deviance:", format(signif(x$deviance, digits)))
+    cat("\nApproximate residual deviance:", format(signif(x$deviance, digits)))
     if(!x$converged) cat("\n\nNote: Algorithm did not converge.\n")
     if(nchar(mess <- naprint(x$na.action))) cat("  (",mess, ")\n", sep="")
     else cat("\n")
@@ -746,9 +745,8 @@ print.summary.mmclogit <-
         writeLines(VarCov.k)
     }
 
-    cat("\nNull Deviance:    ", format(signif(x$null.deviance, digits)),
-        "\nResidual Deviance:", format(signif(x$deviance, digits)),
-        "\nNumber of Fisher Scoring iterations: ", x$iter)
+    cat("\nApproximate residual deviance:", format(signif(x$deviance, digits)),
+        "\nNumber of Fisher scoring iterations: ", x$iter)
 
     cat("\nNumber of observations")
     for(i in seq_along(x$groups)){

@@ -594,9 +594,8 @@ print.summary.mblogit <-
     if(x$dispersion != 1)
         cat("\nDispersion: ",x$dispersion," on ",x$df.residual," degrees of freedom")
 
-    cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
-        "\nResidual Deviance:", format(signif(x$deviance, digits)),
-        "\nNumber of Fisher Scoring iterations: ", x$iter,
+    cat("\nApproximate residual Deviance:", format(signif(x$deviance, digits)),
+        "\nNumber of Fisher scoring iterations: ", x$iter,
         "\nNumber of observations: ",x$N,
         "\n")
     correl <- x$correlation
@@ -828,9 +827,8 @@ print.summary.mmblogit <-
         writeLines(VarCov.k)
     }
 
-    cat("\nNull Deviance:    ", format(signif(x$null.deviance, digits)),
-        "\nResidual Deviance:", format(signif(x$deviance, digits)),
-        "\nNumber of Fisher Scoring iterations: ", x$iter)
+    cat("\nApproximate residual deviance:", format(signif(x$deviance, digits)),
+        "\nNumber of Fisher scoring iterations: ", x$iter)
 
     cat("\nNumber of observations")
     for(i in seq_along(x$groups)){
