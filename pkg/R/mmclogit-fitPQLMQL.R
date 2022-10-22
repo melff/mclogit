@@ -21,6 +21,7 @@ mmclogit.fitPQLMQL <- function(
     nobs <- length(y)
     nsets <- length(unique(s))
     nlevs <- length(Z)
+    m <- sapply(Z,ncol)/d
 
     sqrt.w <- sqrt(w)
 
@@ -67,9 +68,24 @@ Please reconsider your model specification."
     last.deviance <- deviance
     prev.last.deviance <- NULL
     last.eta <- eta
+
+    model.struct <- list(y=y,
+                         s=s,
+                         nsets=nsets,
+                         nobs=nobs,
+                         i=i,
+                         w=w,
+                         sqrt.w=sqrt.w,
+                         offset=offset,
+                         X=X,
+                         Z=Z,
+                         d=d,
+                         m=m,
+                         nlevs=nlevs)
     
-    coef <- start
-    Phi <- start.Phi
+    parms$coefficients <- list(fixed=start,
+                               random=start.b)
+    parms$Phi <- start.Phi
     for(iter in 1:control$maxit){
 
         W <- Matrix(0,nrow=nobs,ncol=nsets)
@@ -84,8 +100,9 @@ Please reconsider your model specification."
         prev.last.parms <- last.parms
         last.parms <- parms
         
-        parms <- try(PQLMQL_innerFit(y.star,X,alpha.start=coef,Z,Phi.start=Phi,W,d,offset,method,estimator,control),
-                   silent=TRUE)
+        aux <- list(y=y.star,W=W)
+
+        parms <- PQLMQL_innerFit(parms,aux,model.struct,method,estimator,control)
 
         step.back <- FALSE
         if(inherits(parms,"try-error")){
@@ -105,7 +122,7 @@ Please reconsider your model specification."
         }
         
         last.fit <- fit
-        fit <- PQLMQL_eval_parms(y,s,w,parms,X,Z,d,offset,method,estimator)
+        fit <- PQLMQL_eval_parms(parms,model.struct,method,estimator)
         
         deviance <- fit$deviance
         if(control$trace){
@@ -227,11 +244,16 @@ matrank <- function(x) {
 }
 
 
-PQLMQL_innerFit <- function(y,X,alpha.start,Z,Phi.start,W,d,offset,method,estimator,control){
+PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
 
-    nlevs <- length(Z)
+    m <- model.struct$m
+    d <- model.struct$d
+    nlevs <- model.struct$nlevs
+    X <- model.struct$X
+    Z <- model.struct$Z
 
-    m <- sapply(Z,ncol)/d
+    y <- aux$y
+    W <- aux$W
 
     # Naive starting values
     Wy <- W%*%y
@@ -240,19 +262,22 @@ PQLMQL_innerFit <- function(y,X,alpha.start,Z,Phi.start,W,d,offset,method,estima
     XWy <- crossprod(X,Wy)
     yWy <- crossprod(y,Wy)
     
+    alpha.start <- parms$coefficients$fixed
+    Phi.start <- parms$Phi
+
     if(!length(alpha.start))
         alpha.start <- solve(XWX,XWy)
 
-    y.Xalpha <- as.vector(y - X%*%alpha.start)
+    y_Xalpha <- as.vector(y - X%*%alpha.start)
 
     if(!length(Phi.start)){
         Phi.start <- list()
         for(k in 1:nlevs){
             Z.k <- Z[[k]]
             ZZ.k <- crossprod(Z.k)
-            ZyXa.k <- crossprod(Z.k,y.Xalpha)
+            Zy_Xa.k <- crossprod(Z.k,y_Xalpha)
             ZZ.k <- ZZ.k + Diagonal(ncol(ZZ.k))
-            b.k <- solve(ZZ.k,ZyXa.k)
+            b.k <- solve(ZZ.k,Zy_Xa.k)
             m.k <- m[k]
             d.k <- d[k]
             dim(b.k) <- c(d.k,m.k)
@@ -274,25 +299,78 @@ PQLMQL_innerFit <- function(y,X,alpha.start,Z,Phi.start,W,d,offset,method,estima
     ZWX <- bMatCrsProd(WZ,X)
     ZWy <- bMatCrsProd(WZ,y)
 
-    nqfunc1 <- function(lambda) -qfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator)
-    ngrfunc1 <- function(lambda) -grfunc(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator)
-
-    info_func1 <- function(lambda) info_func(lambda,d,XWX,ZWX,ZWZ,estimator)
+    aux <- list(yWy=yWy,
+                XWy=XWy,
+                ZWy=ZWy,
+                XWX=XWX,
+                ZWX=ZWX,
+                ZWZ=ZWZ)
 
     if(control$trace.inner) cat("\n")
+
+    devfunc <- function(lambda) 
+       -2*as.vector(PQLMQL_pseudoLogLik(lambda,
+                           model.struct=model.struct,
+                           estimator=estimator,
+                           aux=aux)$logLik)
+    gradfunc <- function(lambda) 
+       -2*as.vector(PQLMQL_pseudoLogLik(lambda,
+                           model.struct=model.struct,
+                           estimator=estimator,
+                           aux=aux,
+                           gradient=TRUE)$gradient) 
+    
     res.port <- nlminb(lambda.start,
-                       objective = nqfunc1,
-                       gradient = ngrfunc1,
+                       objective = devfunc,
+                       gradient = gradfunc,
                        control = list(trace = as.integer(control$trace.inner))
                        )
     if(res.port$convergence != 0){
         warning(sprintf("Inner iterations did not coverge - nlminb message: %s",res.port$message),
                 call.=FALSE,immediate.=TRUE)
     }
-
+    
     lambda <- res.port$par
-    info.lambda <- info_func1(lambda)
-    info.psi <- info_func_psi(lambda,d,XWX,ZWX,ZWZ,estimator)
+
+    # 'nlminb' seems to be more stable - but this allows to check the analyticals.
+    #
+    # dev_f <- function(lambda){
+    #     res <- PQLMQL_pseudoLogLik(lambda,
+    #                        model.struct=model.struct,
+    #                        estimator=estimator,
+    #                        aux=aux,
+    #                        gradient=TRUE)
+    #     structure(-2*res$logLik,
+    #               gradient=-2*res$gradient)
+    # }
+    # 
+    # res.nlm <- nlm(f=dev_f,p=lambda.start,hessian=TRUE,check.analyticals=TRUE,
+    #                print.level=if(control$trace.inner) 2 else 0)
+    # 
+    # if(res.nlm$code > 2){
+    #     nlm.messages <- c("","",
+    #                       paste("Last global step failed to locate a point lower than",
+    #                             "'estimate'.  Either 'estimate' is an approximate local",
+    #                             "minimum of the function or 'steptol' is too small.",sep="\n"),
+    #                       "Iteration limit exceeded.",
+    #                       paste("Maximum step size 'stepmax' exceeded five consecutive",
+    #                             "times.  Either the function is unbounded below, becomes",
+    #                             "asymptotic to a finite value from above in some direction",
+    #                             "or 'stepmax' is too small.",sep="\n"))
+    #     retcode <- res.nlm$code
+    #     cat("\n")
+    #     warning(sprintf("Inner iterations failed to coverge - nlm code indicates: %s",
+    #                     nlm.messages[retcode]),
+    #             call.=FALSE,immediate.=TRUE)
+    # }
+    # lambda <- res.nlm$estimate
+
+    info.varPar <- PQLMQL_pseudoLogLik(lambda,
+                                       model.struct=model.struct,
+                                       estimator=estimator,
+                                       aux=aux,
+                                       info.lambda=TRUE,
+                                       info.psi=TRUE)$info
 
     Lambda <- lambda2Mat(lambda,m,d)
     Psi <- lapply(Lambda,crossprod)
@@ -325,22 +403,33 @@ PQLMQL_innerFit <- function(y,X,alpha.start,Z,Phi.start,W,d,offset,method,estima
         Phi = Phi,
         info.fixed = as.matrix(XiVX),
         info.fixed.random = XZWiSZX,
-        info.lambda = info.lambda,
-        info.psi = info.psi,
+        info.lambda = info.varPar$lambda,
+        info.psi = info.varPar$psi,
         log.det.iSigma = log.det.iSigma,
         log.det.ZiVZ = log.det.ZWZiSigma,
         ZiVZ = ZWZiSigma
     )
  }
 
-PQLMQL_eval_parms <- function(y,s,w,parms,X,Z,d,offset,method,estimator){
+PQLMQL_eval_parms <- function(parms,model.struct,method,estimator){
 
-    nlevs <- length(Z)
+    nlevs <- model.struct$nlevs
+    d <- model.struct$d
+    s <- model.struct$s
+    y <- model.struct$y
+    w <- model.struct$w
+
+    X <- model.struct$X
+    Z <- model.struct$Z
+    offset <- model.struct$offset
+
     alpha <- parms$coefficients$fixed
     b <- parms$coefficients$random
     Psi <- parms$Psi
     ZiVZ <- parms$ZiVZ
+
     eta <- as.vector(X%*%alpha) + offset
+
     if(method=="PQL"){
         rand.ssq <- 0
         for(k in 1:nlevs){
@@ -368,12 +457,26 @@ PQLMQL_eval_parms <- function(y,s,w,parms,X,Z,d,offset,method,estimator){
     )
 }
 
+PQLMQL_pseudoLogLik <- function(lambda,
+                                model.struct,
+                                estimator,
+                                aux,
+                                gradient=FALSE,
+                                info.lambda=FALSE,
+                                info.psi=FALSE
+                   ){
 
-qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
+    nlevs <- model.struct$nlevs
+    d <- model.struct$d
+    m <- model.struct$m
 
-    estimator <- match.arg(estimator,c("ML","REML"))
-    nlevs <- ncol(ZWZ)
-    m <- bM_ncol(ZWZ)%/%d
+    yWy <- aux$yWy
+    XWy <- aux$XWy
+    ZWy <- aux$ZWy
+    XWX <- aux$XWX
+    ZWX <- aux$ZWX
+    ZWZ <- aux$ZWZ
+
     Lambda <- lambda2Mat(lambda,m,d)
     Psi <- lapply(Lambda,crossprod)
     iSigma <- Psi2iSigma(Psi,m)
@@ -389,148 +492,91 @@ qfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
     b <- bMatProd(K,ZWy-bMatProd(ZWX,alpha))
 
     y.aXiVXa.y <- yWy - crossprod(XWy,alpha) - fuseMat(bMatCrsProd(ZWy,b))
-    #S <- mapply(v_bCrossprod,b,d)
-    #bPsib <- mapply(`%*%`,S,Psi)
-    #bPsib <- Reduce(`+`,bPsib)
 
-    
-    #log.det.iSigma <- 2*sum(log(diag(chol_blockMatrix(iSigma,resplit=FALSE))))
     log.det.iSigma <- Lambda2log.det.iSigma(Lambda,m)
     
     log.det.H <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
-    res <- (log.det.iSigma - log.det.H - y.aXiVXa.y)/2
+    logLik <- (log.det.iSigma - log.det.H - y.aXiVXa.y)/2
     if(estimator == "REML"){
         log.det.XiVX <- log.Det(XiVX)
-        res <- res - log.det.XiVX/2
+        logLik <- logLik - log.det.XiVX/2
     }
-    as.vector(res)
+    res <- list(
+        logLik=as.vector(logLik),
+        coefficients=as.vector(alpha),
+        random.effects=b,
+        Psi=Psi
+        )
+
+    if(gradient || info.lambda || info.psi){
+        if(estimator=="REML"){
+            iA <- solve(XiVX)
+            XWZK <- bMatCrsProd(ZWX,K)
+            iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
+            M <- bMatCrsProd(XWZK,iAXWZK)
+        }
+    }
+    
+    if(gradient){
+        if(estimator=="REML"){
+            K <- K + M
+        }
+        Phi <- lapply(Psi,safeInverse)
+        S <- mapply(v_bCrossprod,b,d,SIMPLIFY=FALSE)
+        K.kk <- diag(K)
+        SumK.k <- mapply(sum_blockDiag,K.kk,d,SIMPLIFY=FALSE)
+        Gr <- list()
+        for(k in 1:nlevs)
+            Gr[[k]] <- Lambda[[k]]%*%(m[k]*Phi[[k]] - SumK.k[[k]] - S[[k]])
+        res$gradient <- unlist(lapply(Gr,uvech))
+    }
+    if(info.lambda || info.psi){
+        res$info <- list()
+        T <- iSigma - K
+        if(estimator=="REML"){
+            T <- T - M
+        }
+        if(info.lambda){
+            G.lambda <- d.psi.d.lambda(Lambda)
+            I.lambda <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
+        }
+        if(info.psi)
+            I.psi <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
+        for(k in 1:nlevs){
+            T.k <- T[[k,k]]
+            B.kk <- block_kronSum(T.k,m[k],m[k])
+            if(info.lambda){
+                G.k <- G.lambda[[k]]
+                I.lambda[[k,k]] <- crossprod(G.k,B.kk%*%G.k)
+            }
+            if(info.psi){
+                I.psi[[k,k]] <- B.kk/2
+            }
+            if(k < nlevs){
+                for(k_ in seq(from=k+1,to=nlevs)){
+                    T.kk_ <- T[[k,k_]]
+                    B.kk_ <- block_kronSum(T.kk_,m[k],m[k_])
+                    if(info.lambda){
+                        G.k_ <- G.lambda[[k_]]
+                        I.lambda[[k,k_]] <- crossprod(G.k,B.kk_%*%G.k_)
+                        I.lambda[[k_,k]] <- t(I.lambda[[k,k_]])
+                    }
+                    if(info.psi){
+                        I.psi[[k,k_]] <- B.kk_/2
+                        I.psi[[k_,k]] <- t(I.psi[[k,k_]])
+                    }
+                }
+            }
+        }
+        if(info.lambda)
+            res$info$lambda <- as.matrix(fuseMat(I.lambda))
+        if(info.psi)
+            res$info$psi <- as.matrix(fuseMat(I.psi))
+    }
+    return(res)
 }
 
-grfunc <- function(lambda,y,d,yWy,XWy,ZWy,XWX,ZWX,ZWZ,estimator){
 
-    estimator <- match.arg(estimator,c("ML","REML"))
-    nlevs <- ncol(ZWZ)
-    m <- bM_ncol(ZWZ)%/%d
-    Lambda <- lambda2Mat(lambda,m,d)
-    Psi <- lapply(Lambda,crossprod)
-    iSigma <- Psi2iSigma(Psi,m)
-
-    H <- ZWZ + iSigma
-    K <- solve(H)
-
-    XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
-    XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
-    XiVX <- symmpart(XiVX)
-
-    if(estimator=="REML"){
-        iA <- solve(XiVX)
-        alpha <- iA%*%XiVy
-    }
-    else
-        alpha <- solve(XiVX,XiVy)
-    b <- bMatProd(K,ZWy-bMatProd(ZWX,alpha))
-
-    if(estimator=="REML"){
-        XWZK <- bMatCrsProd(ZWX,K)
-        iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
-        M <- bMatCrsProd(XWZK,iAXWZK)
-        K <- K + M
-    }
-    Phi <- lapply(Psi,safeInverse)
-    S <- mapply(v_bCrossprod,b,d,SIMPLIFY=FALSE)
-    K.kk <- diag(K)
-    SumK.k <- mapply(sum_blockDiag,K.kk,d,SIMPLIFY=FALSE)
-    Gr <- list()
-    for(k in 1:nlevs)
-        Gr[[k]] <- Lambda[[k]]%*%(m[k]*Phi[[k]] - SumK.k[[k]] - S[[k]])
-    gr <- lapply(Gr,uvech)
-    unlist(gr)
-}
-
-info_func_psi <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
-
-    estimator <- match.arg(estimator,c("ML","REML"))
-    nlevs <- ncol(ZWZ)
-    m <- bM_ncol(ZWZ)%/%d
-
-    Lambda <- lambda2Mat(lambda,m,d)
-    Psi <- lapply(Lambda,crossprod)
-    iSigma <- Psi2iSigma(Psi,m)
-
-    H <- ZWZ + iSigma
-    K <- solve(H)
-    T <- iSigma - K
-
-    if(estimator=="REML"){
-        XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
-        XiVX <- symmpart(XiVX)
-        iA <- solve(XiVX)
-        XWZK <- bMatCrsProd(ZWX,K)
-        iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
-        M <- bMatCrsProd(XWZK,iAXWZK)
-        T <- T - M
-    }
-    
-    Imat <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
-    for(k in 1:nlevs) {
-        T.k <- T[[k,k]]
-        B.kk <- block_kronSum(T.k,m[k],m[k])
-        Imat[[k,k]] <- B.kk/2
-        if(k < nlevs)
-            for(k_ in seq(from=k+1,to=nlevs)){
-                T.kk_ <- T[[k,k_]]
-                B.kk_ <- block_kronSum(T.kk_,m[k],m[k_])
-                Imat[[k,k_]] <- B.kk_/2
-                Imat[[k_,k]] <- t(Imat[[k,k_]])
-            }
-    }
-    as.matrix(fuseMat(Imat))
-} 
-
-
-info_func <- function(lambda,d,XWX,ZWX,ZWZ,estimator){
-
-    estimator <- match.arg(estimator,c("ML","REML"))
-    nlevs <- ncol(ZWZ)
-    m <- bM_ncol(ZWZ)%/%d
-
-    Lambda <- lambda2Mat(lambda,m,d)
-    Psi <- lapply(Lambda,crossprod)
-    iSigma <- Psi2iSigma(Psi,m)
-
-    G.lambda <- d.psi.d.lambda(Lambda)
-    
-    H <- ZWZ + iSigma
-    K <- solve(H)
-    T <- iSigma - K
-
-    if(estimator=="REML"){
-        XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
-        XiVX <- symmpart(XiVX)
-        iA <- solve(XiVX)
-        XWZK <- bMatCrsProd(ZWX,K)
-        iAXWZK <- bMatProd(blockMatrix(iA),XWZK)
-        M <- bMatCrsProd(XWZK,iAXWZK)
-        T <- T - M
-    }
-    
-    Imat <- blockMatrix(list(matrix(0,0,0)),nlevs,nlevs)
-    for(k in 1:nlevs) {
-        T.k <- T[[k,k]]
-        B.kk <- block_kronSum(T.k,m[k],m[k])
-        G.k <- G.lambda[[k]]
-        Imat[[k,k]] <- crossprod(G.k,B.kk%*%G.k)/2
-        if(k < nlevs)
-            for(k_ in seq(from=k+1,to=nlevs)){
-                T.kk_ <- T[[k,k_]]
-                B.kk_ <- block_kronSum(T.kk_,m[k],m[k_])
-                G.k_ <- G.lambda[[k_]]
-                Imat[[k,k_]] <- crossprod(G.k,B.kk_%*%G.k_)/2
-                Imat[[k_,k]] <- t(Imat[[k,k_]])
-            }
-    }
-    as.matrix(fuseMat(Imat))
-} 
 
 vech <- function(x) x[lower.tri(x,diag=TRUE)]
 setVech <- function(x,v) {
