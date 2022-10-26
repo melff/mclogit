@@ -38,8 +38,11 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
           
-      - run: |
-          R -e 'install.packages("devtools")'
-          R -e 'devtools::install_deps("pkg")'
+      - name: Install dependencies
+        run: |
+          RScript -e 'install.packages(setdiff(unlist(tools::package_dependencies("mclogit")),installed.packages()[,1]))'
+          
+      - name: Install binary
+        run: |
           R CMD INSTALL -l . --build pkg
         
