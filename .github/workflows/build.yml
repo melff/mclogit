@@ -40,6 +40,6 @@ jobs:
           
       - run: |
           R -e 'install.packages("devtools")'
-          R -e 'devtools::install_deps(".")'
+          R -e 'devtools::install_deps("pkg")'
           R CMD INSTALL -l . --build pkg
         
