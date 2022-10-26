@@ -20,9 +20,9 @@ jobs:
       matrix:
         config:
           - {os: macos-latest,   r: 'release'}
-          - {os: windows-latest, r: 'release'}
+          # - {os: windows-latest, r: 'release'}
           # - {os: ubuntu-latest,   r: 'devel', http-user-agent: 'release'}
-          - {os: ubuntu-latest,   r: 'release'}
+          # - {os: ubuntu-latest,   r: 'release'}
           # - {os: ubuntu-latest,   r: 'oldrel-1'}
 
     env:
@@ -44,7 +44,9 @@ jobs:
         with:
           extra-packages: any::rcmdcheck
           needs: check
+          working-directory: pkg
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+          working-directory: pkg
