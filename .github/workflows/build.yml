@@ -7,8 +7,6 @@ on:
     types: [published]
   workflow_dispatch:
 
-name: R build binary package
-
 on:
   push:
     branches: [main, master]
