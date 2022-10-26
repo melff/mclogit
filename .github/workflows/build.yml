@@ -39,5 +39,7 @@ jobs:
           use-public-rspm: true
           
       - run: |
+          R -e 'install.packages("devtools")'
+          R -e 'devtools::install_deps(".")'
           R CMD INSTALL -l . --build pkg
         
