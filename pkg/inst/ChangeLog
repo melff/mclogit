@@ -1,3 +1,22 @@
+2022-10-23:
+  - Refactored MQL/PQL algorithm: Eliminated redundant code and adapted it to
+    both 'nlm' and 'nlminb'
+
+2022-10-16:
+  - Fixed bug in MQL/PQL-objective function that led to false non-convergence and
+    bias in variance parameter estimates
+
+2022-10-12:
+  - Support for starting values in random effects models
+  - Support for restriction on random effects variances in multinomial baseline
+    logit models
+
+2022-10-09:
+  - Improve handling of boundary values and singular information matrices
+
+2022-10-07:
+  - Remove spurious messages about missing starting values
+
 2022-05-21:
   - Add checks of 'control=' argument of 'mclogit()' and 'mblogit()'.
 
