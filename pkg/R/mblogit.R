@@ -480,7 +480,7 @@ mblogit <- function(formula,
     
     coefficients <- fit$coefficients
     coefmat <- matrix(coefficients,nrow=ncol(D),
-                      dimnames=list("Response categories"=colnames(D),
+                      dimnames=list("Logit eqn."=colnames(D),
                                     "Predictors"=colnames(X)
                                     ))
     
