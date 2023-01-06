@@ -13,7 +13,6 @@ mmclogit.fitPQLMQL <- function(
                                estimator = c("ML","REML"),
                                control=mmclogit.control()
                                ){
-
     method <- match.arg(method)
     estimator <- match.arg(estimator)
 
@@ -319,51 +318,98 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
                            estimator=estimator,
                            aux=aux,
                            gradient=TRUE)$gradient) 
-    
-    res.port <- nlminb(lambda.start,
-                       objective = devfunc,
-                       gradient = gradfunc,
-                       control = list(trace = as.integer(control$trace.inner))
-                       )
-    if(res.port$convergence != 0){
-        warning(sprintf("Inner iterations did not coverge - nlminb message: %s",res.port$message),
-                call.=FALSE,immediate.=TRUE)
-    }
-    
-    lambda <- res.port$par
 
-    # 'nlminb' seems to be more stable - but this allows to check the analyticals.
-    #
-    # dev_f <- function(lambda){
-    #     res <- PQLMQL_pseudoLogLik(lambda,
-    #                        model.struct=model.struct,
-    #                        estimator=estimator,
-    #                        aux=aux,
-    #                        gradient=TRUE)
-    #     structure(-2*res$logLik,
-    #               gradient=-2*res$gradient)
-    # }
-    # 
-    # res.nlm <- nlm(f=dev_f,p=lambda.start,hessian=TRUE,check.analyticals=TRUE,
-    #                print.level=if(control$trace.inner) 2 else 0)
-    # 
-    # if(res.nlm$code > 2){
-    #     nlm.messages <- c("","",
-    #                       paste("Last global step failed to locate a point lower than",
-    #                             "'estimate'.  Either 'estimate' is an approximate local",
-    #                             "minimum of the function or 'steptol' is too small.",sep="\n"),
-    #                       "Iteration limit exceeded.",
-    #                       paste("Maximum step size 'stepmax' exceeded five consecutive",
-    #                             "times.  Either the function is unbounded below, becomes",
-    #                             "asymptotic to a finite value from above in some direction",
-    #                             "or 'stepmax' is too small.",sep="\n"))
-    #     retcode <- res.nlm$code
-    #     cat("\n")
-    #     warning(sprintf("Inner iterations failed to coverge - nlm code indicates: %s",
-    #                     nlm.messages[retcode]),
-    #             call.=FALSE,immediate.=TRUE)
-    # }
-    # lambda <- res.nlm$estimate
+    if(control$inner.optimizer=="nlminb"){
+    
+        res.port <- nlminb(lambda.start,
+                           objective = devfunc,
+                           gradient = gradfunc,
+                           control = list(trace = as.integer(control$trace.inner),
+                                          iter.max=control$maxit.inner)
+                           )
+        if(res.port$convergence != 0){
+            warning(sprintf("Possible non-convergence of inner iterations - nlminb message: %s",res.port$message),
+                    call.=FALSE,immediate.=TRUE)
+        }
+        
+        lambda <- res.port$par
+    }
+    else if(control$inner.optimizer=="nlm") {
+
+        # 'nlminb' seems to be more stable - but this allows to check the analyticals.
+        
+        dev_f <- function(lambda){
+            res <- PQLMQL_pseudoLogLik(lambda,
+                                       model.struct=model.struct,
+                                       estimator=estimator,
+                                       aux=aux,
+                                       gradient=TRUE)
+            structure(-2*res$logLik,
+                      gradient=-2*res$gradient)
+        }
+        
+        res.nlm <- nlm(f = dev_f,
+                       p = lambda.start,
+                       check.analyticals = TRUE,
+                       print.level = if(control$trace.inner) 2 else 0,
+                       iterlim = control$maxit.inner)
+        
+        if(res.nlm$code > 2){
+            nlm.messages <- c("","",
+                              paste("Last global step failed to locate a point lower than",
+                                    "'estimate'.  Either 'estimate' is an approximate local",
+                                    "minimum of the function or 'steptol' is too small.",sep="\n"),
+                              "Iteration limit exceeded.",
+                              paste("Maximum step size 'stepmax' exceeded five consecutive",
+                                    "times.  Either the function is unbounded below, becomes",
+                                    "asymptotic to a finite value from above in some direction",
+                                    "or 'stepmax' is too small.",sep="\n"))
+            retcode <- res.nlm$code
+            cat("\n")
+            warning(sprintf("Possible non-convergence of inner iterations - nlm code indicates:\n %s",
+                            nlm.messages[retcode]),
+                    call.=FALSE,immediate.=TRUE)
+        }
+        lambda <- res.nlm$estimate
+    } else if(control$inner.optimizer %in% 
+              c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN")){
+        optim.method <- control$inner.optimizer
+        optim.control <- list(
+            trace = as.integer(control$trace.inner),
+            maxit = control$maxit.inner,
+            REPORT = switch(control$inner.optimizer,
+                            SANN          = 100,
+                            `Nelder-Mead` = 100,
+                                            1),
+            type  = if(optim.method == "CG") control$CG.type,
+            alpha = if(optim.method == "Nelder-Mead") control$NM.alpha,
+            beta  = if(optim.method == "Nelder-Mead") control$NM.beta,
+            gamma = if(optim.method == "Nelder-Mead") control$NM.gamma,
+            temp  = if(optim.method == "SANN") control$SANN.temp,
+            tmax  = if(optim.method == "SANN") control$SANN.tmax
+        )
+        res.optim <- optim(par     = lambda.start,
+                           fn      = devfunc,
+                           gr      = gradfunc,
+                           method  = optim.method,
+                           control = optim.control
+                           )
+        if(res.optim$convergence > 0){
+            if(res.optim$convergence == 1) 
+                warning("Inner iterations did not converge",
+                        call.=FALSE,immediate.=TRUE)
+            if(res.optim$convergence == 10) 
+                warning("Degeneracy of the Nelder-Mead simplex",
+                        call.=FALSE,immediate.=TRUE)
+            if(length(res.optim$message))
+                warning(sprintf("Message from 'optim':\n%s",
+                                res.optim$message),
+                        call.=FALSE,immediate.=TRUE)
+        }
+        lambda <- res.optim$par
+    }
+    else
+        stop(sprintf("Unknown optimizer '%s'",control$inner.optimizer))
 
     info.varPar <- PQLMQL_pseudoLogLik(lambda,
                                        model.struct=model.struct,
@@ -629,18 +675,39 @@ mmclogit.control <- function(
                              avoid.increase = FALSE,
                              break.on.increase = FALSE,
                              break.on.infinite = FALSE,
-                             break.on.negative = FALSE
+                             break.on.negative = FALSE,
+                             inner.optimizer = "nlminb",
+                             maxit.inner = switch(inner.optimizer,
+                                                  SANN          = 10000,
+                                                  `Nelder-Mead` = 500,
+                                                                  100),
+                             CG.type = 1,
+                             NM.alpha = 1,
+                             NM.beta = 0.5,
+                             NM.gamma = 2.0,
+                             SANN.temp = 10,
+                             SANN.tmax = 10
                             ) {
     if (!is.numeric(epsilon) || epsilon <= 0)
         stop("value of epsilon must be > 0")
     if (!is.numeric(maxit) || maxit <= 0)
         stop("maximum number of iterations must be > 0")
+    m <- match.call()
+    
     list(epsilon = epsilon, maxit = maxit,
          trace = trace, trace.inner = trace.inner,
          avoid.increase = avoid.increase,
          break.on.increase = break.on.increase,
          break.on.infinite = break.on.infinite,
-         break.on.negative = break.on.negative
+         break.on.negative = break.on.negative,
+         inner.optimizer = inner.optimizer,
+         maxit.inner = maxit.inner,
+         CG.type = CG.type,
+         NM.alpha = NM.alpha,
+         NM.beta = NM.beta,
+         NM.gamma = NM.gamma,
+         SANN.temp = SANN.temp,
+         SANN.tmax = SANN.tmax
          )
 }
 

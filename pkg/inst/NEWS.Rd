@@ -12,6 +12,10 @@
       \item The left-hand side of conditional logit models can now
       more conveniently specified using the vertical-bar (\code{|})
       operator.
+      \item It is now possible to choose between different
+      optimizers to be used in the inner iterations of the MQL/PQL
+      estimator: One can choose between \code{nlm()}, \code{nlminb()},
+      and most techniques provided by \code{optim()}.
     }
   }
   \subsection{BUGFIXES}{
