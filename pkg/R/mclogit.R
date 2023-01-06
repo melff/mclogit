@@ -1065,12 +1065,18 @@ fuseCols <- function(x,i) do.call(cbind,x[i,])
 
 format_Mat <- function(x,title="",rownames=NULL){
     if(length(rownames))
-        rn <- format(c("",rownames))
+        rn <- c("",rownames)
     else 
-        rn <- format(c("",rownames(x)))
+        rn <- c("",rownames(x))
     x <- format(x)
+    if(length(colnames(x))){
+        x <- rbind(colnames(x),x)
+        x <- format(x,justify="centre")
+        rn <- c("",rn)
+    }
     x <- apply(x,1,paste,collapse=" ")
     x <- format(c(title,x))
+    rn <- format(rn,justify="right")
     paste(rn,x)
 }
 
