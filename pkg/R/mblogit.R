@@ -725,6 +725,35 @@ weights.mblogit <- function (object, ...)
   else naresid(object$na.action, res)
 }
 
+format_VarCov <- function(x, digits = 3){
+    x <- format(x, digits = digits)
+    x[upper.tri(x)] <- ""
+    return(x)
+}
+
+rcomb <- function(x){
+    total.cnames <- unique(unlist(lapply(x,colnames)))
+    total.ncol <- length(total.cnames)
+    res <- matrix(nrow=0,ncol=total.ncol)
+    for(i in seq_along(x)){
+        x.i <- x[[i]]
+        res.i <- matrix("",nrow=nrow(x.i),ncol=total.ncol)
+        res.i[,match(colnames(x.i),total.cnames)] <- x.i
+        res <- rbind(res,res.i)
+    }
+    total.rnames <- unlist(lapply(x,rownames))
+    colnames(res) <- total.cnames
+    rownames(res) <- total.rnames
+    return(res)
+}
+
+VC_colnames_drop_lhs <- function(x){
+    coln <- colnames(x)
+    coln <- strsplit(coln,"~",fixed=TRUE)
+    coln <-  unlist(lapply(coln,"[",2))
+    colnames(x) <- paste0(".~",coln)
+    return(x)
+}
 
 print.mmblogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
     cat(paste(deparse(x$call), sep="\n", collapse="\n"), "\n\n", sep="")
@@ -753,13 +782,22 @@ print.mmblogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
-    for(k in 1:length(VarCov)){
-        if(k > 1) cat("\n")
-        cat("Grouping level:",names(VarCov)[k],"\n")
-        VarCov.k <- VarCov[[k]]
-        VarCov.k[] <- format(VarCov.k, digits=digits)
-        VarCov.k[upper.tri(VarCov.k)] <- ""
-        print.default(VarCov.k, print.gap = 2, quote = FALSE)
+    nVC <- names(VarCov)
+    unVC <- unique(nVC)
+    for(nm in unVC){
+        cat("\nGrouping level:",nm,"\n")
+        k <- which(nVC==nm)
+        VarCov.nm <- VarCov[k]
+        if(length(VarCov.nm) == 1){
+            VarCov.nm <- format_VarCov(VarCov.nm[[1]], digits = digits)
+            print.default(VarCov.nm, print.gap = 2, quote = FALSE)
+        }
+        else {
+            VarCov.nm <- lapply(VarCov.nm, format_VarCov, digits = digits)
+            VarCov.nm <- lapply(VarCov.nm,VC_colnames_drop_lhs)
+            VarCov.nm <- rcomb(VarCov.nm)
+            print.default(VarCov.nm, print.gap = 2, quote = FALSE)
+        }
     }
     
     cat("\nNull Deviance:    ",   format(signif(x$null.deviance, digits)),
@@ -809,33 +847,48 @@ print.summary.mmblogit <-
     cat("\n(Co-)Variances:\n")
     VarCov <- x$VarCov
     se_VarCov <- x$se_VarCov
-    for(k in 1:length(VarCov)){
-        if(k > 1) cat("\n")
-        cat("Grouping level:",names(VarCov)[k],"\n")
-        VarCov.k <- VarCov[[k]]
-        VarCov.k[] <- format(VarCov.k, digits=digits)
-        VarCov.k[upper.tri(VarCov.k)] <- ""
-        #print.default(VarCov.k, print.gap = 2, quote = FALSE)
-        VarCov.k <- format_Mat(VarCov.k,title="Estimate")
-
-        se_VarCov.k <- se_VarCov[[k]]
-        se_VarCov.k[] <- format(se_VarCov.k, digits=digits)
-        se_VarCov.k[upper.tri(se_VarCov.k)] <- ""
-        se_VarCov.k <- format_Mat(se_VarCov.k,title="Std.Err.",rownames=" ")
-
-        VarCov.k <- paste(VarCov.k,se_VarCov.k)
-        writeLines(VarCov.k)
+    nVC <- names(VarCov)
+    unVC <- unique(nVC)
+    for(nm in unVC){
+        cat("\nGrouping level:",nm,"\n")
+        k <- which(nVC==nm)
+        VarCov.nm <- VarCov[k]
+        if(length(VarCov.nm) == 1){
+            VarCov.k <- format_VarCov(VarCov[[k]], digits = digits)
+            VarCov.k <- format_Mat(VarCov.k,title="Estimate")
+            se_VarCov.k <- se_VarCov[[k]]
+            se_VarCov.k <- format_VarCov(se_VarCov[[k]], digits = digits)
+            se_VarCov.k <- format_Mat(se_VarCov.k,title="Std.Err.")
+            VarCov.k <- paste(VarCov.k,se_VarCov.k)
+            writeLines(VarCov.k)
+        }
+        else {
+            VarCov.nm <- lapply(VarCov.nm, format_VarCov, digits = digits)
+            VarCov.nm <- lapply(VarCov.nm,VC_colnames_drop_lhs)
+            VarCov.nm <- rcomb(VarCov.nm)
+            VarCov.nm <- format_Mat(VarCov.nm,title="Estimate")
+            se_VarCov.nm <- se_VarCov[k]
+            se_VarCov.nm <- lapply(se_VarCov.nm, format_VarCov, digits = digits)
+            se_VarCov.nm <- lapply(se_VarCov.nm,VC_colnames_drop_lhs)
+            se_VarCov.nm <- rcomb(se_VarCov.nm)
+            se_VarCov.nm <- format_Mat(se_VarCov.nm,title="Std.Err.")
+            VarCov.nm <- paste(VarCov.nm,se_VarCov.nm)
+            writeLines(VarCov.nm)
+        }
     }
 
     cat("\nApproximate residual deviance:", format(signif(x$deviance, digits)),
         "\nNumber of Fisher scoring iterations: ", x$iter)
 
     cat("\nNumber of observations")
-    for(i in seq_along(x$groups)){
-        g <- nlevels(x$groups[[i]])
-        nm.group <- names(x$groups)[i]
+    nm_grps <- names(x$groups)
+    unm_grps <- unique(nm_grps)
+    for(nm in unm_grps){
+        k <- which(nm_grps == nm)
+        grps_k <- x$groups[k]
+        g <- nlevels(grps_k[[1]])
         cat("\n  Groups by",
-            paste0(nm.group,": ",format(g)))
+            paste0(nm,": ",format(g)))
     }
     cat("\n  Individual observations: ",x$N)
 
