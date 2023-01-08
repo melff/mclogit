@@ -328,6 +328,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
                                           iter.max=control$maxit.inner)
                            )
         if(res.port$convergence != 0){
+            cat("\n")
             warning(sprintf("Possible non-convergence of inner iterations - nlminb message: %s",res.port$message),
                     call.=FALSE,immediate.=TRUE)
         }
@@ -395,6 +396,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
                            control = optim.control
                            )
         if(res.optim$convergence > 0){
+            cat("\n")
             if(res.optim$convergence == 1) 
                 warning("Inner iterations did not converge",
                         call.=FALSE,immediate.=TRUE)
