@@ -168,6 +168,13 @@ mclogit(formula, data=parent.frame(), random=NULL,
   satisfied. Since version 0.6 of the package, the function
   \code{mclogit} will complain about such model a misspecification
   explicitely.
+
+  From version 0.9.7 it is possible to choose the optimization
+  technique used for the inner iterations of the PQL/MQL: either
+  \code{\link[stats]{nlminb}} (the default), \code{\link[stats]{nlm}},
+  or any of the algorithms (other than "Brent" supported by
+  \code{\link[stats]{optim}}).  To choose the optimizer, use the
+  appropriate argument for \code{\link{mmclogit.control}} .
 }
 
 \references{

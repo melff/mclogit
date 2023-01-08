@@ -688,8 +688,7 @@ mmclogit.control <- function(
                              NM.beta = 0.5,
                              NM.gamma = 2.0,
                              SANN.temp = 10,
-                             SANN.tmax = 10
-                            ) {
+                             SANN.tmax = 10) {
     if (!is.numeric(epsilon) || epsilon <= 0)
         stop("value of epsilon must be > 0")
     if (!is.numeric(maxit) || maxit <= 0)
