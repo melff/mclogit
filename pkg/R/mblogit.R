@@ -1049,7 +1049,6 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         W <- Diagonal(x=pv)-tcrossprod(W)
         WX <- W%*%XD
         if(object$method=="PQL"){
-            WZ <- bMatProd(W,ZD)
             H <- object$info.fixed.random
             K <- solve(H)
         }
@@ -1058,6 +1057,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     if(type=="response") {
         if(se.fit){
             if(object$method=="PQL" && conditional){
+                WZ <- bMatProd(W,ZD)
                 WXZ <- structure(cbind(blockMatrix(WX),WZ),class="blockMatrix")
                 var.p <- bMatProd(WXZ,K)
                 var.p <- Map(`*`,WXZ,var.p)
