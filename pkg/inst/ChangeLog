@@ -1,3 +1,11 @@
+2023-01-08:
+  - Bugfix in 'predict.mmmblogit' that caused an error if 'conditional=FALSE'
+    was set.
+
+2023-01-06:
+  - More compact output of mblogit models random effects and diagonal covariance
+    matrix. 
+
 2023-01-05:
   - Added support for alternative optimizers to be used in the inner iterations 
     of MQL/PQL
