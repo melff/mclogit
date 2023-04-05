@@ -37,6 +37,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
         method = NULL, estimator=c("ML","REML"),
         dispersion = FALSE,
         start=NULL,
+        groups = NULL,
         control=if(length(random))
                     mmclogit.control(\dots)
                 else mclogit.control(\dots), \dots)
@@ -124,6 +125,13 @@ mclogit(formula, data=parent.frame(), random=NULL,
     a logical value -- if \code{TRUE} the default method
     (\code{"Afroz"}) is used, if \code{FALSE}, the dispersion parameter
     is set to 1, that is, no dispersion. For details see \code{\link{dispersion}}.}
+
+  \item{groups}{an optional formula that specifies groups of observations
+    relevant for the estimation of overdispersion. Covariates should be
+    constant within groups, otherwise a warning is generated
+    since the overdispersion estimate may
+    be imprecise.
+  }
   
   \item{control}{a list of parameters for the fitting process.
     See \code{\link{mclogit.control}} }

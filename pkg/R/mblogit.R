@@ -58,7 +58,9 @@
 #'     this case, will lead to efficiency gains in computing, but more
 #'     importantly overdispersion will correctly be computed if present.
 #' @param groups an optional formula that specifies groups of observations
-#'     relevant for the specification of overdispersed response counts.
+#'     relevant for the estimation of overdispersion. Covariates should be
+#'     constant within groups, otherwise a warning is generated
+#'     since the overdispersion estimate may be imprecise.
 #' @param control a list of parameters for the fitting process.  See
 #'     \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or
@@ -178,13 +180,13 @@ mblogit <- function(formula,
         mff <- eval(mff, parent.frame())
         mf$formula <- update(mff,gf)
         mf <- eval(mf, parent.frame())
+        groups <- all.vars(groups)
+        groups <- mf[groups]
+        if(length(groups) > 1) stop("Multiple groups not supported")
         check.names(control,
                     "epsilon","maxit",
-                    "trace","trace.inner",
-                    "avoid.increase",
-                    "break.on.increase",
-                    "break.on.infinite",
-                    "break.on.negative")
+                    "trace"
+                    )
     }
     else {
         mf <- eval(mf, parent.frame())
@@ -318,7 +320,8 @@ mblogit <- function(formula,
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
                            dispersion=dispersion,
                            start=start,
-                           control=control)
+                           control=control,
+                           groups=groups)
     else { ## random effects
 
         if(!length(method)) method <- "PQL"

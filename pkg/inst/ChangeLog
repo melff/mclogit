@@ -1,3 +1,7 @@
+2023-04-05:
+  - Allow estimation of overdispersion across groups indicated by
+    grouping factor.
+
 2023-03-29:
   - Add support for 'ucminf' as inner optimisation method.
 

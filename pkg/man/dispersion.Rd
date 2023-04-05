@@ -11,7 +11,7 @@
 }
 \usage{
 dispersion(object,method, \dots)
-\method{dispersion}{mclogit}(object,method=NULL, \dots)
+\method{dispersion}{mclogit}(object,method=NULL,groups=NULL, \dots)
 }
 \arguments{
   \item{object}{an object that inherits class \code{"mclogit"}.
@@ -24,6 +24,12 @@ dispersion(object,method, \dots)
     specifies the estimator of the dispersion; or
     \code{NULL}, in which case the default estimator, \code{"Afroz"} 
     is used. The estimators are discussed in Afroz et al. (2019).
+  }
+  \item{groups}{an optional formula that specifies groups of observations
+    relevant for the estimation of overdispersion. Prediced probabilities should be
+    constant within groups, otherwise a warning is generated
+    since the overdispersion estimate may
+    be imprecise.
   }
   \item{\dots}{other arguments, ignored or passed to other methods.}
 }
