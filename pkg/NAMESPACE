@@ -64,3 +64,6 @@ S3method(simulate,mmblogit)
 
 S3method(predict,mmblogit)
 S3method(predict,mmclogit)
+
+export(rebase)
+S3method(rebase,mblogit)
