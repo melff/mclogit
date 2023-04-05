@@ -16,6 +16,8 @@
       optimizers to be used in the inner iterations of the MQL/PQL
       estimator: One can choose between \code{nlm()}, \code{nlminb()},
       and most techniques provided by \code{optim()}.
+      \item With \code{rebase()} the baseline category of a model
+      can be changed without the need of refitting the model.
     }
   }
   \subsection{BUGFIXES}{

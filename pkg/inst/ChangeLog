@@ -1,5 +1,9 @@
+2023-01-11:
+  - Added 'rebase' function (and method) to change the baseline category of a
+    fitted model. (That is adjust the coefficients without the need of refitting.)
+
 2023-01-08:
-  - Bugfix in 'predict.mmmblogit' that caused an error if 'conditional=FALSE'
+  - Bugfix in 'predict.mmblogit' that caused an error if 'conditional=FALSE'
     was set.
 
 2023-01-06:
