@@ -410,6 +410,32 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
         }
         lambda <- res.optim$par
     }
+    else if(control$inner.optimizer == "ucminf" && require(ucminf)){
+        ucminf.control <- list(
+            trace = as.integer(control$trace.inner)
+            )
+        for(nn in c("grtol","xtol","stepmax","maxeval","grad"))
+            if(length(control[nn])) ucminf.control[[nn]] <- control[[nn]]
+        res.ucminf <- ucminf(par     = lambda.start,
+                             fn      = devfunc,
+                             gr      = gradfunc,
+                             control = ucminf.control
+                           )
+        if(res.ucminf$convergence > 2){
+            cat("\n")
+            if(length(res.ucminf$message))
+                warning(sprintf("Message from 'ucminf':\n%s",
+                                res.ucminf$message),
+                        call.=FALSE,immediate.=TRUE)
+        }
+        else if(ucminf.control$trace > 0){
+            cat("\n")
+            if(length(res.ucminf$message))
+                message(sprintf("Message from 'ucminf':\n%s",
+                                res.ucminf$message))
+        }
+        lambda <- res.ucminf$par
+    }
     else
         stop(sprintf("Unknown optimizer '%s'",control$inner.optimizer))
 
@@ -688,7 +714,11 @@ mmclogit.control <- function(
                              NM.beta = 0.5,
                              NM.gamma = 2.0,
                              SANN.temp = 10,
-                             SANN.tmax = 10) {
+                             SANN.tmax = 10,
+                             grtol = 1e-6,
+                             xtol = 1e-8,
+                             maxeval = 100,
+                             gradstep = c(1e-6, 1e-8)) {
     if (!is.numeric(epsilon) || epsilon <= 0)
         stop("value of epsilon must be > 0")
     if (!is.numeric(maxit) || maxit <= 0)
@@ -708,7 +738,11 @@ mmclogit.control <- function(
          NM.beta = NM.beta,
          NM.gamma = NM.gamma,
          SANN.temp = SANN.temp,
-         SANN.tmax = SANN.tmax
+         SANN.tmax = SANN.tmax,
+         grtol = grtol,
+         xtol = xtol,
+         maxeval = maxeval,
+         gradstep = gradstep
          )
 }
 

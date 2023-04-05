@@ -1,3 +1,6 @@
+2023-03-29:
+  - Add support for 'ucminf' as inner optimisation method.
+
 2023-01-11:
   - Added 'rebase' function (and method) to change the baseline category of a
     fitted model. (That is adjust the coefficients without the need of refitting.)
