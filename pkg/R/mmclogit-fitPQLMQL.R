@@ -323,7 +323,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
     
         res.port <- nlminb(lambda.start,
                            objective = devfunc,
-                           gradient = gradfunc,
+                           gradient = if(control$use.gradient == "analytic") gradfunc,
                            control = list(trace = as.integer(control$trace.inner),
                                           iter.max=control$maxit.inner)
                            )
@@ -346,7 +346,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
                                        aux=aux,
                                        gradient=TRUE)
             structure(-2*res$logLik,
-                      gradient=-2*res$gradient)
+                      gradient=if(control$use.gradient == "analytic") -2*res$gradient)
         }
         
         res.nlm <- nlm(f = dev_f,
@@ -391,7 +391,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
         )
         res.optim <- optim(par     = lambda.start,
                            fn      = devfunc,
-                           gr      = gradfunc,
+                           gr      = if(control$use.gradient == "analytic") gradfunc,
                            method  = optim.method,
                            control = optim.control
                            )
@@ -718,13 +718,16 @@ mmclogit.control <- function(
                              grtol = 1e-6,
                              xtol = 1e-8,
                              maxeval = 100,
-                             gradstep = c(1e-6, 1e-8)) {
+                             gradstep = c(1e-6, 1e-8),
+                             use.gradient = c("analytic","numeric")) {
     if (!is.numeric(epsilon) || epsilon <= 0)
         stop("value of epsilon must be > 0")
     if (!is.numeric(maxit) || maxit <= 0)
         stop("maximum number of iterations must be > 0")
     m <- match.call()
     
+    use.gradient <- match.arg(use.gradient)
+
     list(epsilon = epsilon, maxit = maxit,
          trace = trace, trace.inner = trace.inner,
          avoid.increase = avoid.increase,
@@ -742,7 +745,8 @@ mmclogit.control <- function(
          grtol = grtol,
          xtol = xtol,
          maxeval = maxeval,
-         gradstep = gradstep
+         gradstep = gradstep,
+         use.gradient = use.gradient
          )
 }
 
@@ -824,12 +828,22 @@ d.psi.d.lambda.1 <- function(Lambda){
     G[,keep.lambda]
 }
 
+solve_ <- function(x){
+    res <- try(solve(x),silent=TRUE)
+    if(inherits(res,"try-error")){
+        warning("Singlular matrix encountered, trying a Moore-Penrose inverse")
+        return(ginv(x))
+    } else return(res)
+        
+}
+
+
 se_Phi_ <- function(Phi,info.lambda){
     d <- ncol(Phi)
     Psi <- solve(Phi)
     Lambda <- chol(Psi)
     G <- d.psi.d.lambda.1(Lambda)
-    vcov.lambda <- solve(info.lambda)
+    vcov.lambda <- solve_(info.lambda)
     vcov.psi <- G%*%tcrossprod(vcov.lambda,G)
     PhiPhi <- Phi%x%Phi
     vcov.phi <- PhiPhi%*%vcov.psi%*%PhiPhi
