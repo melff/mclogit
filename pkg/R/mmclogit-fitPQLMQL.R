@@ -513,7 +513,7 @@ PQLMQL_eval_parms <- function(parms,model.struct,method,estimator){
             rand.ssq <- rand.ssq + sum(B.k * (Psi.k%*%B.k))
         }
     } else {
-        b_ <- blockMatrix(b,nrow=nlevs)
+        b_ <- blockMatrix(b,nrow=nlevs,ncol=1)
         rand.ssq <- as.vector(fuseMat(bMatCrsProd(b_,bMatProd(ZiVZ,b_))))
     }
     
