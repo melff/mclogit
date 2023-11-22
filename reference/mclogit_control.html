@@ -18,7 +18,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mclogit</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -60,7 +60,18 @@
 <span>                 avoid.increase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                 break.on.increase <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>                 break.on.infinite <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>                 break.on.negative <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
+<span>                 break.on.negative <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>                 inner.optimizer <span class="op">=</span> <span class="st">"nlminb"</span>,</span>
+<span>                 maxit.inner <span class="op">=</span> <span class="kw"><a href="https://rdrr.io/r/base/switch.html" class="external-link">switch</a></span><span class="op">(</span><span class="va">inner.optimizer</span>,</span>
+<span>                                      SANN          <span class="op">=</span> <span class="fl">10000</span>,</span>
+<span>                                      `Nelder-Mead` <span class="op">=</span> <span class="fl">500</span>,</span>
+<span>                                      <span class="fl">100</span><span class="op">)</span>,</span>
+<span>                 CG.type <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                 NM.alpha <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>                 NM.beta <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>                 NM.gamma <span class="op">=</span> <span class="fl">2.0</span>,</span>
+<span>                 SANN.temp <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                 SANN.tmax <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -97,6 +108,44 @@
 <dd><p>logical; should a negative deviance
      stop the algorithm?</p></dd>
 
+   <dt>inner.optimizer</dt>
+<dd><p>a character string, one of
+     "nlminb", "nlm", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN".
+     See <code><a href="https://rdrr.io/r/stats/nlminb.html" class="external-link">nlminb</a></code>, <code><a href="https://rdrr.io/r/stats/nlm.html" class="external-link">nlm</a></code>, <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code>.</p></dd>
+
+   <dt>maxit.inner</dt>
+<dd><p>integer; the maximum number of inner iterations</p></dd>
+
+   <dt>CG.type</dt>
+<dd><p>integer; the <code>type</code> argument passed to
+     <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
+     "CG" is selected as inner optimizer.</p></dd>
+
+   <dt>NM.alpha</dt>
+<dd><p>integer; the <code>alpha</code> argument passed to
+     <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
+     "Nelder-Mead" is selected as inner optimizer.</p></dd>
+
+   <dt>NM.beta</dt>
+<dd><p>integer; the <code>beta</code> argument passed to
+     <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
+     "Nelder-Mead" is selected as inner optimizer.</p></dd>
+
+   <dt>NM.gamma</dt>
+<dd><p>integer; the <code>gamma</code> argument passed to
+     <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
+     "Nelder-Mead" is selected as inner optimizer.</p></dd>
+
+   <dt>SANN.temp</dt>
+<dd><p>integer; the <code>temp</code> argument passed to
+     <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
+     "SANN" is selected as inner optimizer.</p></dd>
+
+   <dt>SANN.tmax</dt>
+<dd><p>integer; the <code>tmax</code> argument passed to
+     <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
+     "SANN" is selected as inner optimizer.</p></dd>
+
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -117,7 +166,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

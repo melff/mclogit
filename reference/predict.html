@@ -24,7 +24,7 @@ For models with random effecs fitted using the PQL-method, it is
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mclogit</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -128,14 +128,14 @@ For models with random effecs fitted using the PQL-method, it is
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Predictors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Response categories  (Intercept)  InflMedium  InflHigh  TypeApartment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Medium/Low  -0.4192       0.4464      0.6649   -0.4357      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          High/Low    -0.1387       0.7349      1.6126   -0.7356      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Predictors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Response categories  TypeAtrium  TypeTerrace  ContHigh</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Medium/Low   0.1314     -0.6666       0.3609 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          High/Low    -0.4080     -1.4123       0.4818 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             Predictors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Logit eqn.    (Intercept)  InflMedium  InflHigh  TypeApartment  TypeAtrium</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Medium/Low  -0.4192       0.4464      0.6649   -0.4357         0.1314   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   High/Low    -0.1387       0.7349      1.6126   -0.7356        -0.4080   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             Predictors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Logit eqn.    TypeTerrace  ContHigh</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Medium/Low  -0.6666       0.3609 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   High/Low    -1.4123       0.4818 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Null Deviance:     3694 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Residual Deviance: 3470</span>
@@ -190,8 +190,8 @@ For models with random effecs fitted using the PQL-method, it is
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 965.7808 - criterion = 0.0253941</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 949.163 - criterion = 0.005112973</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 947.9638 - criterion = 0.0002016051</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 947.8468 - criterion = 2.470041e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 947.8431 - criterion = 4.402689e-13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 947.8468 - criterion = 2.469648e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 947.8431 - criterion = 4.94197e-13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> mclogit(formula = cbind(Freq, interaction(time, class)) ~ econ.left/class + </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     welfare/class + auth/class, data = within(electors, party.time &lt;- interaction(party, </span>
@@ -245,7 +245,7 @@ For models with random effecs fitted using the PQL-method, it is
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

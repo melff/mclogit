@@ -21,7 +21,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mclogit</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -60,7 +60,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">dispersion</span><span class="op">(</span><span class="va">object</span>,<span class="va">method</span>, <span class="va">...</span><span class="op">)</span></span>
 <span><span class="co"># S3 method for mclogit</span></span>
-<span><span class="fu">dispersion</span><span class="op">(</span><span class="va">object</span>,method<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">dispersion</span><span class="op">(</span><span class="va">object</span>,method<span class="op">=</span><span class="cn">NULL</span>,groups<span class="op">=</span><span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -77,6 +77,13 @@
     specifies the estimator of the dispersion; or
     <code>NULL</code>, in which case the default estimator, <code>"Afroz"</code> 
     is used. The estimators are discussed in Afroz et al. (2019).</p></dd>
+
+  <dt>groups</dt>
+<dd><p>an optional formula that specifies groups of observations
+    relevant for the estimation of overdispersion. Prediced probabilities should be
+    constant within groups, otherwise a warning is generated
+    since the overdispersion estimate may
+    be imprecise.</p></dd>
 
   <dt>...</dt>
 <dd><p>other arguments, ignored or passed to other methods.</p></dd>
@@ -106,9 +113,9 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">dispersion</span><span class="op">(</span><span class="va">house.mblogit</span>,method<span class="op">=</span><span class="st">"Afroz"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 20.45129</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.062653</span>
 <span class="r-in"><span><span class="fu">dispersion</span><span class="op">(</span><span class="va">house.mblogit</span>,method<span class="op">=</span><span class="st">"Deviance"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 26.69295</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 2.175601</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">house.mblogit</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -170,7 +177,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dispersion:  20.45129  on  130  degrees of freedom</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dispersion:  2.062653  on  130  degrees of freedom</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual Deviance: 3470 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations:  1681 </span>
@@ -182,28 +189,28 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Equation for Medium vs Low:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)    -0.4192     0.7821  -0.536    0.593</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium      0.4464     0.6402   0.697    0.487</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh        0.6649     0.8427   0.789    0.432</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment  -0.4357     0.7802  -0.558    0.578</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium      0.1314     1.0090   0.130    0.897</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace    -0.6666     0.9327  -0.715    0.476</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh        0.3609     0.5987   0.603    0.548</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)    -0.4192     0.2484  -1.688   0.0938 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium      0.4464     0.2033   2.196   0.0299 *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh        0.6649     0.2676   2.485   0.0142 *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment  -0.4357     0.2478  -1.758   0.0811 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium      0.1314     0.3204   0.410   0.6825  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace    -0.6666     0.2962  -2.250   0.0261 *</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh        0.3609     0.1901   1.898   0.0599 .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Equation for High vs Low:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)    -0.1387     0.7201  -0.193   0.8475  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium      0.7349     0.6193   1.187   0.2375  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh        1.6126     0.7558   2.134   0.0348 *</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment  -0.7356     0.7022  -1.048   0.2968  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium     -0.4080     0.9565  -0.427   0.6704  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace    -1.4123     0.9051  -1.560   0.1211  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh        0.4818     0.5614   0.858   0.3923  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)    -0.1387     0.2287  -0.607 0.545109    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium      0.7349     0.1967   3.737 0.000278 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh        1.6126     0.2400   6.718 5.20e-10 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment  -0.7356     0.2230  -3.299 0.001253 ** </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium     -0.4080     0.3038  -1.343 0.181568    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace    -1.4123     0.2875  -4.913 2.64e-06 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh        0.4818     0.1783   2.703 0.007800 ** </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dispersion:  20.45129  on  130  degrees of freedom</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dispersion:  2.062653  on  130  degrees of freedom</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual Deviance: 3470 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations:  1681 </span>
@@ -220,7 +227,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - deviance = 38.84842 - criterion = 0.992521</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 38.6622 - criterion = 3.782555e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 38.6622 - criterion = 1.833081e-16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 38.6622 - criterion = 3.666163e-15</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-in"><span><span class="co"># Now the estimated dispersion parameter is no longer larger than 20,</span></span></span>
 <span class="r-in"><span><span class="co"># but just bit over 1.0.</span></span></span>
@@ -231,28 +238,28 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span>     dispersion = "Afroz", from.table = TRUE)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Equation for Medium vs Low:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)    -0.4192     0.1832  -2.289  0.02842 * </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium      0.4464     0.1499   2.977  0.00533 **</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh        0.6649     0.1974   3.369  0.00189 **</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment  -0.4357     0.1827  -2.384  0.02284 * </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium      0.1314     0.2363   0.556  0.58189   </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace    -0.6666     0.2184  -3.051  0.00440 **</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh        0.3609     0.1402   2.573  0.01461 * </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)    </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   -0.41923    0.02661 -15.757  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium     0.44640    0.02178  20.497  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh       0.66494    0.02867  23.195  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment -0.43569    0.02654 -16.414  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium     0.13137    0.03432   3.827  0.00053 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace   -0.66657    0.03173 -21.007  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh       0.36085    0.02037  17.716  &lt; 2e-16 ***</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Equation for High vs Low:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>               Estimate Std. Error t value Pr(&gt;|t|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)    -0.1387     0.1686  -0.823 0.416418    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium      0.7349     0.1450   5.067 1.41e-05 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh        1.6126     0.1770   9.110 1.20e-10 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment  -0.7356     0.1645  -4.473 8.19e-05 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium     -0.4080     0.2240  -1.821 0.077370 .  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace    -1.4123     0.2120  -6.662 1.20e-07 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh        0.4818     0.1315   3.665 0.000837 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)   -0.13874    0.02450  -5.664 2.36e-06 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflMedium     0.73486    0.02107  34.882  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> InflHigh       1.61263    0.02571  62.718  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeApartment -0.73563    0.02389 -30.795  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeAtrium    -0.40798    0.03254 -12.539 2.64e-14 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> TypeTerrace   -1.41233    0.03079 -45.866  &lt; 2e-16 ***</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> ContHigh       0.48183    0.01910  25.229  &lt; 2e-16 ***</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Dispersion:  1.121765  on  34  degrees of freedom</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Dispersion:  0.0236687  on  34  degrees of freedom</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual Deviance: 38.66 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  4 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations:  1681 </span>
@@ -271,7 +278,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>

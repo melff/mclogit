@@ -18,7 +18,7 @@ and multinomial count responses with fixed alternatives."><!-- mathjax --><scrip
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">mclogit</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.6</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.9.8</span>
       </span>
     </div>
 
@@ -213,11 +213,11 @@ relevant for the specification of overdispersed response counts.</p></dd>
     <h2>References</h2>
     <p>Agresti, Alan. 2002.
    <em>Categorical Data Analysis.</em> 2nd ed, Hoboken, NJ: Wiley.
-   <a href="https://doi.org/10.1002/0471249688" class="external-link">https://doi.org/10.1002/0471249688</a></p>
+   <a href="https://doi.org/10.1002/0471249688" class="external-link">doi:10.1002/0471249688</a></p>
 <p>Breslow, N.E. and D.G. Clayton. 1993.
    "Approximate Inference in Generalized Linear Mixed Models".
    <em>Journal of the American Statistical Association</em> 88 (421): 9-25.
-   <a href="https://doi.org/10.1080/01621459.1993.10594284" class="external-link">https://doi.org/10.1080/01621459.1993.10594284</a></p>
+   <a href="https://doi.org/10.1080/01621459.1993.10594284" class="external-link">doi:10.1080/01621459.1993.10594284</a></p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -284,14 +284,14 @@ relevant for the specification of overdispersed response counts.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Predictors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Response categories  (Intercept)  InflMedium  InflHigh  TypeApartment</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Medium/Low  -0.4192       0.4464      0.6649   -0.4357      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          High/Low    -0.1387       0.7349      1.6126   -0.7356      </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                    Predictors</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Response categories  TypeAtrium  TypeTerrace  ContHigh</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Medium/Low   0.1314     -0.6666       0.3609 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          High/Low    -0.4080     -1.4123       0.4818 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             Predictors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Logit eqn.    (Intercept)  InflMedium  InflHigh  TypeApartment  TypeAtrium</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Medium/Low  -0.4192       0.4464      0.6649   -0.4357         0.1314   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   High/Low    -0.1387       0.7349      1.6126   -0.7356        -0.4080   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>             Predictors</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Logit eqn.    TypeTerrace  ContHigh</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   Medium/Low  -0.6666       0.3609 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   High/Low    -1.4123       0.4818 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Null Deviance:     3694 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Residual Deviance: 3470</span>
@@ -394,7 +394,7 @@ relevant for the specification of overdispersed response counts.</p></dd>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
 </div>
 
       </footer></div>
