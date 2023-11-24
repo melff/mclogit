@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://melff.github.io/mclogit/404.html</loc>
+    <loc>/404.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/authors.html</loc>
+    <loc>/authors.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/index.html</loc>
+    <loc>/index.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/Transport.html</loc>
+    <loc>/reference/Transport.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/dispersion.html</loc>
+    <loc>/reference/dispersion.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/electors.html</loc>
+    <loc>/reference/electors.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/getSummary-mclogit.html</loc>
+    <loc>/reference/getSummary-mclogit.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/index.html</loc>
+    <loc>/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/mblogit.html</loc>
+    <loc>/reference/mblogit.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/mclogit.fit.html</loc>
+    <loc>/reference/mclogit.fit.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/mclogit.html</loc>
+    <loc>/reference/mclogit.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/mclogit_control.html</loc>
+    <loc>/reference/mclogit_control.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/predict.html</loc>
+    <loc>/reference/predict.html</loc>
   </url>
   <url>
-    <loc>https://melff.github.io/mclogit/reference/simulate.html</loc>
+    <loc>/reference/simulate.html</loc>
   </url>
 </urlset>
