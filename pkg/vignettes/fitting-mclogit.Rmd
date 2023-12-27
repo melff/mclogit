@@ -5,13 +5,14 @@ vignette: >
   % \VignetteIndexEntry{The IWLS algorithm used to fit conditional logit models}
   % \VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: mclogit.bib
 ---
 
 The package "mclogit" fits conditional logit models using a maximum
 likelihood estimator. It does this by maximizing the log-likelihood
 function using an *iterative weighted least-squares* (IWLS) algorithm,
 which follows the algorithm used by the `glm.fit()` function from the
-"stats" package of *R*.
+"stats" package of *R* [@nelder.wedderburn:glm;@mccullagh.nelder:glm.2ed;@Rcore]. 
 
 If $\pi_{ij}$ is the probability that individual $i$ chooses
 alternative $j$ from his/her choice set $\mathcal{S}_i$, where
@@ -94,7 +95,7 @@ n_{i+}
 $$
 
 Here $y_{ij}=n_{ij}/n_{i+}$, while
-$boldsymbol{N}$ is a diagonal matrix with diagonal elements
+$\boldsymbol{N}$ is a diagonal matrix with diagonal elements
 $n_{i+}$.
 
 Newton-Raphson iterations then take the form
@@ -200,3 +201,5 @@ constructe as follows:
     =
     \eta_{ij}^{(0)}+\frac{y_{ij}-\pi_{ij}^{(0)}}{\pi_{ij}^{(0)}}
     $$
+
+# References

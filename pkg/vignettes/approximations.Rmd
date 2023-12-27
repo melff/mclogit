@@ -5,6 +5,7 @@ vignette: >
   % \VignetteIndexEntry{Approximate Inference for Multinomial Logit Models with Random Effects}
   % \VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: mclogit.bib
 ---
 
 # The problem
@@ -111,7 +112,7 @@ Since this quadratic expansion---let us call it
 $\ell^*_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})$---is a
 (multivariate) quadratic function of $\boldsymbol{b}$, the integral of
 its exponential does have a closed-form solution (the relevant formula
-can be found in `harville:matrix.algebra`).
+can be found in @harville:matrix.algebra).
 
 For purposes of estimation, the resulting approximate log-likelihood is
 more useful:
@@ -139,7 +140,7 @@ $\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})$ but also
 $\ell^*_{\text{Lapl}}$. This motivates the following IWLS/Fisher
 scoring equations for $\hat{\boldsymbol{\alpha}}$ and
 $\tilde{\boldsymbol{b}}$ (see
-`breslow.clayton:approximate.inference.glmm` and [this
+@breslow.clayton:approximate.inference.glmm and [this
 page](fitting-mclogit.html)):
 
 $$
@@ -187,7 +188,7 @@ $$
 \boldsymbol{Z}'\boldsymbol{W}(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})
 $$
 
-which can be solved to compute $hat{\boldsymbol{\alpha}}$ and
+which can be solved to compute $\hat{\boldsymbol{\alpha}}$ and
 $\tilde{\boldsymbol{b}}$ (for given $\boldsymbol{\Sigma}$)
 
 Here
@@ -204,8 +205,8 @@ $$
 \boldsymbol{W}\boldsymbol{Z}'\left(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z}+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{Z}\boldsymbol{W}
 $$
 
-Following `breslow.clayton:approximate.inference.glmm` the variance
-parameters in $\boldsymbol{Sigma}$ are estimated by minimizing
+Following @breslow.clayton:approximate.inference.glmm the variance
+parameters in $\boldsymbol{\Sigma}$ are estimated by minimizing
 
 $$
 q_1 =
@@ -221,7 +222,7 @@ $$
 
 This motivates the following algorithm, which is strongly inspired by
 the `glmmPQL()` function in Brian Ripley's *R* package
-[MASS](https://cran.r-project.org/package=MASS):
+[MASS](https://cran.r-project.org/package=MASS) [@MASS]:
 
 1.  Create some suitable starting values for $\boldsymbol{\pi}$,
     $\boldsymbol{W}$, and $\boldsymbol{y}^*$
@@ -242,16 +243,16 @@ algorithm used to fit conditional logit models without random effects.
 Instead of just solving a linear requatoin in step 3, it estimates a
 weighted linear mixed-effects model. In contrast to `glmmPQL()` it does
 not use the `lme()` function from package
-[nlme](https://cran.r-project.org/package=nlme) for this, because the
+[nlme](https://cran.r-project.org/package=nlme) [@nlme-book] for this, because the
 weighting matrix $\boldsymbol{W}$ is non-diagonal. Instead, $q_1$ or
 $q_2$ are minimized using the function `nlminb` from the standard *R*
-package "stats".
+package "stats" or some other optimizer chosen by the user.
 
 # The Solomon-Cox approximation and MQL
 
 ## The Solomon-Cox approximation
 
-The (first-order) Solomon approximation is based on the quadratic
+The (first-order) Solomon approximation [@Solomon.Cox:1992] is based on the quadratic
 expansion the integrand
 
 $$
@@ -299,13 +300,13 @@ $$
 
 ## Marginal quasi-likelhood (MQL)
 
-The resulting estimation technique is very similar to PQL (again, see
-`breslow.clayton:approximate.inference.glmm` for a discussion). The only
+The resulting estimation technique is very similar to PQL [again, see
+@breslow.clayton:approximate.inference.glmm for a discussion]. The only
 difference is the construction of the "working dependent" variable
 $\boldsymbol{y}^*$. With PQL it is constructed as 
 $$\boldsymbol{y}^* =
 \boldsymbol{X}\boldsymbol{\alpha} + \boldsymbol{Z}\boldsymbol{b} +
-\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{pi})$$
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})$$
 while the MQL working
 dependent variable is just
 
@@ -330,3 +331,4 @@ so that the algorithm has the following steps:
     Otherwise go back to step 2 with the updated values of
     $\hat{\boldsymbol{\alpha}}$.
 
+# References

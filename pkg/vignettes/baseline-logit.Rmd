@@ -5,6 +5,7 @@ vignette: >
   % \VignetteIndexEntry{Baseline-category logit models}
   % \VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: mclogit.bib
 ---
 
 
@@ -13,12 +14,11 @@ logistic regression, that allow to model not only binary or dichotomous
 responses, but also polychotomous responses. In addition, they allow to
 model responses in the form of counts that have a pre-determined sum.
 These models are described in
-`agresti:categorical.data.analysis.2002`{.interpreted-text
-role="citet"}. Estimating these models is also supported by the function
-`multinom()` in the *R* package \"nnet\" `MASS`{.interpreted-text
-role="cite"}. In the package \"mclogit\", the function to estimate these
-models is called `mblogit()` (see the relevant [manual
-page](reference/mblogit.html)), which uses the infrastructure for estimating
+@agresti:categorical.data.analysis.2002. 
+Estimating these models is also supported by the function
+`multinom()` in the *R* package "nnet" [@MASS]. 
+In the package "mclogit", the function to estimate these
+models is called `mblogit()`, which uses the infrastructure for estimating
 conditional logit models, exploiting the fact that baseline-category
 logit models can be re-expressed as condigional logit models.
 
@@ -61,3 +61,4 @@ taking a value $j$ versus taking the value $1$. Note that there is
 one coefficient for each independent variable and *each response* other
 than the baseline category.
 
+# References

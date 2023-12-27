@@ -5,14 +5,15 @@ vignette: >
   % \VignetteIndexEntry{Conditional logit models}
   % \VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: mclogit.bib
 ---
 
 Conditional logit models are motivated by a variety of considerations,
 notably as a way to model binary panel data or responses in
 case-control-studies. The variant supported by the package "mclogit"
 is motivated by the analysis of discrete choices and goes back to
-`mcfadden:conditional.logit`{.interpreted-text role="citet"}. Here, a
-series of individuals $i=1,ldots,n$ is observed to have made a choice
+@mcfadden:conditional.logit. Here, a
+series of individuals $i=1,\ldots,n$ is observed to have made a choice
 (represented by a number $j$) from a choice set $\mathcal{S}_i$, the
 set of alternatives at the individual's disposal. Each alternatives
 $j$ in the choice set can be described by the values
@@ -46,14 +47,14 @@ $$
 Conditional logit models appear more parsimonious than baseline-category
 logit models in so far as they have only one coefficient for each
 independent variables.[^1] In the "mclogi\" package, these models can
-be estimated using the function `mclogit()` (see the relevant [manual
-page](reference/mclogit.html)).
+be estimated using the function `mclogit()`.
 
 My interest in conditional logit models derives from my research into
 the influence of parties\' political positions on the patterns of
 voting. Here, the political positions are the attributes of the
 alternatives and the choice sets are the sets of parties that run
 candidates in a countries at various points in time. For the application
-of the conditional logit models, see my doctoral thesis
-`elff:politische.ideologien`{.interpreted-text role="cite"}.
+of the conditional logit models, see 
+@elff:divisions.positions.voting.
 
+# References

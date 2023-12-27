@@ -5,6 +5,7 @@ vignette: >
   % \VignetteIndexEntry{Random effects in baseline logit models and conditional logit models}
   % \VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+bibliography: mclogit.bib
 ---
 
 The "mclogit" package allows for the presence of random effects in
@@ -22,8 +23,7 @@ motivation for working on conditional logit models with random effects
 was to make it possible to assess the impact of parties' political
 positions on the patterns of voting behaviour in various European
 countries. The results of this research are published in an article in
-*Electoral Studies* `elff:divisions.positions.voting`{.interpreted-text
-role="cite"}.
+@elff:divisions.positions.voting.
 
 In its earliest incarnation, the package supported only a very simple
 random-intercept extension of conditional logit models (or "mixed
@@ -69,5 +69,6 @@ PQL-technique based on a (first-order) Laplace approximation was
 supported, release 0.8, "mclogit" also supports the MQL technique,
 which is based on a (first-order) Solomon-Cox approximation. The ideas
 behind the PQL and MQL techniques are described e.g. in
-`breslow.clayton:approximate.inference.glmm`{.interpreted-text
-role="citet"}.
+@breslow.clayton:approximate.inference.glmm.
+
+# References
