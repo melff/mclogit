@@ -130,14 +130,13 @@
 logistic regression, that allow to model not only binary or dichotomous
 responses, but also polychotomous responses. In addition, they allow to
 model responses in the form of counts that have a pre-determined sum.
-These models are described in <code class="interpreted-text" role="citet">agresti:categorical.data.analysis.2002</code>. Estimating
-these models is also supported by the function <code><a href="https://rdrr.io/pkg/nnet/man/multinom.html" class="external-link">multinom()</a></code>
-in the <em>R</em> package "nnet" <code class="interpreted-text" role="cite">MASS</code>. In the package "mclogit", the function to
-estimate these models is called <code><a href="../reference/mblogit.html">mblogit()</a></code> (see the relevant
-<a href="reference/mblogit.html">manual page</a>), which uses the
-infrastructure for estimating conditional logit models, exploiting the
-fact that baseline-category logit models can be re-expressed as
-condigional logit models.</p>
+These models are described in <span class="citation">Agresti
+(2002)</span>. Estimating these models is also supported by the function
+<code><a href="https://rdrr.io/pkg/nnet/man/multinom.html" class="external-link">multinom()</a></code> in the <em>R</em> package “nnet” <span class="citation">(Venables and Ripley 2002)</span>. In the package
+“mclogit”, the function to estimate these models is called
+<code><a href="../reference/mblogit.html">mblogit()</a></code>, which uses the infrastructure for estimating
+conditional logit models, exploiting the fact that baseline-category
+logit models can be re-expressed as condigional logit models.</p>
 <p>Baseline-category logit models are constructed as follows. Suppose a
 categorical dependent variable or response with categories <span class="math inline">\(j=1,\ldots,q\)</span> is observed for individuals
 <span class="math inline">\(i=1,\ldots,n\)</span>. Let <span class="math inline">\(\pi_{ij}\)</span> denote the probability that the
@@ -171,11 +170,27 @@ of the response taking a value <span class="math inline">\(j\)</span>
 versus taking the value <span class="math inline">\(1\)</span>. Note
 that there is one coefficient for each independent variable and <em>each
 response</em> other than the baseline category.</p>
+<div class="section level2">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-agresti:categorical.data.analysis.2002" class="csl-entry">
+Agresti, Alan. 2002. <em>Categorical Data Analysis</em>. Second. New
+York: Wiley.
+</div>
+<div id="ref-MASS" class="csl-entry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics
+with s</em>. Fourth. New York: Springer. <a href="https://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
+</div>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-      </div>
+        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
+    </nav>
+</div>
 
 </div>
 

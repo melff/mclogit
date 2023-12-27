@@ -222,7 +222,7 @@ is the value of the negative Hessian with respect to <span class="math inline">\
 <p>Since this quadratic expansion—let us call it <span class="math inline">\(\ell^*_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})\)</span>—is
 a (multivariate) quadratic function of <span class="math inline">\(\boldsymbol{b}\)</span>, the integral of its
 exponential does have a closed-form solution (the relevant formula can
-be found in <code>harville:matrix.algebra</code>).</p>
+be found in <span class="citation">Harville (1997)</span>).</p>
 <p>For purposes of estimation, the resulting approximate log-likelihood
 is more useful:</p>
 <p><span class="math display">\[
@@ -246,8 +246,7 @@ is more useful:</p>
 <p>If one disregards the dependence of <span class="math inline">\(\tilde{\boldsymbol{H}}\)</span> on <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{b}\)</span>, then <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> maximizes not only
 <span class="math inline">\(\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\)</span>
 but also <span class="math inline">\(\ell^*_{\text{Lapl}}\)</span>. This
-motivates the following IWLS/Fisher scoring equations for <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> (see
-<code>breslow.clayton:approximate.inference.glmm</code> and <a href="fitting-mclogit.html">this page</a>):</p>
+motivates the following IWLS/Fisher scoring equations for <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> (see <span class="citation">Breslow and Clayton (1993)</span> and <a href="fitting-mclogit.html">this page</a>):</p>
 <p><span class="math display">\[
 \begin{aligned}
 \begin{bmatrix}
@@ -288,7 +287,7 @@ iteration.</p>
 \boldsymbol{\Sigma}^{-1})\boldsymbol{b} =
 \boldsymbol{Z}'\boldsymbol{W}(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})
 \]</span></p>
-<p>which can be solved to compute <span class="math inline">\(hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> (for given <span class="math inline">\(\boldsymbol{\Sigma}\)</span>)</p>
+<p>which can be solved to compute <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> (for given <span class="math inline">\(\boldsymbol{\Sigma}\)</span>)</p>
 <p>Here</p>
 <p><span class="math display">\[
 \boldsymbol{V} =
@@ -299,8 +298,8 @@ iteration.</p>
 \boldsymbol{V}^- = \boldsymbol{W}-
 \boldsymbol{W}\boldsymbol{Z}'\left(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z}+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{Z}\boldsymbol{W}
 \]</span></p>
-<p>Following <code>breslow.clayton:approximate.inference.glmm</code> the
-variance parameters in <span class="math inline">\(\boldsymbol{Sigma}\)</span> are estimated by
+<p>Following <span class="citation">Breslow and Clayton (1993)</span>
+the variance parameters in <span class="math inline">\(\boldsymbol{\Sigma}\)</span> are estimated by
 minimizing</p>
 <p><span class="math display">\[
 q_1 =
@@ -313,7 +312,7 @@ q_2 =
 \]</span></p>
 <p>This motivates the following algorithm, which is strongly inspired by
 the <code><a href="https://rdrr.io/pkg/MASS/man/glmmPQL.html" class="external-link">glmmPQL()</a></code> function in Brian Ripley’s <em>R</em> package
-<a href="https://cran.r-project.org/package=MASS" class="external-link">MASS</a>:</p>
+<a href="https://cran.r-project.org/package=MASS" class="external-link">MASS</a> <span class="citation">(Venables and Ripley 2002)</span>:</p>
 <ol style="list-style-type: decimal">
 <li>Create some suitable starting values for <span class="math inline">\(\boldsymbol{\pi}\)</span>, <span class="math inline">\(\boldsymbol{W}\)</span>, and <span class="math inline">\(\boldsymbol{y}^*\)</span>
 </li>
@@ -337,10 +336,11 @@ Otherwise go back to step 2 with the updated values of <span class="math inline"
 logit models without random effects. Instead of just solving a linear
 requatoin in step 3, it estimates a weighted linear mixed-effects model.
 In contrast to <code><a href="https://rdrr.io/pkg/MASS/man/glmmPQL.html" class="external-link">glmmPQL()</a></code> it does not use the
-<code>lme()</code> function from package <a href="https://cran.r-project.org/package=nlme" class="external-link">nlme</a> for this,
-because the weighting matrix <span class="math inline">\(\boldsymbol{W}\)</span> is non-diagonal. Instead,
-<span class="math inline">\(q_1\)</span> or <span class="math inline">\(q_2\)</span> are minimized using the function
-<code>nlminb</code> from the standard <em>R</em> package “stats”.</p>
+<code>lme()</code> function from package <a href="https://cran.r-project.org/package=nlme" class="external-link">nlme</a> <span class="citation">(Pinheiro and Bates 2000)</span> for this, because the
+weighting matrix <span class="math inline">\(\boldsymbol{W}\)</span> is
+non-diagonal. Instead, <span class="math inline">\(q_1\)</span> or <span class="math inline">\(q_2\)</span> are minimized using the function
+<code>nlminb</code> from the standard <em>R</em> package “stats” or some
+other optimizer chosen by the user.</p>
 </div>
 </div>
 <div class="section level2">
@@ -349,7 +349,7 @@ because the weighting matrix <span class="math inline">\(\boldsymbol{W}\)</span>
 <div class="section level3">
 <h3 id="the-solomon-cox-approximation">The Solomon-Cox approximation<a class="anchor" aria-label="anchor" href="#the-solomon-cox-approximation"></a>
 </h3>
-<p>The (first-order) Solomon approximation is based on the quadratic
+<p>The (first-order) Solomon approximation <span class="citation">(Solomon and Cox 1992)</span> is based on the quadratic
 expansion the integrand</p>
 <p><span class="math display">\[
 \ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
@@ -392,13 +392,12 @@ has a closed-form solution, as does its logarithm, which is:</p>
 <div class="section level3">
 <h3 id="marginal-quasi-likelhood-mql">Marginal quasi-likelhood (MQL)<a class="anchor" aria-label="anchor" href="#marginal-quasi-likelhood-mql"></a>
 </h3>
-<p>The resulting estimation technique is very similar to PQL (again, see
-<code>breslow.clayton:approximate.inference.glmm</code> for a
-discussion). The only difference is the construction of the “working
-dependent” variable <span class="math inline">\(\boldsymbol{y}^*\)</span>. With PQL it is
+<p>The resulting estimation technique is very similar to PQL <span class="citation">(again, see Breslow and Clayton 1993 for a
+discussion)</span>. The only difference is the construction of the
+“working dependent” variable <span class="math inline">\(\boldsymbol{y}^*\)</span>. With PQL it is
 constructed as <span class="math display">\[\boldsymbol{y}^* =
 \boldsymbol{X}\boldsymbol{\alpha} + \boldsymbol{Z}\boldsymbol{b} +
-\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{pi})\]</span> while the
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})\]</span> while the
 MQL working dependent variable is just</p>
 <p><span class="math display">\[
 \boldsymbol{y}^* =  \boldsymbol{X}\boldsymbol{\alpha} +
@@ -423,6 +422,33 @@ current estimate of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>
 tolerance criterion stop the algorighm and declare it as converged.
 Otherwise go back to step 2 with the updated values of <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span>.</li>
 </ol>
+</div>
+</div>
+<div class="section level2">
+<h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
+</h2>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-breslow.clayton:approximate.inference.glmm" class="csl-entry">
+Breslow, Norman E., and David G. Clayton. 1993. <span>“Approximate
+Inference in Generalized Linear Mixed Models.”</span> <em>Journal of the
+American Statistical Association</em> 88 (421): 9–25.
+</div>
+<div id="ref-harville:matrix.algebra" class="csl-entry">
+Harville, David A. 1997. <em>Matrix Algebra from a Statistician’s
+Perspective</em>. New York: Springer.
+</div>
+<div id="ref-nlme-book" class="csl-entry">
+Pinheiro, José C., and Douglas M. Bates. 2000. <em>Mixed-Effects Models
+in s and s-PLUS</em>. New York: Springer. <a href="https://doi.org/10.1007/b98882" class="external-link">https://doi.org/10.1007/b98882</a>.
+</div>
+<div id="ref-Solomon.Cox:1992" class="csl-entry">
+Solomon, P. J., and D. R. Cox. 1992. <span>“Nonlinear Component of
+Variance Models.”</span> <em>Biometrika</em> 79 (1): 1–11. <a href="https://doi.org/10.1093/biomet/79.1.1" class="external-link">https://doi.org/10.1093/biomet/79.1.1</a>.
+</div>
+<div id="ref-MASS" class="csl-entry">
+Venables, W. N., and B. D. Ripley. 2002. <em>Modern Applied Statistics
+with s</em>. Fourth. New York: Springer. <a href="https://www.stats.ox.ac.uk/pub/MASS4/" class="external-link">https://www.stats.ox.ac.uk/pub/MASS4/</a>.
+</div>
 </div>
 </div>
   </div>
