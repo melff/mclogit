@@ -1,4 +1,17 @@
 url: https://melff.github.io/mclogit
 template:
-  bootstrap: 5
-  bootswatch: sandstone
+  package: preferably
+articles:
+- title: The statistical models
+  navbar: The statistical models
+  contents:
+    - conditional-logit
+    - baseline-logit
+    - baseline-and-conditional-logit
+    - random-effects
+- title: Technical aspects of model fitting
+  navbar: Technical aspects of model fitting
+  contents:
+    - fitting-mclogit
+    - approximations
+  

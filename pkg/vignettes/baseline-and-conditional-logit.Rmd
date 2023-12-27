@@ -1,0 +1,81 @@
+---
+title: The relation between baseline logit and conditional logit models
+output: rmarkdown::html_vignette
+vignette: >
+  % \VignetteIndexEntry{The relation between baseline logit and conditional logit models}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+Baseline-category logit models can be expressed as particular form of
+conditional logit models. In a conditional logit model (without random
+effects) the probability that individual $i$ chooses alternative $j$
+from choice set $\mathcal{S}_i$ is
+
+$$
+\pi_{ij} = \frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
+$$
+
+where
+
+$$
+\eta_{ij} = \alpha_1x_{1ij}+\cdots+\alpha_qx_{qij}
+$$
+
+In a baseline-category logit model, the set of alternatives is the same
+for all individuals $i$ that is $\mathcal{S}_i = {1,\ldots,q}$ and
+the linear part of the model can be written like:
+
+$$
+\eta_{ij} = \beta_{j0}+\beta_{j1}x_{i1}+\cdots+\beta_{jr}x_{ri}
+$$
+
+where the coefficients in the equation for baseline category $j$ are
+all zero, i.e.
+
+$$
+\beta_{10} = \cdots = \beta_{1r} = 0
+$$
+
+After setting
+
+$$
+\begin{aligned}
+x_{(g\times(j-1))ij} = d_{gj}, \quad
+x_{(g\times(j-1)+h)ij} = d_{gj}x_{hi}, \qquad
+\text{with }d_{gj}=
+\begin{cases}
+0&\text{for } j\neq g\text{ or } j=g\text{ and } j=0\\
+1&\text{for } j=g \text{ and } j\neq0\\
+\end{cases}
+\end{aligned}
+$$
+
+we have for the log-odds:
+
+$$
+\begin{aligned}
+\begin{aligned}
+\ln\frac{\pi_{ij}}{\pi_{i1}}
+&=\beta_{j0}+\beta_{ji}x_{1i}+\cdots+\beta_{jr}x_{ri}
+\\
+&=\sum_{h}\beta_{jh}x_{hi}=\sum_{g,h}\beta_{jh}d_{gj}x_{hi}
+=\sum_{g,h}\alpha_{g\times(j-1)+h}(d_{gj}x_{hi}-d_{g1}x_{hi})
+=\sum_{g,h}\alpha_{g\times(j-1)+h}(x_{(g\times(j-1)+h)ij}-x_{(g\times(j-1)+h)i1})\\
+&=\alpha_{1}(x_{1ij}-x_{1i1})+\cdots+\alpha_{s}(x_{sij}-x_{si1})
+\end{aligned}
+\end{aligned}
+$$
+
+where $\alpha_1=\beta_{21}$, $\alpha_2=\beta_{22}$, etc.
+
+That is, the baseline-category logit model is translated into a
+conditional logit model where the alternative-specific values of the
+attribute variables are interaction terms composed of
+alternativ-specific dummes and individual-specific values of
+characteristics variables.
+
+Analogously, the random-effects extension of the baseline-logit model
+can be translated into a random-effects conditional logit model where
+the random intercepts in the logit equations of the baseline-logit model
+are translated into random slopes of category-specific dummy variables.

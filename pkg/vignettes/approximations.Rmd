@@ -1,0 +1,332 @@
+---
+title: Approximate Inference for Multinomial Logit Models with Random Effects
+output: rmarkdown::html_vignette
+vignette: >
+  % \VignetteIndexEntry{Approximate Inference for Multinomial Logit Models with Random Effects}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# The problem
+
+A crucial problem for inference about non-linear models with random
+effects is that the likelihood function for such models involves
+integrals for which no analytical solution exists.
+
+For given values $\boldsymbol{b}$ of the random effects the likelihood
+function of a conditional logit model (and therefore also of a
+baseline-logit model) can be written in the form
+
+$$
+\mathcal{L}_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})
+=
+\exp\left(\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\right)
+=\exp
+\left(
+\ell(\boldsymbol{y}|\boldsymbol{b};\boldsymbol{\alpha})
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
+\right)
+$$
+
+However, this "complete data" likelihood function cannot be used for
+inference, because it depends on the unobserved random effects. To
+arrive at a likelihood function that depends only on observed data, one
+needs to used the following integrated likelihood function:
+
+$$
+\mathcal{L}_{\text{obs}}(\boldsymbol{y})
+=
+\int
+\exp\left(\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\right)
+\partial \boldsymbol{b}
+=
+\int
+\exp
+\left(
+\ell(\boldsymbol{y}|\boldsymbol{b};\boldsymbol{\alpha})
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
+\right)
+\partial \boldsymbol{b}
+$$
+
+In general, this integral cannot be "solved", i.e. eliminated from the
+formula by analytic means (it is "analytically untractable"). Instead,
+one will compute it either using numeric techniques (e.g. using
+numerical quadrature) or approximate it using analytical techniques.
+Unless there is only a single level of random effects numerical
+quadrature can become computationally be demanding, that is, the
+computation of the (log-)likelihood function and its derivatives can
+take a lot of time even on modern, state-of-the-art computer hardware.
+Yet approximations based on analytical techniques hand may lead to
+biased estimates in particular in samples where the number of
+observations relative to the number of random offects is small, but at
+least they are much easier to compute and sometimes making inference
+possible after all.
+
+The package "mclogit" supports to kinds of analytical approximations,
+the Laplace approximation and what one may call the Solomon-Cox
+appoximation. Both approximations are based on a quadratic expansion of
+the integrand so that the thus modified integral does have a closed-form
+solution, i.e. is analytically tractable.
+
+# The Laplace approximation and PQL
+
+## Laplace approximation
+
+The (first-order) Laplace approximation is based on the quadratic
+expansion the logarithm of the integrand, the complete-data
+log-likelihood
+
+$$
+\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
+\ell(\boldsymbol{y}|\tilde{\boldsymbol{b}};\boldsymbol{\alpha})
+-
+\frac12
+(\boldsymbol{b}-\tilde{\boldsymbol{b}})'
+\tilde{\boldsymbol{H}}
+(\boldsymbol{b}-\tilde{\boldsymbol{b}})
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12(\boldsymbol{b}-\tilde{\boldsymbol{b}})'\boldsymbol{\Sigma}^{-1}(\boldsymbol{b}-\tilde{\boldsymbol{b}})
+$$
+
+where $\tilde{\boldsymbol{b}}$ is the solution to
+
+$$
+\frac{\partial\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})}{\partial\boldsymbol{b}}
+= 0
+$$
+
+and $\tilde{\boldsymbol{H}}=\boldsymbol{H}(\tilde{\boldsymbol{b}})$ is the
+value of the negative Hessian with respect to $\boldsymbol{b}$
+
+$$
+\boldsymbol{H}(\boldsymbol{b})=-\frac{\partial^2\ell(\boldsymbol{y}|\boldsymbol{b};\boldsymbol{\alpha})}{\partial\boldsymbol{b}\partial\boldsymbol{b}'}
+$$
+
+for $\boldsymbol{b}=\tilde{\boldsymbol{b}}$.
+
+Since this quadratic expansion---let us call it
+$\ell^*_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})$---is a
+(multivariate) quadratic function of $\boldsymbol{b}$, the integral of
+its exponential does have a closed-form solution (the relevant formula
+can be found in `harville:matrix.algebra`).
+
+For purposes of estimation, the resulting approximate log-likelihood is
+more useful:
+
+$$
+\ell^*_{\text{Lapl}}
+=
+\ln\int \exp(\ell_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})) \partial\boldsymbol{b}
+=
+\ell(\boldsymbol{y}|\tilde{\boldsymbol{b}};\boldsymbol{\alpha})
+-
+\frac12\tilde{\boldsymbol{b}}'\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{b}}
+-
+\frac12\ln\det(\boldsymbol{\Sigma})
+-
+\frac12\ln\det\left(\tilde{\boldsymbol{H}}+\boldsymbol{\Sigma}^{-1}\right).
+$$
+
+## Penalized quasi-likelihood (PQL)
+
+If one disregards the dependence of $\tilde{\boldsymbol{H}}$ on
+$\boldsymbol{\alpha}$ and $\boldsymbol{b}$, then
+$\tilde{\boldsymbol{b}}$ maximizes not only
+$\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})$ but also
+$\ell^*_{\text{Lapl}}$. This motivates the following IWLS/Fisher
+scoring equations for $\hat{\boldsymbol{\alpha}}$ and
+$\tilde{\boldsymbol{b}}$ (see
+`breslow.clayton:approximate.inference.glmm` and [this
+page](fitting-mclogit.html)):
+
+$$
+\begin{aligned}
+\begin{bmatrix}
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} & \boldsymbol{X}'\boldsymbol{W}\boldsymbol{Z} \\
+\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{X} & \boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} + \boldsymbol{\Sigma}^{-1}\\
+\end{bmatrix}
+\begin{bmatrix}
+ \hat{\boldsymbol{\alpha}}\\
+ \tilde{\boldsymbol{b}}\\
+\end{bmatrix}
+ =
+\begin{bmatrix}
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^*\\
+\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{y}^*
+\end{bmatrix}
+\end{aligned}
+$$
+
+where
+
+$$
+\boldsymbol{y}^* =  \boldsymbol{X}\boldsymbol{\alpha} +
+\boldsymbol{Z}\boldsymbol{b} +
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})
+$$
+
+is the IWLS "working dependend variable" with $\boldsymbol{\alpha}$,
+$\boldsymbol{b}$, $\boldsymbol{W}$, and $\boldsymbol{\pi}$ computed in
+an earlier iteration.
+
+Substitutions lead to the equations:
+
+$$
+(\boldsymbol{X}\boldsymbol{V}^-\boldsymbol{X})\hat{\boldsymbol{\alpha}} =
+\boldsymbol{X}\boldsymbol{V}^-\boldsymbol{y}^*
+$$
+
+and
+
+$$
+(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} +
+\boldsymbol{\Sigma}^{-1})\boldsymbol{b} =
+\boldsymbol{Z}'\boldsymbol{W}(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})
+$$
+
+which can be solved to compute $hat{\boldsymbol{\alpha}}$ and
+$\tilde{\boldsymbol{b}}$ (for given $\boldsymbol{\Sigma}$)
+
+Here
+
+$$
+\boldsymbol{V} =
+\boldsymbol{W}^-+\boldsymbol{Z}\boldsymbol{\Sigma}\boldsymbol{Z}'
+$$
+
+and
+
+$$
+\boldsymbol{V}^- = \boldsymbol{W}-
+\boldsymbol{W}\boldsymbol{Z}'\left(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z}+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{Z}\boldsymbol{W}
+$$
+
+Following `breslow.clayton:approximate.inference.glmm` the variance
+parameters in $\boldsymbol{Sigma}$ are estimated by minimizing
+
+$$
+q_1 =
+\det(\boldsymbol{V})+(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})\boldsymbol{V}^-(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})
+$$
+
+or the "REML" variant:
+
+$$
+q_2 =
+\det(\boldsymbol{V})+(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})\boldsymbol{V}^-(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})+\det(\boldsymbol{X}'\boldsymbol{V}^{-}\boldsymbol{X})
+$$
+
+This motivates the following algorithm, which is strongly inspired by
+the `glmmPQL()` function in Brian Ripley's *R* package
+[MASS](https://cran.r-project.org/package=MASS):
+
+1.  Create some suitable starting values for $\boldsymbol{\pi}$,
+    $\boldsymbol{W}$, and $\boldsymbol{y}^*$
+2.  Construct the "working dependent variable" $\boldsymbol{y}^*$
+3.  Minimize $q_1$ (quasi-ML) or $q_2$ (quasi-REML) iteratively
+    (inner loop), to obtain an estimate of $\boldsymbol{\Sigma}$
+4.  Obtain $hat{\boldsymbol{\alpha}}$ and $\tilde{\boldsymbol{b}}$ based
+    on the current estimate of $\boldsymbol{\Sigma}$
+5.  Compute updated $\boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha} +
+    \boldsymbol{Z}\boldsymbol{b}$, $\boldsymbol{\pi}$, $\boldsymbol{W}$.
+6.  If the change in $\boldsymbol{\eta}$ is smaller than a given
+    tolerance criterion stop the algorighm and declare it as converged.
+    Otherwise go back to step 2 with the updated values of
+    $\hat{\boldsymbol{\alpha}}$ and $\tilde{\boldsymbol{b}}$.
+
+This algorithm is a modification of the [IWLS](fitting-mclogit.html)
+algorithm used to fit conditional logit models without random effects.
+Instead of just solving a linear requatoin in step 3, it estimates a
+weighted linear mixed-effects model. In contrast to `glmmPQL()` it does
+not use the `lme()` function from package
+[nlme](https://cran.r-project.org/package=nlme) for this, because the
+weighting matrix $\boldsymbol{W}$ is non-diagonal. Instead, $q_1$ or
+$q_2$ are minimized using the function `nlminb` from the standard *R*
+package "stats".
+
+# The Solomon-Cox approximation and MQL
+
+## The Solomon-Cox approximation
+
+The (first-order) Solomon approximation is based on the quadratic
+expansion the integrand
+
+$$
+\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
+\ell(\boldsymbol{y}|\boldsymbol{0};\boldsymbol{\alpha})
++
+\boldsymbol{g}_0'
+\boldsymbol{b}
+-
+\frac12
+\boldsymbol{b}'
+\boldsymbol{H}_0
+\boldsymbol{b}
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
+$$
+
+where $\boldsymbol{g}\_0=\boldsymbol{g}(\boldsymbol{0})$ is the gradient
+of $\ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})$
+
+$$
+\boldsymbol{g}(\boldsymbol{b})=-\frac{\partial\ell(\boldsymbol{y}|\boldsymbol{b};\boldsymbol{\alpha})}{\partial\boldsymbol{b}}
+$$
+
+at $\boldsymbol{b}=\boldsymbol{0}$, while
+$\boldsymbol{H}\_0=\boldsymbol{H}(\boldsymbol{0})$ is the negative
+Hessian at $\boldsymbol{b}=\boldsymbol{0}$.
+
+Like before, the integral of the exponential this quadratic expansion
+(which we refer to as
+$\ell_{\text{SC}}(\boldsymbol{y},\boldsymbol{b})$) has a closed-form
+solution, as does its logarithm, which is:
+
+$$
+\ln\int \exp(\ell_{\text{SC}}(\boldsymbol{y},\boldsymbol{b})) \partial\boldsymbol{b}
+=
+\ell(\boldsymbol{y}|\boldsymbol{0};\boldsymbol{\alpha})
+-
+\frac12\boldsymbol{g}_0'\left(\boldsymbol{H}_0+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{g}_0
+-
+\frac12\ln\det(\boldsymbol{\Sigma})
+-
+\frac12\ln\det\left(\boldsymbol{H}_0+\boldsymbol{\Sigma}^{-1}\right).
+$$
+
+## Marginal quasi-likelhood (MQL)
+
+The resulting estimation technique is very similar to PQL (again, see
+`breslow.clayton:approximate.inference.glmm` for a discussion). The only
+difference is the construction of the "working dependent" variable
+$\boldsymbol{y}^*$. With PQL it is constructed as 
+$$\boldsymbol{y}^* =
+\boldsymbol{X}\boldsymbol{\alpha} + \boldsymbol{Z}\boldsymbol{b} +
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{pi})$$
+while the MQL working
+dependent variable is just
+
+$$
+\boldsymbol{y}^* =  \boldsymbol{X}\boldsymbol{\alpha} +
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})
+$$
+
+so that the algorithm has the following steps:
+
+1.  Create some suitable starting values for $\boldsymbol{\pi}$,
+    $\boldsymbol{W}$, and $\boldsymbol{y}^*$
+2.  Construct the "working dependent variable" $\boldsymbol{y}^*$
+3.  Minimize $q_1$ (quasi-ML) or $q_2$ (quasi-REML) iteratively
+    (inner loop), to obtain an estimate of $\boldsymbol{\Sigma}$
+4.  Obtain $\hat{\boldsymbol{\alpha}}$ based on the current estimate of
+    $\boldsymbol{\Sigma}$
+5.  Compute updated $\boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha}$,
+    $\boldsymbol{\pi}$, $\boldsymbol{W}$.
+6.  If the change in $\boldsymbol{\eta}$ is smaller than a given
+    tolerance criterion stop the algorighm and declare it as converged.
+    Otherwise go back to step 2 with the updated values of
+    $\hat{\boldsymbol{\alpha}}$.
+

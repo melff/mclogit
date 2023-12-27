@@ -1,0 +1,63 @@
+---
+title: Baseline-category logit models
+output: rmarkdown::html_vignette
+vignette: >
+  % \VignetteIndexEntry{Baseline-category logit models}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+Multinomial baseline-category logit models are a generalisation of
+logistic regression, that allow to model not only binary or dichotomous
+responses, but also polychotomous responses. In addition, they allow to
+model responses in the form of counts that have a pre-determined sum.
+These models are described in
+`agresti:categorical.data.analysis.2002`{.interpreted-text
+role="citet"}. Estimating these models is also supported by the function
+`multinom()` in the *R* package \"nnet\" `MASS`{.interpreted-text
+role="cite"}. In the package \"mclogit\", the function to estimate these
+models is called `mblogit()` (see the relevant [manual
+page](reference/mblogit.html)), which uses the infrastructure for estimating
+conditional logit models, exploiting the fact that baseline-category
+logit models can be re-expressed as condigional logit models.
+
+Baseline-category logit models are constructed as follows. Suppose a
+categorical dependent variable or response with categories
+$j=1,\ldots,q$ is observed for individuals $i=1,\ldots,n$. Let
+$\pi_{ij}$ denote the probability that the value of the dependent
+variable for individual $i$ is equal to $j$, then the
+baseline-category logit model takes the form:
+
+$$
+\begin{aligned}
+\pi_{ij} =
+\begin{cases}
+\dfrac{\exp(\alpha_{j0}+\alpha_{j1}x_{1i}+\cdots+\alpha_{jr}x_{ri})}
+{1+\sum_{k>1}\exp(\alpha_{k0}+\alpha_{k1}x_{1i}+\cdots+\alpha_{kr}x_{ri})}
+& \text{for } j>1\\[20pt]
+\dfrac{1}
+{1+\sum_{k>1}\exp(\alpha_{k0}+\alpha_{k1}x_{1i}+\cdots+\alpha_{kr}x_{ri})}
+& \text{for } j=1
+\end{cases}
+\end{aligned}
+$$
+
+where the first category ($j=1$) is the baseline category.
+
+Equivalently, the model can be expressed in terms of log-odds, relative
+to the baseline-category:
+
+$$
+\ln\frac{\pi_{ij}}{\pi_{i1}}
+=
+\alpha_{j0}+\alpha_{j1}x_{1i}+\cdots+\alpha_{jr}x_{ri}.
+$$
+
+Here the relevant parameters of the model are the coefficients
+$\alpha_{jk}$ which describe how the values of independent variables
+(numbered $k=1,\ldots,r$) affect the relative chances of the response
+taking a value $j$ versus taking the value $1$. Note that there is
+one coefficient for each independent variable and *each response* other
+than the baseline category.
+

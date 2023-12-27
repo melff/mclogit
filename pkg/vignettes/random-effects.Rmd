@@ -1,0 +1,73 @@
+---
+title: Random effects in baseline logit models and conditional logit models
+output: rmarkdown::html_vignette
+vignette: >
+  % \VignetteIndexEntry{Random effects in baseline logit models and conditional logit models}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The "mclogit" package allows for the presence of random effects in
+baseline-category logit and conditional logit models. In
+baseline-category logit models, the random effects may represent
+(unobserved) characteristics that are common the individuals in
+clusters, such as regional units or electoral districts or the like. In
+conditional logit models, random effects may represent attributes that
+share across several choice occasions within the same context of choice.
+That is, if one analyses voting behaviour across countries then an
+random effect specific to the Labour party may represent unobserved
+attributes of this party in terms of which it differs from (or is more
+like) the Social Democratic Party of Germany (SPD). My original
+motivation for working on conditional logit models with random effects
+was to make it possible to assess the impact of parties' political
+positions on the patterns of voting behaviour in various European
+countries. The results of this research are published in an article in
+*Electoral Studies* `elff:divisions.positions.voting`{.interpreted-text
+role="cite"}.
+
+In its earliest incarnation, the package supported only a very simple
+random-intercept extension of conditional logit models (or "mixed
+conditional logit models", hence the name of the package). These models
+can be written as
+
+$$
+\pi_{ij} = \frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
+$$
+
+with
+
+$$
+\eta_{ij}=\sum_h\alpha_hx_{hij}+\sum_kz_{ik}b_{jk}
+$$
+
+where $x_{hij}$ represents values of independent variables, $\alpha_h$
+are coefficients, $z_{ik}$ are dummy ariables (that are equal to
+$1$ if $i$ is in cluster $k$ and equal to $0$ otherwise),
+$b_{jk}$ are random effects with a normal distribution with expectation
+$0$ and variance parameter $\sigma^2$.
+
+Later releases also added support for baseline-category logit models
+(initially only without random effects). In order to support random
+effects in baseline-category logit models, the package had to be further
+modified to allow for conditional logit models with random slopes (this
+is so because baseline-categoy logit models can be expressed as a
+particular type of conditional logit models).
+
+It should be noted that estimating the parameters of random effects
+multinomial logit models (whether of baseline-category logit variety or
+the conditional logit variety) involves the considerable challenges
+already known from the "generalized linear mixed models" literature.
+The main challenge is that the likelihood function involves analytically
+intractable integrals (i.e. there is know way to "solve" or eliminate
+the intergrals from the formula of the likelihood function). This means
+that either computationally intensive methods for the computation of
+such integrals have to be used or certain approximations (most notably
+the Laplace approximation technique and its variants), which may lead to
+biases in certain situations. The "mclogit" package only supports
+approximate likelihood-based inference. Most of the time the
+PQL-technique based on a (first-order) Laplace approximation was
+supported, release 0.8, "mclogit" also supports the MQL technique,
+which is based on a (first-order) Solomon-Cox approximation. The ideas
+behind the PQL and MQL techniques are described e.g. in
+`breslow.clayton:approximate.inference.glmm`{.interpreted-text
+role="citet"}.
