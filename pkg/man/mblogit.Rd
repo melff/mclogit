@@ -105,7 +105,9 @@ this case, will lead to efficiency gains in computing, but more
 importantly overdispersion will correctly be computed if present.}
 
 \item{groups}{an optional formula that specifies groups of observations
-relevant for the specification of overdispersed response counts.}
+relevant for the estimation of overdispersion. Covariates should be
+constant within groups, otherwise a warning is generated
+since the overdispersion estimate may be imprecise.}
 
 \item{control}{a list of parameters for the fitting process.  See
 \code{\link{mclogit.control}}}
