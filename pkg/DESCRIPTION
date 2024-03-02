@@ -21,9 +21,7 @@ Imports:
 Suggests:
     MASS,
     nnet
-Enhances:
-    emmeans
 LazyLoad: Yes
 URL: http://melff.github.io/mclogit/,https://github.com/melff/mclogit/
 BugReports: https://github.com/melff/mclogit/issues
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.3
