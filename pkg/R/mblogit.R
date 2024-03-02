@@ -585,7 +585,7 @@ print.summary.mblogit <-
     for(i in 1:ncategs){
       cat <- categs[i]
       patn <- paste0(cat,"~")
-      ii <- grep(patn,rn.coefs,fixed=TRUE)
+      ii <- which(startsWith(rn.coefs,patn))
       coefs.cat <- coefs[ii,,drop=FALSE]
       rownames(coefs.cat) <- gsub(patn,"",rownames(coefs.cat))
       if(i>1) cat("\n")
