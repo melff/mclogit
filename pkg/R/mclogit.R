@@ -961,29 +961,16 @@ mkZ <- function(groups,rX){
     jk <- rep((j-1)*p,p)+rep(k,each=n)
     i.jk <- cbind(i,jk)
 
-    Z[i.jk] <- rX
-    Z
-}
-
-mkZ2 <- function(all.groups,
-                groups,
-                rX){
-    n <- length(groups)
-    ug <- unique(all.groups)
-    m <- length(ug)
-    p <- ncol(rX)
-    
-    Z <- Matrix(0,nrow=n,ncol=m*p)
-
-    i <- 1:n
-    k <- 1:p
-    j <- groups
-    
-    i <- rep(i,p)
-    jk <- rep((j-1)*p,p)+rep(k,each=n)
-    i.jk <- cbind(i,jk)
+    lev_groups <- levels(groups)
+    if(is.null(lev_groups))
+        lev_groups <- unique(groups)
 
     Z[i.jk] <- rX
+    if(ncol(rX) > 1)
+        cn <- as.vector(outer(colnames(rX),lev_groups,paste,sep="|"))
+    else
+        cn <- lev_groups
+    colnames(Z) <- cn
     Z
 }
 

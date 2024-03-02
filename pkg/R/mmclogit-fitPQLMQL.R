@@ -280,6 +280,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
             m.k <- m[k]
             d.k <- d[k]
             dim(b.k) <- c(d.k,m.k)
+            dimnames(b.k) <- NULL
             S.k <- tcrossprod(b.k)
             if(matrank(S.k) < d.k){
             #warning(sprintf("Singular initial covariance matrix at level %d in inner fitting routine",k))
