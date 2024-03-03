@@ -223,7 +223,9 @@ importantly overdispersion will correctly be computed if present.</p></dd>
 
 <dt>groups</dt>
 <dd><p>an optional formula that specifies groups of observations
-relevant for the specification of overdispersed response counts.</p></dd>
+relevant for the estimation of overdispersion. Covariates should be
+constant within groups, otherwise a warning is generated
+since the overdispersion estimate may be imprecise.</p></dd>
 
 
 <dt>control</dt>
