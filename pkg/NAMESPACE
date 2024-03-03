@@ -67,3 +67,7 @@ S3method(predict,mmclogit)
 
 export(rebase)
 S3method(rebase,mblogit)
+
+importFrom(nlme,ranef)
+export(ranef)
+S3method(ranef,mmclogit)

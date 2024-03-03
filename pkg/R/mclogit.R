@@ -1147,3 +1147,57 @@ check.names <- function(x,...){
         stop(msg)
     }
 }
+
+ranef.mmclogit <- function(object,...){
+    re <- object$random.effects
+    g <- object$groups
+    names(re) <- names(object$groups)
+    Imat <- object$info.fixed.random
+    Vmat <- solve(Imat)
+    Vmat <- Vmat[-1,-1,drop=FALSE]
+    k <- length(re)
+    res <- lapply(1:k,get_ranef,g,re,Vmat)
+    names(res) <- names(object$groups)
+    structure(res,class=c("ranef.mmclogit","ranef.mer"))
+}
+
+get_ranef <- function(i,g,re,Vmat){
+    g <- g[[i]]
+    re <- re[[i]]
+    Vmat <- Vmat[[i,i]]
+    nms <- rownames(re)
+    m <- nlevels(g)
+    d <- length(re)/m
+    if(d == 1){
+        coefn <- "(Intercept)"
+        colnames(re) <- coefn
+        gg <- nms
+    }
+    else {
+        nms_spl <- strsplit(nms,"|",fixed=TRUE)
+        nms_spl1 <- unlist(lapply(nms_spl,"[",1))
+        nms_spl2 <- unlist(lapply(nms_spl,"[",2))
+        coefn <- unique(nms_spl1)
+        coefn <- gsub("(Const.)","(Intercept)",coefn,fixed=TRUE)
+        gg <- unique(nms_spl2)
+        dim(re) <- c(d,m)
+        dimnames(re) <- list(coefn,gg)
+        re <- t(re)
+    }
+    re <- as.data.frame(re)
+    Vlist <- lapply(1:m,get_dblock,Vmat,d)
+    Varr <- as.matrix(do.call(rbind,Vlist))
+    dim(Varr) <- c(d,m,d)
+    Varr <- aperm(Varr,c(1,3,2))
+    dimnames(Varr) <- list(coefn,coefn,gg)
+
+    structure(as.data.frame(re),
+              postVar=Varr)
+}
+
+get_dblock <- function(i,M,d){
+    from <- (i-1)*d + 1
+    to <- i*d
+    ii <- from:to
+    M[ii,ii]
+}
