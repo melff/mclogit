@@ -108,19 +108,32 @@ getSummary.mclogit <- function(obj,
 
   ans <- list(coef= coef)
   ans <- c(ans,VarPar)
+  parameter.types <- c("coef", names(VarPar))
 
   if(length(smry$ngrps)){
       G <-as.integer(smry$ngrps)
       names(G) <- names(smry$ngrps)
       names(G) <- paste("Groups by",names(G))
-      ans <- c(ans,list(Groups=G))
+      G <- c(G,"Total obs."=N)
+
+      sumstat <- list(sumstat,N=G)
+      
+      c(ans,
+        list(sumstat=sumstat,
+             parameter.types=parameter.types,
+             call=obj$call,
+             contrasts = obj$contrasts,
+             xlevels = obj$xlevels))     
   }
-    
-  c(ans,
+  else {
+
+    sumstat <- c(sumstat,N=N)
+    c(ans,
     list(sumstat=sumstat,
          call=obj$call,
          contrasts = obj$contrasts,
-         xlevels = obj$xlevels))
+         xlevels = obj$xlevels))     
+  }
 }
 
 getSummary.mmclogit <- getSummary.mclogit
