@@ -24,7 +24,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="Approximate Inference for Multinomial Logit Models with Random Effects">
-<meta property="og:description" content="mclogit">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -35,7 +34,7 @@
 <link id="css-code-dark" rel="stylesheet" href="../code-color-scheme-dark.css" media="(prefers-color-scheme: dark)">
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -61,7 +60,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -96,11 +95,11 @@
 <li>
   <a href="https://github.com/melff/mclogit/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
-        
-        
+
+
 
 
       </ul>
@@ -111,7 +110,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -120,7 +119,7 @@
 Models with Random Effects</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/HEAD/../vignettes/approximations.Rmd" class="external-link"><code>../vignettes/approximations.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/main/vignettes/approximations.Rmd" class="external-link"><code>vignettes/approximations.Rmd</code></a></small>
       <div class="hidden name"><code>approximations.Rmd</code></div>
 
     </div>
@@ -133,11 +132,12 @@ Models with Random Effects</h1>
 <p>A crucial problem for inference about non-linear models with random
 effects is that the likelihood function for such models involves
 integrals for which no analytical solution exists.</p>
-<p>For given values <span class="math inline">\(\boldsymbol{b}\)</span>
+<p>For given values
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐛</mi><annotation encoding="application/x-tex">\boldsymbol{b}</annotation></semantics></math>
 of the random effects the likelihood function of a conditional logit
 model (and therefore also of a baseline-logit model) can be written in
 the form</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>ℓ</mo><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mi>𝐛</mi><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>𝐛</mi><mi>′</mi><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 \mathcal{L}_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})
 =
 \exp\left(\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\right)
@@ -147,12 +147,12 @@ the form</p>
 -\frac12\ln\det(\boldsymbol{\Sigma})
 -\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
 \right)
-\]</span></p>
+</annotation></semantics></math></p>
 <p>However, this “complete data” likelihood function cannot be used for
 inference, because it depends on the unobserved random effects. To
 arrive at a likelihood function that depends only on observed data, one
 needs to used the following integrated likelihood function:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ℒ</mi><mtext mathvariant="normal">obs</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>∫</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>ℓ</mo><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>∂</mi><mi>𝐛</mi><mo>=</mo><mo>∫</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mi>𝐛</mi><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>𝐛</mi><mi>′</mi><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>∂</mi><mi>𝐛</mi></mrow><annotation encoding="application/x-tex">
 \mathcal{L}_{\text{obs}}(\boldsymbol{y})
 =
 \int
@@ -167,7 +167,7 @@ needs to used the following integrated likelihood function:</p>
 -\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
 \right)
 \partial \boldsymbol{b}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>In general, this integral cannot be “solved”, i.e. eliminated from
 the formula by analytic means (it is “analytically untractable”).
 Instead, one will compute it either using numeric techniques (e.g. using
@@ -196,7 +196,7 @@ solution, i.e. is analytically tractable.</p>
 <p>The (first-order) Laplace approximation is based on the quadratic
 expansion the logarithm of the integrand, the complete-data
 log-likelihood</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ℓ</mo><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐛</mi><mo>−</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>′</mi><mover><mi>𝐇</mi><mo accent="true">̃</mo></mover><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐛</mi><mo>−</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐛</mi><mo>−</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow><mi>′</mi><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐛</mi><mo>−</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 \ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
 \ell(\boldsymbol{y}|\tilde{\boldsymbol{b}};\boldsymbol{\alpha})
 -
@@ -206,30 +206,36 @@ log-likelihood</p>
 (\boldsymbol{b}-\tilde{\boldsymbol{b}})
 -\frac12\ln\det(\boldsymbol{\Sigma})
 -\frac12(\boldsymbol{b}-\tilde{\boldsymbol{b}})'\boldsymbol{\Sigma}^{-1}(\boldsymbol{b}-\tilde{\boldsymbol{b}})
-\]</span></p>
-<p>where <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> is
-the solution to</p>
-<p><span class="math display">\[
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{b}}</annotation></semantics></math>
+is the solution to</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><msub><mo>ℓ</mo><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝐛</mi></mrow></mfrac><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
 \frac{\partial\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})}{\partial\boldsymbol{b}}
 = 0
-\]</span></p>
-<p>and <span class="math inline">\(\tilde{\boldsymbol{H}}=\boldsymbol{H}(\tilde{\boldsymbol{b}})\)</span>
-is the value of the negative Hessian with respect to <span class="math inline">\(\boldsymbol{b}\)</span></p>
-<p><span class="math display">\[
+</annotation></semantics></math></p>
+<p>and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>𝐇</mi><mo accent="true">̃</mo></mover><mo>=</mo><mi>𝐇</mi><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\tilde{\boldsymbol{H}}=\boldsymbol{H}(\tilde{\boldsymbol{b}})</annotation></semantics></math>
+is the value of the negative Hessian with respect to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐛</mi><annotation encoding="application/x-tex">\boldsymbol{b}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐇</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mi>𝐛</mi><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝐛</mi><mi>∂</mi><mi>𝐛</mi><mi>′</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">
 \boldsymbol{H}(\boldsymbol{b})=-\frac{\partial^2\ell(\boldsymbol{y}|\boldsymbol{b};\boldsymbol{\alpha})}{\partial\boldsymbol{b}\partial\boldsymbol{b}'}
-\]</span></p>
-<p>for <span class="math inline">\(\boldsymbol{b}=\tilde{\boldsymbol{b}}\)</span>.</p>
-<p>Since this quadratic expansion—let us call it <span class="math inline">\(\ell^*_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})\)</span>—is
-a (multivariate) quadratic function of <span class="math inline">\(\boldsymbol{b}\)</span>, the integral of its
-exponential does have a closed-form solution (the relevant formula can
-be found in <span class="citation">Harville (1997)</span>).</p>
+</annotation></semantics></math></p>
+<p>for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐛</mi><mo>=</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover></mrow><annotation encoding="application/x-tex">\boldsymbol{b}=\tilde{\boldsymbol{b}}</annotation></semantics></math>.</p>
+<p>Since this quadratic expansion—let us call it
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>ℓ</mo><mtext mathvariant="normal">Lapl</mtext><mo>*</mo></msubsup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\ell^*_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})</annotation></semantics></math>—is
+a (multivariate) quadratic function of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐛</mi><annotation encoding="application/x-tex">\boldsymbol{b}</annotation></semantics></math>,
+the integral of its exponential does have a closed-form solution (the
+relevant formula can be found in <span class="citation">Harville
+(1997)</span>).</p>
 <p>For purposes of estimation, the resulting approximate log-likelihood
 is more useful:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mo>ℓ</mo><mtext mathvariant="normal">Lapl</mtext><mo>*</mo></msubsup><mo>=</mo><mo>ln</mo><mo>∫</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>ℓ</mo><mtext mathvariant="normal">Lapl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>∂</mi><mi>𝐛</mi><mo>=</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mi>′</mi><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mover><mi>𝐇</mi><mo accent="true">̃</mo></mover><mo>+</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \ell^*_{\text{Lapl}}
 =
-\ln\int \exp(\ell_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b}))
-\partial\boldsymbol{b}
+\ln\int \exp(\ell_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})) \partial\boldsymbol{b}
 =
 \ell(\boldsymbol{y}|\tilde{\boldsymbol{b}};\boldsymbol{\alpha})
 -
@@ -238,110 +244,153 @@ is more useful:</p>
 \frac12\ln\det(\boldsymbol{\Sigma})
 -
 \frac12\ln\det\left(\tilde{\boldsymbol{H}}+\boldsymbol{\Sigma}^{-1}\right).
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="penalized-quasi-likelihood-pql">Penalized quasi-likelihood (PQL)<a class="anchor" aria-label="anchor" href="#penalized-quasi-likelihood-pql"></a>
 </h3>
-<p>If one disregards the dependence of <span class="math inline">\(\tilde{\boldsymbol{H}}\)</span> on <span class="math inline">\(\boldsymbol{\alpha}\)</span> and <span class="math inline">\(\boldsymbol{b}\)</span>, then <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> maximizes not only
-<span class="math inline">\(\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\)</span>
-but also <span class="math inline">\(\ell^*_{\text{Lapl}}\)</span>. This
-motivates the following IWLS/Fisher scoring equations for <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> (see <span class="citation">Breslow and Clayton (1993)</span> and <a href="fitting-mclogit.html">this page</a>):</p>
-<p><span class="math display">\[
+<p>If one disregards the dependence of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐇</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{H}}</annotation></semantics></math>
+on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛂</mi><annotation encoding="application/x-tex">\boldsymbol{\alpha}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐛</mi><annotation encoding="application/x-tex">\boldsymbol{b}</annotation></semantics></math>,
+then
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{b}}</annotation></semantics></math>
+maximizes not only
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ℓ</mo><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})</annotation></semantics></math>
+but also
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mo>ℓ</mo><mtext mathvariant="normal">Lapl</mtext><mo>*</mo></msubsup><annotation encoding="application/x-tex">\ell^*_{\text{Lapl}}</annotation></semantics></math>.
+This motivates the following IWLS/Fisher scoring equations for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\alpha}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{b}}</annotation></semantics></math>
+(see <span class="citation">Breslow and Clayton (1993)</span> and <a href="fitting-mclogit.html">this page</a>):</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐙</mi></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐙</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi></mtd><mtd columnalign="center" style="text-align: center"><mi>𝐙</mi><mi>′</mi><mi>𝐖</mi><mi>𝐙</mi><mo>+</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow><mo>=</mo><mrow><mo stretchy="true" form="prefix">[</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><msup><mi>𝐲</mi><mo>*</mo></msup></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><mi>𝐙</mi><mi>′</mi><mi>𝐖</mi><msup><mi>𝐲</mi><mo>*</mo></msup></mtd></mtr></mtable><mo stretchy="true" form="postfix">]</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 \begin{bmatrix}
-\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} &amp;
-\boldsymbol{X}'\boldsymbol{W}\boldsymbol{Z} \\
-\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{X} &amp;
-\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} +
-\boldsymbol{\Sigma}^{-1}\\
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} &amp; \boldsymbol{X}'\boldsymbol{W}\boldsymbol{Z} \\
+\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{X} &amp; \boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} + \boldsymbol{\Sigma}^{-1}\\
 \end{bmatrix}
 \begin{bmatrix}
-\hat{\boldsymbol{\alpha}}\\
-\tilde{\boldsymbol{b}}\\
+ \hat{\boldsymbol{\alpha}}\\
+ \tilde{\boldsymbol{b}}\\
 \end{bmatrix}
-=
+ =
 \begin{bmatrix}
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^*\\
 \boldsymbol{Z}'\boldsymbol{W}\boldsymbol{y}^*
 \end{bmatrix}
 \end{aligned}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>where</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐲</mi><mo>*</mo></msup><mo>=</mo><mi>𝐗</mi><mi>𝛂</mi><mo>+</mo><mi>𝐙</mi><mi>𝐛</mi><mo>+</mo><msup><mi>𝐖</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 \boldsymbol{y}^* =  \boldsymbol{X}\boldsymbol{\alpha} +
 \boldsymbol{Z}\boldsymbol{b} +
 \boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})
-\]</span></p>
-<p>is the IWLS “working dependend variable” with <span class="math inline">\(\boldsymbol{\alpha}\)</span>, <span class="math inline">\(\boldsymbol{b}\)</span>, <span class="math inline">\(\boldsymbol{W}\)</span>, and <span class="math inline">\(\boldsymbol{\pi}\)</span> computed in an earlier
-iteration.</p>
+</annotation></semantics></math></p>
+<p>is the IWLS “working dependend variable” with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛂</mi><annotation encoding="application/x-tex">\boldsymbol{\alpha}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐛</mi><annotation encoding="application/x-tex">\boldsymbol{b}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>
+computed in an earlier iteration.</p>
 <p>Substitutions lead to the equations:</p>
-<p><span class="math display">\[
-(\boldsymbol{X}\boldsymbol{V}^-\boldsymbol{X})\hat{\boldsymbol{\alpha}}
-=
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><msup><mi>𝐕</mi><mo>−</mo></msup><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover><mo>=</mo><mi>𝐗</mi><msup><mi>𝐕</mi><mo>−</mo></msup><msup><mi>𝐲</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">
+(\boldsymbol{X}\boldsymbol{V}^-\boldsymbol{X})\hat{\boldsymbol{\alpha}} =
 \boldsymbol{X}\boldsymbol{V}^-\boldsymbol{y}^*
-\]</span></p>
+</annotation></semantics></math></p>
 <p>and</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐙</mi><mi>′</mi><mi>𝐖</mi><mi>𝐙</mi><mo>+</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>𝐛</mi><mo>=</mo><mi>𝐙</mi><mi>′</mi><mi>𝐖</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐲</mi><mo>*</mo></msup><mo>−</mo><mi>𝐗</mi><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 (\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} +
 \boldsymbol{\Sigma}^{-1})\boldsymbol{b} =
 \boldsymbol{Z}'\boldsymbol{W}(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})
-\]</span></p>
-<p>which can be solved to compute <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> (for given <span class="math inline">\(\boldsymbol{\Sigma}\)</span>)</p>
+</annotation></semantics></math></p>
+<p>which can be solved to compute
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\alpha}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{b}}</annotation></semantics></math>
+(for given
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>)</p>
 <p>Here</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐕</mi><mo>=</mo><msup><mi>𝐖</mi><mo>−</mo></msup><mo>+</mo><mi>𝐙</mi><mi>𝚺</mi><mi>𝐙</mi><mi>′</mi></mrow><annotation encoding="application/x-tex">
 \boldsymbol{V} =
 \boldsymbol{W}^-+\boldsymbol{Z}\boldsymbol{\Sigma}\boldsymbol{Z}'
-\]</span></p>
+</annotation></semantics></math></p>
 <p>and</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐕</mi><mo>−</mo></msup><mo>=</mo><mi>𝐖</mi><mo>−</mo><mi>𝐖</mi><mi>𝐙</mi><mi>′</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐙</mi><mi>′</mi><mi>𝐖</mi><mi>𝐙</mi><mo>+</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>𝐙</mi><mi>𝐖</mi></mrow><annotation encoding="application/x-tex">
 \boldsymbol{V}^- = \boldsymbol{W}-
 \boldsymbol{W}\boldsymbol{Z}'\left(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z}+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{Z}\boldsymbol{W}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>Following <span class="citation">Breslow and Clayton (1993)</span>
-the variance parameters in <span class="math inline">\(\boldsymbol{\Sigma}\)</span> are estimated by
-minimizing</p>
-<p><span class="math display">\[
+the variance parameters in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>
+are estimated by minimizing</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mn>1</mn></msub><mo>=</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐕</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐲</mi><mo>*</mo></msup><mo>−</mo><mi>𝐗</mi><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>𝐕</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐲</mi><mo>*</mo></msup><mo>−</mo><mi>𝐗</mi><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 q_1 =
 \det(\boldsymbol{V})+(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})\boldsymbol{V}^-(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})
-\]</span></p>
+</annotation></semantics></math></p>
 <p>or the “REML” variant:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mn>2</mn></msub><mo>=</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐕</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐲</mi><mo>*</mo></msup><mo>−</mo><mi>𝐗</mi><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><msup><mi>𝐕</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>𝐲</mi><mo>*</mo></msup><mo>−</mo><mi>𝐗</mi><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><mi>′</mi><msup><mi>𝐕</mi><mo>−</mo></msup><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 q_2 =
 \det(\boldsymbol{V})+(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})\boldsymbol{V}^-(\boldsymbol{y}^*-\boldsymbol{X}\boldsymbol{\alpha})+\det(\boldsymbol{X}'\boldsymbol{V}^{-}\boldsymbol{X})
-\]</span></p>
+</annotation></semantics></math></p>
 <p>This motivates the following algorithm, which is strongly inspired by
 the <code><a href="https://rdrr.io/pkg/MASS/man/glmmPQL.html" class="external-link">glmmPQL()</a></code> function in Brian Ripley’s <em>R</em> package
 <a href="https://cran.r-project.org/package=MASS" class="external-link">MASS</a> <span class="citation">(Venables and Ripley 2002)</span>:</p>
 <ol style="list-style-type: decimal">
-<li>Create some suitable starting values for <span class="math inline">\(\boldsymbol{\pi}\)</span>, <span class="math inline">\(\boldsymbol{W}\)</span>, and <span class="math inline">\(\boldsymbol{y}^*\)</span>
+<li>Create some suitable starting values for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>
 </li>
-<li>Construct the “working dependent variable” <span class="math inline">\(\boldsymbol{y}^*\)</span>
+<li>Construct the “working dependent variable”
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>
 </li>
-<li>Minimize <span class="math inline">\(q_1\)</span> (quasi-ML) or
-<span class="math inline">\(q_2\)</span> (quasi-REML) iteratively (inner
-loop), to obtain an estimate of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>
+<li>Minimize
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>1</mn></msub><annotation encoding="application/x-tex">q_1</annotation></semantics></math>
+(quasi-ML) or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>2</mn></msub><annotation encoding="application/x-tex">q_2</annotation></semantics></math>
+(quasi-REML) iteratively (inner loop), to obtain an estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>
 </li>
-<li>Obtain <span class="math inline">\(hat{\boldsymbol{\alpha}}\)</span>
-and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span> based on
-the current estimate of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>
+<li>Obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mi>a</mi><mi>t</mi><mi>𝛂</mi></mrow><annotation encoding="application/x-tex">hat{\boldsymbol{\alpha}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{b}}</annotation></semantics></math>
+based on the current estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>
 </li>
-<li>Compute updated <span class="math inline">\(\boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha}
-+
-\boldsymbol{Z}\boldsymbol{b}\)</span>, <span class="math inline">\(\boldsymbol{\pi}\)</span>, <span class="math inline">\(\boldsymbol{W}\)</span>.</li>
-<li>If the change in <span class="math inline">\(\boldsymbol{\eta}\)</span> is smaller than a given
-tolerance criterion stop the algorighm and declare it as converged.
-Otherwise go back to step 2 with the updated values of <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> and <span class="math inline">\(\tilde{\boldsymbol{b}}\)</span>.</li>
+<li>Compute updated
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛈</mi><mo>=</mo><mi>𝐗</mi><mi>𝛂</mi><mo>+</mo><mi>𝐙</mi><mi>𝐛</mi></mrow><annotation encoding="application/x-tex">\boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha} +
+\boldsymbol{Z}\boldsymbol{b}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>.</li>
+<li>If the change in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛈</mi><annotation encoding="application/x-tex">\boldsymbol{\eta}</annotation></semantics></math>
+is smaller than a given tolerance criterion stop the algorighm and
+declare it as converged. Otherwise go back to step 2 with the updated
+values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\alpha}}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝐛</mi><mo accent="true">̃</mo></mover><annotation encoding="application/x-tex">\tilde{\boldsymbol{b}}</annotation></semantics></math>.</li>
 </ol>
 <p>This algorithm is a modification of the <a href="fitting-mclogit.html">IWLS</a> algorithm used to fit conditional
 logit models without random effects. Instead of just solving a linear
 requatoin in step 3, it estimates a weighted linear mixed-effects model.
 In contrast to <code><a href="https://rdrr.io/pkg/MASS/man/glmmPQL.html" class="external-link">glmmPQL()</a></code> it does not use the
 <code>lme()</code> function from package <a href="https://cran.r-project.org/package=nlme" class="external-link">nlme</a> <span class="citation">(Pinheiro and Bates 2000)</span> for this, because the
-weighting matrix <span class="math inline">\(\boldsymbol{W}\)</span> is
-non-diagonal. Instead, <span class="math inline">\(q_1\)</span> or <span class="math inline">\(q_2\)</span> are minimized using the function
-<code>nlminb</code> from the standard <em>R</em> package “stats” or some
-other optimizer chosen by the user.</p>
+weighting matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>
+is non-diagonal. Instead,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>1</mn></msub><annotation encoding="application/x-tex">q_1</annotation></semantics></math>
+or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>2</mn></msub><annotation encoding="application/x-tex">q_2</annotation></semantics></math>
+are minimized using the function <code>nlminb</code> from the standard
+<em>R</em> package “stats” or some other optimizer chosen by the
+user.</p>
 </div>
 </div>
 <div class="section level2">
@@ -352,7 +401,7 @@ other optimizer chosen by the user.</p>
 </h3>
 <p>The (first-order) Solomon approximation <span class="citation">(Solomon and Cox 1992)</span> is based on the quadratic
 expansion the integrand</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ℓ</mo><mtext mathvariant="normal">cpl</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>≈</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mn>𝟎</mn><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><msub><mi>𝐠</mi><mn>0</mn></msub><mi>′</mi><mi>𝐛</mi><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>𝐛</mi><mi>′</mi><msub><mi>𝐇</mi><mn>0</mn></msub><mi>𝐛</mi><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mi>𝐛</mi><mi>′</mi><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>𝐛</mi></mrow><annotation encoding="application/x-tex">
 \ell_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
 \ell(\boldsymbol{y}|\boldsymbol{0};\boldsymbol{\alpha})
 +
@@ -365,21 +414,26 @@ expansion the integrand</p>
 \boldsymbol{b}
 -\frac12\ln\det(\boldsymbol{\Sigma})
 -\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
-\]</span></p>
-<p>where <span class="math inline">\(\boldsymbol{g}\_0=\boldsymbol{g}(\boldsymbol{0})\)</span>
-is the gradient of <span class="math inline">\(\ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})\)</span></p>
-<p><span class="math display">\[
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐠</mi><mi>_</mi><mn>0</mn><mo>=</mo><mi>𝐠</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>𝟎</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol{g}\_0=\boldsymbol{g}(\boldsymbol{0})</annotation></semantics></math>
+is the gradient of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="postfix">∥</mo><mi>𝐛</mi><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐠</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>−</mo><mfrac><mrow><mi>∂</mi><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mi>𝐛</mi><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mi>∂</mi><mi>𝐛</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">
 \boldsymbol{g}(\boldsymbol{b})=-\frac{\partial\ell(\boldsymbol{y}|\boldsymbol{b};\boldsymbol{\alpha})}{\partial\boldsymbol{b}}
-\]</span></p>
-<p>at <span class="math inline">\(\boldsymbol{b}=\boldsymbol{0}\)</span>, while
-<span class="math inline">\(\boldsymbol{H}\_0=\boldsymbol{H}(\boldsymbol{0})\)</span>
-is the negative Hessian at <span class="math inline">\(\boldsymbol{b}=\boldsymbol{0}\)</span>.</p>
+</annotation></semantics></math></p>
+<p>at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐛</mi><mo>=</mo><mn>𝟎</mn></mrow><annotation encoding="application/x-tex">\boldsymbol{b}=\boldsymbol{0}</annotation></semantics></math>,
+while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐇</mi><mi>_</mi><mn>0</mn><mo>=</mo><mi>𝐇</mi><mrow><mo stretchy="true" form="prefix">(</mo><mn>𝟎</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol{H}\_0=\boldsymbol{H}(\boldsymbol{0})</annotation></semantics></math>
+is the negative Hessian at
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐛</mi><mo>=</mo><mn>𝟎</mn></mrow><annotation encoding="application/x-tex">\boldsymbol{b}=\boldsymbol{0}</annotation></semantics></math>.</p>
 <p>Like before, the integral of the exponential this quadratic expansion
-(which we refer to as <span class="math inline">\(\ell_{\text{SC}}(\boldsymbol{y},\boldsymbol{b})\)</span>)
+(which we refer to as
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mo>ℓ</mo><mtext mathvariant="normal">SC</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\ell_{\text{SC}}(\boldsymbol{y},\boldsymbol{b})</annotation></semantics></math>)
 has a closed-form solution, as does its logarithm, which is:</p>
-<p><span class="math display">\[
-\ln\int \exp(\ell_{\text{SC}}(\boldsymbol{y},\boldsymbol{b}))
-\partial\boldsymbol{b}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mo>∫</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mo>ℓ</mo><mtext mathvariant="normal">SC</mtext></msub><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>,</mo><mi>𝐛</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>∂</mi><mi>𝐛</mi><mo>=</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo stretchy="false" form="prefix">|</mo><mn>𝟎</mn><mo>;</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><msub><mi>𝐠</mi><mn>0</mn></msub><mi>′</mi><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐇</mi><mn>0</mn></msub><mo>+</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><msub><mi>𝐠</mi><mn>0</mn></msub><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝚺</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>𝐇</mi><mn>0</mn></msub><mo>+</mo><msup><mi>𝚺</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\ln\int \exp(\ell_{\text{SC}}(\boldsymbol{y},\boldsymbol{b})) \partial\boldsymbol{b}
 =
 \ell(\boldsymbol{y}|\boldsymbol{0};\boldsymbol{\alpha})
 -
@@ -388,40 +442,57 @@ has a closed-form solution, as does its logarithm, which is:</p>
 \frac12\ln\det(\boldsymbol{\Sigma})
 -
 \frac12\ln\det\left(\boldsymbol{H}_0+\boldsymbol{\Sigma}^{-1}\right).
-\]</span></p>
+</annotation></semantics></math></p>
 </div>
 <div class="section level3">
 <h3 id="marginal-quasi-likelhood-mql">Marginal quasi-likelhood (MQL)<a class="anchor" aria-label="anchor" href="#marginal-quasi-likelhood-mql"></a>
 </h3>
 <p>The resulting estimation technique is very similar to PQL <span class="citation">(again, see Breslow and Clayton 1993 for a
 discussion)</span>. The only difference is the construction of the
-“working dependent” variable <span class="math inline">\(\boldsymbol{y}^*\)</span>. With PQL it is
-constructed as <span class="math display">\[\boldsymbol{y}^* =
+“working dependent” variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>.
+With PQL it is constructed as
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐲</mi><mo>*</mo></msup><mo>=</mo><mi>𝐗</mi><mi>𝛂</mi><mo>+</mo><mi>𝐙</mi><mi>𝐛</mi><mo>+</mo><msup><mi>𝐖</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">\boldsymbol{y}^* =
 \boldsymbol{X}\boldsymbol{\alpha} + \boldsymbol{Z}\boldsymbol{b} +
-\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})\]</span> while the
-MQL working dependent variable is just</p>
-<p><span class="math display">\[
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})</annotation></semantics></math>
+while the MQL working dependent variable is just</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝐲</mi><mo>*</mo></msup><mo>=</mo><mi>𝐗</mi><mi>𝛂</mi><mo>+</mo><msup><mi>𝐖</mi><mo>−</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
 \boldsymbol{y}^* =  \boldsymbol{X}\boldsymbol{\alpha} +
 \boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})
-\]</span></p>
+</annotation></semantics></math></p>
 <p>so that the algorithm has the following steps:</p>
 <ol style="list-style-type: decimal">
-<li>Create some suitable starting values for <span class="math inline">\(\boldsymbol{\pi}\)</span>, <span class="math inline">\(\boldsymbol{W}\)</span>, and <span class="math inline">\(\boldsymbol{y}^*\)</span>
+<li>Create some suitable starting values for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>
 </li>
-<li>Construct the “working dependent variable” <span class="math inline">\(\boldsymbol{y}^*\)</span>
+<li>Construct the “working dependent variable”
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>
 </li>
-<li>Minimize <span class="math inline">\(q_1\)</span> (quasi-ML) or
-<span class="math inline">\(q_2\)</span> (quasi-REML) iteratively (inner
-loop), to obtain an estimate of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>
+<li>Minimize
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>1</mn></msub><annotation encoding="application/x-tex">q_1</annotation></semantics></math>
+(quasi-ML) or
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mn>2</mn></msub><annotation encoding="application/x-tex">q_2</annotation></semantics></math>
+(quasi-REML) iteratively (inner loop), to obtain an estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>
 </li>
-<li>Obtain <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span> based on the
-current estimate of <span class="math inline">\(\boldsymbol{\Sigma}\)</span>
+<li>Obtain
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\alpha}}</annotation></semantics></math>
+based on the current estimate of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝚺</mi><annotation encoding="application/x-tex">\boldsymbol{\Sigma}</annotation></semantics></math>
 </li>
-<li>Compute updated <span class="math inline">\(\boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha}\)</span>,
-<span class="math inline">\(\boldsymbol{\pi}\)</span>, <span class="math inline">\(\boldsymbol{W}\)</span>.</li>
-<li>If the change in <span class="math inline">\(\boldsymbol{\eta}\)</span> is smaller than a given
-tolerance criterion stop the algorighm and declare it as converged.
-Otherwise go back to step 2 with the updated values of <span class="math inline">\(\hat{\boldsymbol{\alpha}}\)</span>.</li>
+<li>Compute updated
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛈</mi><mo>=</mo><mi>𝐗</mi><mi>𝛂</mi></mrow><annotation encoding="application/x-tex">\boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>.</li>
+<li>If the change in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛈</mi><annotation encoding="application/x-tex">\boldsymbol{\eta}</annotation></semantics></math>
+is smaller than a given tolerance criterion stop the algorighm and
+declare it as converged. Otherwise go back to step 2 with the updated
+values of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>𝛂</mi><mo accent="true">̂</mo></mover><annotation encoding="application/x-tex">\hat{\boldsymbol{\alpha}}</annotation></semantics></math>.</li>
 </ol>
 </div>
 </div>
@@ -456,9 +527,7 @@ with s</em>. Fourth. New York: Springer. <a href="https://www.stats.ox.ac.uk/pub
 
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
 
-        <nav id="toc" data-toggle="toc"><h2 data-toc-skip>Contents</h2>
-    </nav>
-</div>
+      </div>
 
 </div>
 
@@ -471,17 +540,17 @@ with s</em>. Fourth. New York: Springer. <a href="https://www.stats.ox.ac.uk/pub
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
   <p class="preferably">Using <a href="https://preferably.amirmasoudabdol.name/?source=footer" class="external-link">preferably</a> template.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>

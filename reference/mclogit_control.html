@@ -16,7 +16,7 @@
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]--><!-- Flatly Theme - Light  --><link id="css-light" rel="stylesheet" href="https://bootswatch.com/3/flatly/bootstrap.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"><!-- Darkly Theme - Dark --><link id="css-dark" rel="stylesheet" href="https://bootswatch.com/3/darkly/bootstrap.css" media="(prefers-color-scheme: dark)"><!-- preferably CSS --><link rel="stylesheet" href="../preferably.css"><link id="css-code-light" rel="stylesheet" href="../code-color-scheme-light.css" media="(prefers-color-scheme: light), (prefers-color-scheme: no-preference)"><link id="css-code-dark" rel="stylesheet" href="../code-color-scheme-dark.css" media="(prefers-color-scheme: dark)"></head><body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-reference-topic">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -41,7 +41,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li class="divider">
@@ -70,24 +70,24 @@
       </ul><ul class="nav navbar-nav navbar-right"><li>
   <a href="https://github.com/melff/mclogit/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
-        
-        
+
+
 
 
       </ul></div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Control Parameters for the Fitting Process</h1>
-    
+
     <div class="hidden name"><code>mclogit_control.Rd</code></div>
     </div>
 
@@ -121,72 +121,73 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <dl><dt>epsilon</dt>
+    <p></p>
+<dl><dt id="arg-epsilon">epsilon<a class="anchor" aria-label="anchor" href="#arg-epsilon"></a></dt>
 <dd><p>positive convergence tolerance \(\epsilon\);
     the iterations converge when
     \(|dev - dev_{old}|/(|dev| + 0.1) &lt; \epsilon\).</p></dd>
 
-   <dt>maxit</dt>
+   <dt id="arg-maxit">maxit<a class="anchor" aria-label="anchor" href="#arg-maxit"></a></dt>
 <dd><p>integer giving the maximal number of IWLS or PQL iterations.</p></dd>
 
-   <dt>trace</dt>
+   <dt id="arg-trace">trace<a class="anchor" aria-label="anchor" href="#arg-trace"></a></dt>
 <dd><p>logical indicating if output should be produced for each
     iteration.</p></dd>
 
-   <dt>trace.inner</dt>
+   <dt id="arg-trace-inner">trace.inner<a class="anchor" aria-label="anchor" href="#arg-trace-inner"></a></dt>
 <dd><p>logical; indicating if output should be produced for each
      inner iteration of the PQL method.</p></dd>
 
-   <dt>avoid.increase</dt>
+   <dt id="arg-avoid-increase">avoid.increase<a class="anchor" aria-label="anchor" href="#arg-avoid-increase"></a></dt>
 <dd><p>logical; should an increase of the deviance
      be avoided by step truncation?</p></dd>
 
-   <dt>break.on.increase</dt>
+   <dt id="arg-break-on-increase">break.on.increase<a class="anchor" aria-label="anchor" href="#arg-break-on-increase"></a></dt>
 <dd><p>logical; should an increase of the deviance
      be avoided by stopping the algorithm?</p></dd>
 
-   <dt>break.on.infinite</dt>
+   <dt id="arg-break-on-infinite">break.on.infinite<a class="anchor" aria-label="anchor" href="#arg-break-on-infinite"></a></dt>
 <dd><p>logical; should an infinite deviance
      stop the algorithm instead of leading to step truncation?</p></dd>
 
-   <dt>break.on.negative</dt>
+   <dt id="arg-break-on-negative">break.on.negative<a class="anchor" aria-label="anchor" href="#arg-break-on-negative"></a></dt>
 <dd><p>logical; should a negative deviance
      stop the algorithm?</p></dd>
 
-   <dt>inner.optimizer</dt>
+   <dt id="arg-inner-optimizer">inner.optimizer<a class="anchor" aria-label="anchor" href="#arg-inner-optimizer"></a></dt>
 <dd><p>a character string, one of
      "nlminb", "nlm", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN".
      See <code><a href="https://rdrr.io/r/stats/nlminb.html" class="external-link">nlminb</a></code>, <code><a href="https://rdrr.io/r/stats/nlm.html" class="external-link">nlm</a></code>, <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code>.</p></dd>
 
-   <dt>maxit.inner</dt>
+   <dt id="arg-maxit-inner">maxit.inner<a class="anchor" aria-label="anchor" href="#arg-maxit-inner"></a></dt>
 <dd><p>integer; the maximum number of inner iterations</p></dd>
 
-   <dt>CG.type</dt>
+   <dt id="arg-cg-type">CG.type<a class="anchor" aria-label="anchor" href="#arg-cg-type"></a></dt>
 <dd><p>integer; the <code>type</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "CG" is selected as inner optimizer.</p></dd>
 
-   <dt>NM.alpha</dt>
+   <dt id="arg-nm-alpha">NM.alpha<a class="anchor" aria-label="anchor" href="#arg-nm-alpha"></a></dt>
 <dd><p>integer; the <code>alpha</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "Nelder-Mead" is selected as inner optimizer.</p></dd>
 
-   <dt>NM.beta</dt>
+   <dt id="arg-nm-beta">NM.beta<a class="anchor" aria-label="anchor" href="#arg-nm-beta"></a></dt>
 <dd><p>integer; the <code>beta</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "Nelder-Mead" is selected as inner optimizer.</p></dd>
 
-   <dt>NM.gamma</dt>
+   <dt id="arg-nm-gamma">NM.gamma<a class="anchor" aria-label="anchor" href="#arg-nm-gamma"></a></dt>
 <dd><p>integer; the <code>gamma</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "Nelder-Mead" is selected as inner optimizer.</p></dd>
 
-   <dt>SANN.temp</dt>
+   <dt id="arg-sann-temp">SANN.temp<a class="anchor" aria-label="anchor" href="#arg-sann-temp"></a></dt>
 <dd><p>integer; the <code>temp</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "SANN" is selected as inner optimizer.</p></dd>
 
-   <dt>SANN.tmax</dt>
+   <dt id="arg-sann-tmax">SANN.tmax<a class="anchor" aria-label="anchor" href="#arg-sann-tmax"></a></dt>
 <dd><p>integer; the <code>tmax</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "SANN" is selected as inner optimizer.</p></dd>
@@ -194,9 +195,7 @@
 </dl></div>
     <div id="value">
     <h2>Value</h2>
-    
-
-<p>A list.</p>
+    <p>A list.</p>
     </div>
 
   </div>
@@ -211,16 +210,16 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
   <p class="preferably">Using <a href="https://preferably.amirmasoudabdol.name/?source=footer" class="external-link">preferably</a> template.</p>
 </div>
 
       </footer></div>
 
-  
 
 
-  
+
+
 
   </body></html>
 

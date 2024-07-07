@@ -24,7 +24,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
 <script src="../pkgdown.js"></script><meta property="og:title" content="The relation between baseline logit and conditional logit models">
-<meta property="og:description" content="mclogit">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -35,7 +34,7 @@
 <link id="css-code-dark" rel="stylesheet" href="../code-color-scheme-dark.css" media="(prefers-color-scheme: dark)">
 </head>
 <body data-spy="scroll" data-target="#toc">
-    
+
 
     <div class="container template-article">
       <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -61,7 +60,7 @@
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
     Articles
-     
+
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu">
@@ -96,11 +95,11 @@
 <li>
   <a href="https://github.com/melff/mclogit/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
-     
+
   </a>
 </li>
-        
-        
+
+
 
 
       </ul>
@@ -111,7 +110,7 @@
 </div>
 <!--/.navbar -->
 
-      
+
 
       </header><div class="row">
   <div class="col-md-9 contents">
@@ -120,7 +119,7 @@
 conditional logit models</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/HEAD/../vignettes/baseline-and-conditional-logit.Rmd" class="external-link"><code>../vignettes/baseline-and-conditional-logit.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/main/vignettes/baseline-and-conditional-logit.Rmd" class="external-link"><code>vignettes/baseline-and-conditional-logit.Rmd</code></a></small>
       <div class="hidden name"><code>baseline-and-conditional-logit.Rmd</code></div>
 
     </div>
@@ -129,28 +128,37 @@ conditional logit models</h1>
     
 <p>Baseline-category logit models can be expressed as particular form of
 conditional logit models. In a conditional logit model (without random
-effects) the probability that individual <span class="math inline">\(i\)</span> chooses alternative <span class="math inline">\(j\)</span> from choice set <span class="math inline">\(\mathcal{S}_i\)</span> is</p>
-<p><span class="math display">\[
-\pi_{ij} =
-\frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
-\]</span></p>
+effects) the probability that individual
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+chooses alternative
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+from choice set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒮</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{S}_i</annotation></semantics></math>
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+\pi_{ij} = \frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
+</annotation></semantics></math></p>
 <p>where</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>α</mi><mn>1</mn></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mi>q</mi></msub><msub><mi>x</mi><mrow><mi>q</mi><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
 \eta_{ij} = \alpha_1x_{1ij}+\cdots+\alpha_qx_{qij}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>In a baseline-category logit model, the set of alternatives is the
-same for all individuals <span class="math inline">\(i\)</span> that is
-<span class="math inline">\(\mathcal{S}_i = {1,\ldots,q}\)</span> and
-the linear part of the model can be written like:</p>
-<p><span class="math display">\[
+same for all individuals
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+that is
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>𝒮</mi><mi>i</mi></msub><mo>=</mo><mrow><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>q</mi></mrow></mrow><annotation encoding="application/x-tex">\mathcal{S}_i = {1,\ldots,q}</annotation></semantics></math>
+and the linear part of the model can be written like:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>β</mi><mrow><mi>j</mi><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>β</mi><mrow><mi>j</mi><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>β</mi><mrow><mi>j</mi><mi>r</mi></mrow></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi></mrow></msub></mrow><annotation encoding="application/x-tex">
 \eta_{ij} = \beta_{j0}+\beta_{j1}x_{i1}+\cdots+\beta_{jr}x_{ri}
-\]</span></p>
-<p>where the coefficients in the equation for baseline category <span class="math inline">\(j\)</span> are all zero, i.e.</p>
-<p><span class="math display">\[
+</annotation></semantics></math></p>
+<p>where the coefficients in the equation for baseline category
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+are all zero, i.e.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>β</mi><mn>10</mn></msub><mo>=</mo><mi>⋯</mi><mo>=</mo><msub><mi>β</mi><mrow><mn>1</mn><mi>r</mi></mrow></msub><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">
 \beta_{10} = \cdots = \beta_{1r} = 0
-\]</span></p>
+</annotation></semantics></math></p>
 <p>After setting</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>x</mi><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>g</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>d</mi><mrow><mi>g</mi><mi>j</mi></mrow></msub><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>x</mi><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>g</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>d</mi><mrow><mi>g</mi><mi>j</mi></mrow></msub><msub><mi>x</mi><mrow><mi>h</mi><mi>i</mi></mrow></msub><mo>,</mo><mspace width="2.0em"></mspace><mrow><mtext mathvariant="normal">with </mtext><mspace width="0.333em"></mspace></mrow><msub><mi>d</mi><mrow><mi>g</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mn>0</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>≠</mo><mi>g</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> or </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>=</mo><mi>g</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> and </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>=</mo><mn>0</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mn>1</mn></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>=</mo><mi>g</mi><mrow><mspace width="0.333em"></mspace><mtext mathvariant="normal"> and </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>≠</mo><mn>0</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"></mtd></mtr></mtable></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 x_{(g\times(j-1))ij} = d_{gj}, \quad
 x_{(g\times(j-1)+h)ij} = d_{gj}x_{hi}, \qquad
@@ -160,9 +168,9 @@ x_{(g\times(j-1)+h)ij} = d_{gj}x_{hi}, \qquad
 1&amp;\text{for } j=g \text{ and } j\neq0\\
 \end{cases}
 \end{aligned}
-\]</span></p>
+</annotation></semantics></math></p>
 <p>we have for the log-odds:</p>
-<p><span class="math display">\[
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><mtable><mtr><mtd columnalign="right" style="text-align: right"><mo>ln</mo><mfrac><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub></mfrac></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>β</mi><mrow><mi>j</mi><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>β</mi><mrow><mi>j</mi><mi>i</mi></mrow></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>β</mi><mrow><mi>j</mi><mi>r</mi></mrow></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi></mrow></msub></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><munder><mo>∑</mo><mi>h</mi></munder><msub><mi>β</mi><mrow><mi>j</mi><mi>h</mi></mrow></msub><msub><mi>x</mi><mrow><mi>h</mi><mi>i</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><mi>h</mi></mrow></munder><msub><mi>β</mi><mrow><mi>j</mi><mi>h</mi></mrow></msub><msub><mi>d</mi><mrow><mi>g</mi><mi>j</mi></mrow></msub><msub><mi>x</mi><mrow><mi>h</mi><mi>i</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><mi>h</mi></mrow></munder><msub><mi>α</mi><mrow><mi>g</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>h</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>d</mi><mrow><mi>g</mi><mi>j</mi></mrow></msub><msub><mi>x</mi><mrow><mi>h</mi><mi>i</mi></mrow></msub><mo>−</mo><msub><mi>d</mi><mrow><mi>g</mi><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mi>h</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>g</mi><mo>,</mo><mi>h</mi></mrow></munder><msub><mi>α</mi><mrow><mi>g</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>h</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>g</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mrow><mo stretchy="true" form="prefix">(</mo><mi>g</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>j</mi><mo>−</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>h</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>i</mi><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>α</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mi>s</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>s</mi><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mi>s</mi><mi>i</mi><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable></mtd></mtr></mtable><annotation encoding="application/x-tex">
 \begin{aligned}
 \begin{aligned}
 \ln\frac{\pi_{ij}}{\pi_{i1}}
@@ -174,8 +182,11 @@ x_{(g\times(j-1)+h)ij} = d_{gj}x_{hi}, \qquad
 &amp;=\alpha_{1}(x_{1ij}-x_{1i1})+\cdots+\alpha_{s}(x_{sij}-x_{si1})
 \end{aligned}
 \end{aligned}
-\]</span></p>
-<p>where <span class="math inline">\(\alpha_1=\beta_{21}\)</span>, <span class="math inline">\(\alpha_2=\beta_{22}\)</span>, etc.</p>
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>=</mo><msub><mi>β</mi><mn>21</mn></msub></mrow><annotation encoding="application/x-tex">\alpha_1=\beta_{21}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>2</mn></msub><mo>=</mo><msub><mi>β</mi><mn>22</mn></msub></mrow><annotation encoding="application/x-tex">\alpha_2=\beta_{22}</annotation></semantics></math>,
+etc.</p>
 <p>That is, the baseline-category logit model is translated into a
 conditional logit model where the alternative-specific values of the
 attribute variables are interaction terms composed of
@@ -203,17 +214,17 @@ variables.</p>
 
 <div class="pkgdown">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.0.</p>
   <p class="preferably">Using <a href="https://preferably.amirmasoudabdol.name/?source=footer" class="external-link">preferably</a> template.</p>
 </div>
 
       </footer>
 </div>
 
-  
 
 
-  
+
+
 
   </body>
 </html>
