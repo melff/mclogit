@@ -15,7 +15,7 @@
       \item It is now possible to choose between different
       optimizers to be used in the inner iterations of the MQL/PQL
       estimator: One can choose between \code{nlm()}, \code{nlminb()},
-      and most techniques provided by \code{optim()}.
+      \code{ucminf()}, and most techniques provided by \code{optim()}.
       \item With \code{rebase()} the baseline category of a model
       can be changed without the need of refitting the model.
     }
@@ -33,6 +33,10 @@
       \item \code{mclogit()} and \code{mblogit()} check whether the list
       passed as \code{control} is complete i.e. contains all the relevant
       named arguments.
+    }
+    \itemize{
+      \item A \code{ranef()} method is provided for objects created
+      by \code{mclogit()} or \code{mblogit()}.
     }
   }
 }

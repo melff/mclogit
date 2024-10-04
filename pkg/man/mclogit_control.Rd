@@ -47,8 +47,10 @@ mmclogit.control(epsilon = 1e-08,
    \item{break.on.negative}{logical; should a negative deviance
      stop the algorithm?}
    \item{inner.optimizer}{a character string, one of
-     "nlminb", "nlm", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN".
-     See \code{\link[stats]{nlminb}}, \code{\link[stats]{nlm}}, \code{\link[stats]{optim}}.
+     "nlminb", "nlm", "ucminf", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN".
+     See \code{\link[stats]{nlminb}}, \code{\link[stats]{nlm}}, 
+     \code{\link[ucminf]{ucminf}}, or
+     \code{\link[stats]{optim}}.
    }
    \item{maxit.inner}{integer; the maximum number of inner iterations}
    \item{CG.type}{integer; the \code{type} argument passed to
