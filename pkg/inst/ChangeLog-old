@@ -1,0 +1,270 @@
+2023-04-05:
+  - Allow estimation of overdispersion across groups indicated by
+    grouping factor.
+
+2023-03-29:
+  - Add support for 'ucminf' as inner optimisation method.
+
+2023-01-11:
+  - Added 'rebase' function (and method) to change the baseline category of a
+    fitted model. (That is adjust the coefficients without the need of refitting.)
+
+2023-01-08:
+  - Bugfix in 'predict.mmblogit' that caused an error if 'conditional=FALSE'
+    was set.
+
+2023-01-06:
+  - More compact output of mblogit models random effects and diagonal covariance
+    matrix. 
+
+2023-01-05:
+  - Added support for alternative optimizers to be used in the inner iterations 
+    of MQL/PQL
+
+2022-10-23:
+  - Refactored MQL/PQL algorithm: Eliminated redundant code and adapted it to
+    both 'nlm' and 'nlminb'
+
+2022-10-16:
+  - Fixed bug in MQL/PQL-objective function that led to false non-convergence and
+    bias in variance parameter estimates
+
+2022-10-12:
+  - Support for starting values in random effects models
+  - Support for restriction on random effects variances in multinomial baseline
+    logit models
+
+2022-10-09:
+  - Improve handling of boundary values and singular information matrices
+
+2022-10-07:
+  - Remove spurious messages about missing starting values
+
+2022-05-21:
+  - Add checks of 'control=' argument of 'mclogit()' and 'mblogit()'.
+
+2022-04-13:
+  - Fixed bug in 'blockMatrix' and make it check for argument validity
+
+2022-04-11:
+  - Hotfix of prediction method
+
+2022-04-10:
+  - Fix handling of singular initial covariance matrices in PQLMQL_innerFit
+  - Issue a warning if models with random effects are compared using anova
+  - Fix predict methods for mmclogit models
+  - Handle DOIs in documentation as required by new guidelines
+
+2022-01-16:
+  - Fix prediction with complicated terms in the model
+  - Add some more demos
+
+2021-08-13:
+  - predict.mmclogit: create W-Matrix only when really needed
+
+2021-07-13:
+  - Include variance parameters in the computation of degrees of freedom
+
+2021-06-03:
+  - Be less zealous about group-level covariates constant in some choice sets.
+
+2021-05-30:
+  - Added support for vertical-bar syntax for responses of conditional
+    logit models.
+
+2021-05-27:
+  - Added support for non-nested random effects.
+
+2021-05-25:
+  - Fixed serious bug in the handling of multilevel random effects models.
+  - Detect some misspecified models with too many groups.
+
+2021-04-17:
+  - Merged pull request by Russel V. Lenth that adds support for "emmeans".
+
+2021-04-04:
+  - Apply patch suggested by Ilya Yalchyk to improve formula argument
+    of 'mclogit()' and 'mblogit()'.
+
+2021-03-19:
+  - Last fixes for CRAN
+
+2021-03-18:
+  - Improved support 'mtable()' for multinomial logit models with random effects.
+
+2021-02-21:
+  - Fixed predictions from models with scaled independent variables etc.
+  - 'summary()' now reports the number of groups per random effects level.      
+
+2021-01-28:
+  - Another prediction fix. Do not refer to weights that are not needed.
+
+2021-01-10:
+  - Fixed prediction method also for mmclogit objects
+
+2020-12-23:
+  - Refactored computations
+  - Fixed predictions from random-effects models where group indices are not 
+    a sequence of integers starting at 1.
+
+2020-11-03:
+  - Correct URLs in DESCRIPTION
+
+2020-09-09:
+  - Fix reference to weights in 'predict()' methods
+
+2020-08-06:
+  - Let 'mclogit'/'mblogit' handle empty responses (i.e. where counts sum to
+    zero) correclty.
+  - Make 'mclogit' complain about non-numeric responses  
+
+2020-07-17:
+  - Documented prediction methods.
+  - Improved flexibility of prediction methods. 
+
+2020-07-16:
+  - Implemented reasonable 'predict' method for mmblogit and mmclogit objects.
+
+2020-07-15:
+  - Bugfix: Make 'update' work with missing 'dispersion=' argument.
+  - Bugfix: Make 'vcov' work for objects without 'phi' component.
+  - Add 'vcov' method for 'mmclogit' objects.
+
+2020-06-27:
+  - Documented 'simulate()' methods.
+
+2020-06-11:
+  - Implemented (approximate) REML estimator.
+
+2020-06-07:
+  - Added a 'simulate()' method for "mblogit" and "mclogit" models.
+
+2020-05-24:
+  - Adapt the package NAMESPACE file to explicitly export S3 methods as methods,
+    even if they are export as functions, as newly required by R 4.0.
+
+2020-05-23:
+  - Added documentation of (over-)dispersion parameter estimation, rename
+    'overdispersion=' arguments into 'dispersion=' arguments.
+
+2020-05-22:
+  - Added support for estimation of (over-)dispersion parameters
+
+2020-05-21:
+  - Implemented MQL technique as an alternative to PQL estimation
+
+2020-05-19:
+  - Improve handling of numerical difficulties
+
+2020-05-11:
+  - Use a Cholesky-factor parameterisation to make sure that covariance matrices
+    are positive (semi-)definite
+
+2020-03-30:
+  - Refactored the algorithm for fitting mixed-effects models
+
+2020-01-09:
+  - Document getSummary.mmclogit, getSummary.mmblogit
+  - Make 'mblogit' handle matrix responses with zero-sum rows
+  - Renamed 'residual.df' to 'df.residual' in results object of 'mclogit.fit' et
+    al. (Fixes issue #4)
+
+2019-10-23:
+  - Merge pull request #3 from skyborla/fix-mblogit
+    Fix mblogit for responses with only two levels
+  - Export getSummary.mmclogit, getSummary.mmblogit
+
+2019-04-20:
+  - Let 'mmblogit' models inherit from class 'mblogit'
+
+2019-02-04:
+  - Merged pull request #2 from pmcharrison/ftt-fix:
+    Fixed typo (ftt -> fit)
+
+2018-09-26:
+  - Fixed matrix column selection in predict.mclogit if there is only one
+    predictor (also PR from skyborla)
+
+2018-04-25:
+  - Improved handling of with misspecified random effect structures.
+  - Added documentation about new handling of misspecified models.
+
+2017-10-25:
+  - Fixed handling of dropped predictors in `predict.mclogit`.
+
+2017-01-26:
+  - Fixed some bugs in predict models for `mclogit` objects.
+  - Made sure that dummy coding is used for response factors even if they are ordinal
+
+2017-01-07:
+  - Implemented random slopes for baseline logit models.
+
+2017-01-05:
+  - Implemented random slopes for conditional logit models.
+
+2016-09-01:
+  - Fixed `mclogit.fit()` and `predict.mclogit()` to work better without covariates.
+
+2016-02-07:
+  - Explicitely import package "methods"
+
+2016-01-17:
+  - Import `as` from package "methods".
+  - Make sure `nobs` is defined in `mclogit.fit.rePQL`.
+
+2016-01-16:
+  - Updated `DESCRIPTION` file: Maintainer email address changed and no "This package"
+    at start of package discriptions.
+
+2015-10-08:
+  - Fix display of number of observations
+  - Drop redundant coefficients
+
+2015-08-01:
+  - Added row and column names to estimator result of `vcov()`
+  - Make sure that scripts run with "mclogit" loaded by `devtools::load_all()`
+
+2015-07-15:
+  - mclogit, mclogit.fit: Added support for starting values.
+
+2015-07-03:
+  - predict.mblogit: 'contrasts.arg' not 'contast.arg' ...
+  - predict-methods now should handle NAs in newdata arguments better.
+
+2015-06-17:
+  - Corrected handling of weights and standard errors of prediction.
+
+2015-06-15:
+  - 'getSummary' methods now return "contrasts" and "xlevels" components.
+  - Fixed prediction method for 'mclogit' results.
+  - Added 'fitted' and 'predict' methods for 'mblogit' results.
+
+2015-01-25:
+  - Added support for multinomial baseline logit models in form of 'mblogit' as a frontend to 'mclogit.fit'
+
+2015-01-23:
+  - Added URLs to DESCRIPTION file
+
+2015-01-21:
+  - Added `nobs` and `extractAIC` methods for `mclogit` objects, so that `drop1.default` should work with these.
+
+2015-01-19:
+  - Added call to result of `getSummary.mclogit`.
+
+2015-01-18:
+  - Cleanup of NAMESPACE file; added aliases to methods for `mclogit` objects so that users can see that they are present.
+  - Export `mclogit.fit`, and `mclogit.fit.rePQL` to enable use by other packages.
+
+2014-10-13:
+  Simplified some namespace dependencies. Eliminated useless pseudo-R-squared statistics
+  from getSummary.mclogit
+
+2014-08-23:
+  Added 'anova' methods
+
+2014-03-10:
+  Refactored code -- algorithms should be more transparent and robust now (hopefully!).
+  mclogit without and with random effects can handle missing values now.
+  Fixed predict method -- use of napredict; handles single indep-variable situation now.
+  Fixed embarassing typo -- prior weights do work now (again?).
+  Included AIC and BIC methods contributed by Nic Elliot <nic_elliot@yahoo.co.uk>

@@ -1,270 +1,1280 @@
-2023-04-05:
-  - Allow estimation of overdispersion across groups indicated by
-    grouping factor.
+2024-10-05  Martin Elff <martin@elff.eu>
 
-2023-03-29:
-  - Add support for 'ucminf' as inner optimisation method.
+	* pkg/inst/ChangeLog, pkg/inst/ChangeLog-old: Use autocreated
+	changelog
 
-2023-01-11:
-  - Added 'rebase' function (and method) to change the baseline category of a
-    fitted model. (That is adjust the coefficients without the need of refitting.)
+2024-10-05  Martin Elff <martin@elff.eu>
 
-2023-01-08:
-  - Bugfix in 'predict.mmblogit' that caused an error if 'conditional=FALSE'
-    was set.
+	* pkg/DESCRIPTION, pkg/inst/NEWS.Rd, pkg/man/mclogit_control.Rd: 
+	Clarify that ucminf() is supported as inner optimizer.
 
-2023-01-06:
-  - More compact output of mblogit models random effects and diagonal covariance
-    matrix. 
+2024-07-07  Martin Elff <martin@elff.eu>
 
-2023-01-05:
-  - Added support for alternative optimizers to be used in the inner iterations 
-    of MQL/PQL
+	* pkg/DESCRIPTION: Add 'nlme' to imports in DESCRIPTION
 
-2022-10-23:
-  - Refactored MQL/PQL algorithm: Eliminated redundant code and adapted it to
-    both 'nlm' and 'nlminb'
+2024-05-27  Martin Elff <martin@elff.eu>
 
-2022-10-16:
-  - Fixed bug in MQL/PQL-objective function that led to false non-convergence and
-    bias in variance parameter estimates
+	* pkg/DESCRIPTION, pkg/R/getSummary-mblogit.R,
+	pkg/R/getSummary-mclogit.R: Use new 'parameter types' infrastructure
+	of current memisc version.
 
-2022-10-12:
-  - Support for starting values in random effects models
-  - Support for restriction on random effects variances in multinomial baseline
-    logit models
+2024-03-03  Martin Elff <martin@elff.eu>
 
-2022-10-09:
-  - Improve handling of boundary values and singular information matrices
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/mclogit.R: Provide method
+	for 'ranef()'
 
-2022-10-07:
-  - Remove spurious messages about missing starting values
+2024-03-02  Martin Elff <martin@elff.eu>
 
-2022-05-21:
-  - Add checks of 'control=' argument of 'mclogit()' and 'mblogit()'.
+	* pkg/man/mblogit.Rd: Add some information in 'mblogit.Rd'
 
-2022-04-13:
-  - Fixed bug in 'blockMatrix' and make it check for argument validity
+2024-03-02  Martin Elff <martin@elff.eu>
 
-2022-04-11:
-  - Hotfix of prediction method
+	* pkg/man/rebase.Rd: Add 'rebase.Rd'
 
-2022-04-10:
-  - Fix handling of singular initial covariance matrices in PQLMQL_innerFit
-  - Issue a warning if models with random effects are compared using anova
-  - Fix predict methods for mmclogit models
-  - Handle DOIs in documentation as required by new guidelines
+2024-03-02  Martin Elff <martin@elff.eu>
 
-2022-01-16:
-  - Fix prediction with complicated terms in the model
-  - Add some more demos
+	* pkg/R/{saveInverse.R => safeInverse.R}: Rename 'saveInverse.R'
+	into 'safeInverse.R'
 
-2021-08-13:
-  - predict.mmclogit: create W-Matrix only when really needed
+2024-03-02  Martin Elff <martin@elff.eu>
 
-2021-07-13:
-  - Include variance parameters in the computation of degrees of freedom
+	* pkg/DESCRIPTION, pkg/R/emmeans.R, pkg/R/zzz.R: Remove references
+	to 'emmeans' package.
 
-2021-06-03:
-  - Be less zealous about group-level covariates constant in some choice sets.
+2024-03-02  Martin Elff <martin@elff.eu>
 
-2021-05-30:
-  - Added support for vertical-bar syntax for responses of conditional
-    logit models.
+	* pkg/R/mblogit.R: Avoid duplicated coefficients in print method for
+	mblogit objects
 
-2021-05-27:
-  - Added support for non-nested random effects.
+2024-03-02  Martin Elff <martin@elff.eu>
 
-2021-05-25:
-  - Fixed serious bug in the handling of multilevel random effects models.
-  - Detect some misspecified models with too many groups.
+	* pkg/R/mclogit.R, pkg/R/mmclogit-fitPQLMQL.R: Make sure that
+	'random.effect' component has usable row names
 
-2021-04-17:
-  - Merged pull request by Russel V. Lenth that adds support for "emmeans".
+2023-12-27  Martin Elff <martin@elff.eu>
 
-2021-04-04:
-  - Apply patch suggested by Ilya Yalchyk to improve formula argument
-    of 'mclogit()' and 'mblogit()'.
+	* pkg/vignettes/approximations.Rmd,
+	pkg/vignettes/baseline-logit.Rmd,
+	pkg/vignettes/conditional-logit.Rmd,
+	pkg/vignettes/fitting-mclogit.Rmd, pkg/vignettes/mclogit.bib,
+	pkg/vignettes/random-effects.Rmd: Added references to
+	vignettes/articles
 
-2021-03-19:
-  - Last fixes for CRAN
+2023-12-27  Martin Elff <melff@users.noreply.github.com>
 
-2021-03-18:
-  - Improved support 'mtable()' for multinomial logit models with random effects.
+	* .github/workflows/pkgdown.yml: Fix pkgdown.yml
 
-2021-02-21:
-  - Fixed predictions from models with scaled independent variables etc.
-  - 'summary()' now reports the number of groups per random effects level.      
+2023-12-27  Martin Elff <martin@elff.eu>
 
-2021-01-28:
-  - Another prediction fix. Do not refer to weights that are not needed.
+	* .github/workflows/pkgdown.yml, README.md, pkg/DESCRIPTION,
+	pkg/pkgdown/_pkgdown.yml, pkg/vignettes/approximations.Rmd,
+	pkg/vignettes/baseline-and-conditional-logit.Rmd,
+	pkg/vignettes/baseline-logit.Rmd,
+	pkg/vignettes/conditional-logit.Rmd,
+	pkg/vignettes/fitting-mclogit.Rmd, pkg/vignettes/random-effects.Rmd: 
+	Move docs from elff.eu to vignettes
 
-2021-01-10:
-  - Fixed prediction method also for mmclogit objects
+2023-11-23  Martin Elff <martin@elff.eu>
 
-2020-12-23:
-  - Refactored computations
-  - Fixed predictions from random-effects models where group indices are not 
-    a sequence of integers starting at 1.
+	* pkg/pkgdown/_pkgdown.yml: sandstone theme for pkgdown
 
-2020-11-03:
-  - Correct URLs in DESCRIPTION
+2023-11-22  Martin Elff <martin@elff.eu>
 
-2020-09-09:
-  - Fix reference to weights in 'predict()' methods
+	* pkg/R/mmclogit-fitPQLMQL.R: Make sure that b_ is a one-column
+	blocked matrix
 
-2020-08-06:
-  - Let 'mclogit'/'mblogit' handle empty responses (i.e. where counts sum to
-    zero) correclty.
-  - Make 'mclogit' complain about non-numeric responses  
+2023-11-22  Martin Elff <melff@users.noreply.github.com>
 
-2020-07-17:
-  - Documented prediction methods.
-  - Improved flexibility of prediction methods. 
+	* .github/workflows/pkgdown.yml: Pkgdown test (#33) * Create pkgdown.yml * Update pkgdown.yml Set 'pkg' as working directory for pkgdown workflow * Update pkgdown.yml Build site from "pkg" * Change dest_dir in pkgdown build_site ... call * Update pkgdown.yml
 
-2020-07-16:
-  - Implemented reasonable 'predict' method for mmblogit and mmclogit objects.
+2023-10-12  Martin Elff <martin@elff.eu>
 
-2020-07-15:
-  - Bugfix: Make 'update' work with missing 'dispersion=' argument.
-  - Bugfix: Make 'vcov' work for objects without 'phi' component.
-  - Add 'vcov' method for 'mmclogit' objects.
+	* pkg/R/mmclogit-fitPQLMQL.R: Make use of analytic gradients in
+	inner iterations optional (though the default)
 
-2020-06-27:
-  - Documented 'simulate()' methods.
+2023-04-05  Martin Elff <martin@elff.eu>
 
-2020-06-11:
-  - Implemented (approximate) REML estimator.
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit-dispersion.R,
+	pkg/R/mclogit-fit.R, pkg/inst/ChangeLog, pkg/inst/NEWS.Rd,
+	pkg/man/dispersion.Rd, pkg/man/mclogit.Rd: Allow estimation of
+	overdispersion across groups indicated by grouping factor.
 
-2020-06-07:
-  - Added a 'simulate()' method for "mblogit" and "mclogit" models.
+2023-04-05  Martin Elff <martin@elff.eu>
 
-2020-05-24:
-  - Adapt the package NAMESPACE file to explicitly export S3 methods as methods,
-    even if they are export as functions, as newly required by R 4.0.
+	* pkg/NAMESPACE: Update NAMESPACE
 
-2020-05-23:
-  - Added documentation of (over-)dispersion parameter estimation, rename
-    'overdispersion=' arguments into 'dispersion=' arguments.
+2023-04-05  Martin Elff <martin@elff.eu>
 
-2020-05-22:
-  - Added support for estimation of (over-)dispersion parameters
+	* pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog: Add support for
+	'ucminf' as inner optimisation method.
 
-2020-05-21:
-  - Implemented MQL technique as an alternative to PQL estimation
+2023-04-05  Martin Elff <martin@elff.eu>
 
-2020-05-19:
-  - Improve handling of numerical difficulties
+	* pkg/R/mclogit-rebase.R, pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Add
+	'rebase()' function to allow changing the baseline category
 
-2020-05-11:
-  - Use a Cholesky-factor parameterisation to make sure that covariance matrices
-    are positive (semi-)definite
+2023-01-08  Martin Elff <martin@elff.eu>
 
-2020-03-30:
-  - Refactored the algorithm for fitting mixed-effects models
+	* pkg/inst/ChangeLog: Update of 'ChangeLog' file
 
-2020-01-09:
-  - Document getSummary.mmclogit, getSummary.mmblogit
-  - Make 'mblogit' handle matrix responses with zero-sum rows
-  - Renamed 'residual.df' to 'df.residual' in results object of 'mclogit.fit' et
-    al. (Fixes issue #4)
+2023-01-08  Martin Elff <martin@elff.eu>
 
-2019-10-23:
-  - Merge pull request #3 from skyborla/fix-mblogit
-    Fix mblogit for responses with only two levels
-  - Export getSummary.mmclogit, getSummary.mmblogit
+	* pkg/R/mmclogit-fitPQLMQL.R, pkg/man/mclogit.Rd,
+	pkg/man/mclogit_control.Rd: Added documentation about choice of
+	inner iteration optimization technique
 
-2019-04-20:
-  - Let 'mmblogit' models inherit from class 'mblogit'
+2023-01-08  Martin Elff <martin@elff.eu>
 
-2019-02-04:
-  - Merged pull request #2 from pmcharrison/ftt-fix:
-    Fixed typo (ftt -> fit)
+	* pkg/R/mblogit.R: More compact output in mmblogit models with
+	diagonal re variance matrices
 
-2018-09-26:
-  - Fixed matrix column selection in predict.mclogit if there is only one
-    predictor (also PR from skyborla)
+2023-01-08  Martin Elff <martin@elff.eu>
 
-2018-04-25:
-  - Improved handling of with misspecified random effect structures.
-  - Added documentation about new handling of misspecified models.
+	* pkg/R/mmclogit-fitPQLMQL.R: New lines before warnings about inner
+	iterations in PQL/MQL algorithm
 
-2017-10-25:
-  - Fixed handling of dropped predictors in `predict.mclogit`.
+2023-01-08  Martin Elff <martin@elff.eu>
 
-2017-01-26:
-  - Fixed some bugs in predict models for `mclogit` objects.
-  - Made sure that dummy coding is used for response factors even if they are ordinal
+	* pkg/R/mblogit.R: Fix error message about missing ZD matrix in
+	predict.mmblogit
 
-2017-01-07:
-  - Implemented random slopes for baseline logit models.
+2023-01-06  Martin Elff <martin@elff.eu>
 
-2017-01-05:
-  - Implemented random slopes for conditional logit models.
+	* pkg/R/mclogit.R: Let 'format_Mat' keep column names
 
-2016-09-01:
-  - Fixed `mclogit.fit()` and `predict.mclogit()` to work better without covariates.
+2023-01-06  Martin Elff <martin@elff.eu>
 
-2016-02-07:
-  - Explicitely import package "methods"
+	* pkg/R/mblogit.R: Change label from 'Response categories' to more
+	adequate 'Logit egn.'
 
-2016-01-17:
-  - Import `as` from package "methods".
-  - Make sure `nobs` is defined in `mclogit.fit.rePQL`.
+2023-01-06  Martin Elff <martin@elff.eu>
 
-2016-01-16:
-  - Updated `DESCRIPTION` file: Maintainer email address changed and no "This package"
-    at start of package discriptions.
+	* pkg/DESCRIPTION, pkg/R/mblogit.R: Improve summary output of
+	mblogit models with random effects
 
-2015-10-08:
-  - Fix display of number of observations
-  - Drop redundant coefficients
+2023-01-06  Martin Elff <martin@elff.eu>
 
-2015-08-01:
-  - Added row and column names to estimator result of `vcov()`
-  - Make sure that scripts run with "mclogit" loaded by `devtools::load_all()`
+	* pkg/DESCRIPTION, pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog,
+	pkg/inst/NEWS.Rd: Add support for additional optimizers for inner
+	iterations
 
-2015-07-15:
-  - mclogit, mclogit.fit: Added support for starting values.
+2022-10-27  Martin Elff <martin@elff.eu>
 
-2015-07-03:
-  - predict.mblogit: 'contrasts.arg' not 'contast.arg' ...
-  - predict-methods now should handle NAs in newdata arguments better.
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd: Use \doi in 'mblogit.Rd'
 
-2015-06-17:
-  - Corrected handling of weights and standard errors of prediction.
+2022-10-27  Martin Elff <martin@elff.eu>
 
-2015-06-15:
-  - 'getSummary' methods now return "contrasts" and "xlevels" components.
-  - Fixed prediction method for 'mclogit' results.
-  - Added 'fitted' and 'predict' methods for 'mblogit' results.
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog: Update DESCRIPTION and
+	ChangeLog
 
-2015-01-25:
-  - Added support for multinomial baseline logit models in form of 'mblogit' as a frontend to 'mclogit.fit'
+2022-10-23  Martin Elff <martin@elff.eu>
 
-2015-01-23:
-  - Added URLs to DESCRIPTION file
+	* pkg/DESCRIPTION, pkg/R/mmclogit-fitPQLMQL.R: Refactor MQL/PQL
+	algorithm This commit simplifies the code and elimates some code redundancies.
 
-2015-01-21:
-  - Added `nobs` and `extractAIC` methods for `mclogit` objects, so that `drop1.default` should work with these.
+2022-10-16  Martin Elff <martin@elff.eu>
 
-2015-01-19:
-  - Added call to result of `getSummary.mclogit`.
+	* pkg/R/mmclogit-fitPQLMQL.R: Warn about non-convergence of 'nlminb'
+	iterations.
 
-2015-01-18:
-  - Cleanup of NAMESPACE file; added aliases to methods for `mclogit` objects so that users can see that they are present.
-  - Export `mclogit.fit`, and `mclogit.fit.rePQL` to enable use by other packages.
+2022-10-16  Martin Elff <martin@elff.eu>
 
-2014-10-13:
-  Simplified some namespace dependencies. Eliminated useless pseudo-R-squared statistics
-  from getSummary.mclogit
+	* pkg/DESCRIPTION: DESCRIPTION update
 
-2014-08-23:
-  Added 'anova' methods
+2022-10-16  Martin Elff <martin@elff.eu>
 
-2014-03-10:
-  Refactored code -- algorithms should be more transparent and robust now (hopefully!).
-  mclogit without and with random effects can handle missing values now.
-  Fixed predict method -- use of napredict; handles single indep-variable situation now.
-  Fixed embarassing typo -- prior weights do work now (again?).
-  Included AIC and BIC methods contributed by Nic Elliot <nic_elliot@yahoo.co.uk>
+	* pkg/R/mblogit.R, pkg/R/mclogit.R, pkg/R/mmclogit-fitPQLMQL.R: Fix
+	MQL/PQL-objective function An error in the construction of the objective function of the
+	MQL/PQL approximation of the log-likelihood of models with random
+	effects has lead to some bias in the variance parameter estimates.
+
+2022-10-12  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/man/mblogit.Rd: Enable
+	restrictions on random effects in baseline logit models
+
+2022-10-12  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/mmclogit-fitPQLMQL.R, pkg/man/mblogit.Rd, pkg/man/mclogit.Rd,
+	pkg/man/mclogit.fit.Rd: Better support of starting values and more
+	stable PQL/MQL algorithm `mclogit()` and `mblogit()` now have an infrastructure that allows
+	to provide starting values for models with random effects.  Starting
+	values should be given for the coefficents and for the variance
+	parameters. If the PQL method is used, also starting values for the
+	random effects have to be provided.  The PQL/MQL algorithm is made more stable by re-using in for the
+	inner iteration the intermediate estimates of coefficients, variance
+	parameters, and random parameters from previous outer iterations.
+
+2022-10-09  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-fitPQLMQL.R: Fix handling of
+	boundary cases by 'mclogit.fitPQLMQL()' 'mclogit.fitPQLMQL()' used error with an error message about a
+	numerically singular matrix in boundary cases. Now the algothithm
+	stops if it encounters numerical issues or a singular information
+	matrix (indicating a flat likelihood surface), but does not raise an
+	error condition. Instead it gives a warning and returns the results
+	from a previous iteration where no numerical issues occurred. It
+	also returns estimates and information matrices in such cases. -
+	This hopefully helps closing the followup to issue #27 raised by
+	fweber144.
+
+2022-10-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R, pkg/R/mclogit.R, pkg/R/saveInverse.R: 
+	mclogit: Handle singular information matrices A singular information matrix made 'mclogit.fit()' to stop and flag
+	an error, even when estimates existed. That is now fixed.
+	Furthermore, 'summary()' will give reasonable results in such cases
+	- provided that taking a Moore-Penrose inverse of a singular
+	information matrix gives reasonable or correct estimates of the
+	estimator covariance matrix. - This hopefully helps closing issue
+	#27 opened by tomwenseleers.
+
+2022-10-07  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Bump up version number and date
+
+2022-10-07  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R: mclogit.fit: Handle cases in which MLE's
+	don't exist more gracefully Previously flat log-likelihood functions created by separation lead
+	the IRLS algorithm in mclogit.fit() to throw an error about NaNs.
+	This is now caught. Instead the algorithm may converge and flag
+	having reached boundary values.
+
+2022-10-07  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R: mclogit.fit: Avoid spurious messages about
+	missing starting values
+
+2022-05-22  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Add checks of 'control='
+	argument of 'mclogit()' and 'mblogit()'.
+
+2022-04-14  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/blockMatrices.R, pkg/inst/ChangeLog: Fixed
+	bug in 'blockMatrix' and make it check for argument validity
+
+2022-04-12  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/inst/ChangeLog: Hotfix of prediction method
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/man/electors.Rd, pkg/man/mclogit.Rd: Changed '\donttest' to
+	'\dontrun' to keep CRAN checker happy
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update NEWs.Rd and ChangeLog
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mblogit.Rd: Correcly handle DOIs (as per new guidelines)
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Fix predict method for mmclogit models.
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/R/anova-mclogit.R, pkg/inst/ChangeLog: Warn if models with
+	random effects are compared using anova
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update package date
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/demo/00Index: Fix index of demos
+
+2022-04-11  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R, pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog: 
+	Fix handling of singular initial covariance matrices in
+	PQLMQL_innerFit
+
+2022-01-16  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Version bump up
+
+2022-01-16  Martin Elff <martin@elff.eu>
+
+	* pkg/demo/00Index, pkg/demo/mclogit.test.R,
+	pkg/demo/test-mblogit-random-nonnested.R: More demos
+
+2022-01-16  Martin Elff <martin@elff.eu>
+
+	* pkg/R/formula-utils.R, pkg/R/mblogit.R, pkg/R/mclogit.R: Fix
+	prediction with complicated terms in the model
+
+2021-08-13  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: predict.mmclogit: create W-Matrix only when
+	really needed
+
+2021-07-13  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog: 
+	Include variance parameters in the computation of degrees of freedom
+
+2021-06-03  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog: Be less
+	zealous about group-level covariates constant in some choice sets.
+
+2021-05-30  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Adapt prediction method to vertical-bar syntax
+
+2021-05-30  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog,
+	pkg/inst/NEWS.Rd, pkg/man/mclogit.Rd: Vertical-bar syntax for
+	responses of mclogit models
+
+2021-05-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2021-05-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2021-05-27  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog, pkg/inst/NEWS.Rd,
+	pkg/man/mblogit.Rd, pkg/man/mclogit.Rd: Added support for non-nested
+	random effects.
+
+2021-05-25  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog: Update ChangeLog
+
+2021-05-25  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-fitPQLMQL.R: Detect some
+	misspecified models (with too many groups)
+
+2021-05-25  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R, pkg/inst/ChangeLog: Fixed
+	serious bug in the handling of multilevel random effects models.
+
+2021-04-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/emmeans.R, pkg/inst/ChangeLog,
+	pkg/man/emmeans-support.Rd: Bump up release number
+
+2021-04-17  Martin Elff <martin@elff.eu>
+
+	* : commit b213195210eb563f01b59451540937be97c16ee4 Merge: 752c829
+	0aa9131 Author: Martin Elff <martin@elff.eu> Date:   Wed Apr 7
+	00:13:12 2021 +0200
+
+2021-04-04  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update ChangeLog and NEWS.Rd
+
+2021-04-04  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: Apply fixes suggested by Ilya
+	Yalchyk in PR #17 more widely
+
+2021-04-04  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Bump up version number for last PR
+
+2021-04-04  Martin Elff <martin@elff.eu>
+
+	* : commit 2400a04256ce29874e8c4490f99aca0e8aabbcf0 Author: Martin
+	Elff <martin@elff.eu> Date:   Sun Apr 4 13:27:00 2021 +0200
+
+2021-04-04  Martin Elff <melff@users.noreply.github.com>
+
+	* : Merge pull request #17 from yalchik/master Fixed dynamic formulas in mblogit with random effect
+
+2021-04-01  Russell V. Lenth <russell-lenth@uiowa.edu>
+
+	* pkg/R/emmeans.R, pkg/R/zzz.R, pkg/man/emmeans-support.Rd: Added
+	emmeans support
+
+2021-04-01  Ilya Yalchyk <yalchik.ilya@gmail.com>
+
+	* pkg/R/mblogit.R: fixed dynamic formulas in mblogit
+
+2021-03-18  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog: Update DESCRIPTION
+
+2021-03-18  Martin Elff <martin@elff.eu>
+
+	* pkg/R/getSummary-mclogit.R: Some minor 'mtable()' improvements for
+	random effects mclogit.
+
+2021-03-18  Martin Elff <martin@elff.eu>
+
+	* pkg/R/getSummary-mblogit.R: Improved 'mtable()' support for
+	random-effects mblogit.
+
+2021-02-28  Martin Elff <martin@elff.eu>
+
+	* pkg/R/getSummary-mclogit.R, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/zzz.R: 'mtable()' now shows variance components and numbers of
+	groups for mmclogit objects
+
+2021-02-28  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: 'summary()' also shows number of groups for
+	mblogit models with random effects.
+
+2021-02-28  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update ChangeLog and NEWS.Rd
+
+2021-02-21  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: 'summary()' reports the number of groups for
+	models with random effects
+
+2021-02-21  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R: Show criterion in mclogit iteration history
+	even without random effects
+
+2021-02-21  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: New website URL in DESCRIPTION
+
+2021-02-21  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/inst/ChangeLog: Fixed predictions from models with scaled
+	independent variables etc.
+
+2021-01-10  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog: Fixed
+	prediction method also for mmclogit objects
+
+2020-12-23  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog,
+	pkg/man/mclogit.fit.Rd: Fixed prediction method for mmblogit
+	objects, refactored computations
+
+2020-12-15  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R: Fixes typo in 'mblogit()'
+	function
+
+2020-11-04  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd, pkg/man/electors.Rd,
+	pkg/man/mclogit.Rd, pkg/man/predict.Rd: Some last corrections before
+	publication on CRAN
+
+2020-11-03  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Correct urls (https://) in DESCRIPTION
+
+2020-09-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: Correct reference to weights in
+	predict methods
+
+2020-08-06  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Make mclogit complain about non-numeric responses
+
+2020-08-06  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Handle 'empty' responses (that sum to zero)
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/examples/.Rhistory,
+	pkg/examples/.Rsession.info: Get rid of dot-files in 'examples'
+	directory.
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update version number
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* : commit c6eb2eef7a71514ba357801877314ece39060882 Author: Martin
+	Elff <martin@elff.eu> Date:   Fri Jul 17 19:19:57 2020 +0200
+
+2020-07-17  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: Fixed another bug in prediction
+	methods
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/inst/ChangeLog: Improved flexibility of prediction methods.
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/blockMatrices.R: Corrects 'bMatTrns'
+	function
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/NEWS.Rd: Updated NEWS.Rd file.
+
+2020-07-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/inst/ChangeLog,
+	pkg/man/mblogit.Rd, pkg/man/mclogit.Rd, pkg/man/predict.Rd,
+	pkg/man/simulate.Rd: Documented prediction methods.
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* : commit 70b7a93759e4b8f6c2894d081c9e8aafa4efb38e Merge: dd4be0e
+	76c72fe Author: Martin Elff <martin@elff.eu> Date:   Thu Jul 16
+	21:48:28 2020 +0200
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog: Fixed
+	another silly bug in 'update.mclogit()'
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog: Implement 'predict'
+	method for 'mmclogit' objects.
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE: Remove non-existiong 'predict'
+	method (which is in master branch)
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit-fit.R,
+	pkg/R/mmclogit-fitPQLMQL.R, pkg/inst/ChangeLog: Implement reasonable
+	'predict' method for mmblogit objects.
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* pkg/R/blockMatrices.R: Fix transposition of block matrices
+
+2020-07-16  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/mclogit.R, pkg/inst/ChangeLog: Add 'vcov'
+	method for 'mmclogit' objects.
+
+2020-07-15  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Bugfix: Make 'vcov' work for objects without
+	'phi' component.
+
+2020-07-15  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog: Bugfix: Make
+	'vcov' work for objects without 'phi' component.
+
+2020-07-15  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit-dispersion.R, pkg/inst/ChangeLog: 
+	Bugfix: Make 'update' work with missing 'dispersion=' argument.
+
+2020-06-27  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mclogit.Rd: Improved cross-ref fix
+
+2020-06-27  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/man/mclogit.Rd: Fix 'Non-file
+	package-anchored link(s) in documentation object'
+
+2020-06-27  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/inst/ChangeLog, pkg/man/simulate.Rd: Fix 'simulate' methods and
+	their documentation
+
+2020-06-25  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Fixed 'fitted()' method for "mblogit" objects
+
+2020-06-24  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/man/simulate.Rd: Documented 'simulate()'
+	methods
+
+2020-06-20  Martin Elff <melff@users.noreply.github.com>
+
+	* .travis.yml: Update .travis.yml
+
+2020-06-20  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/man/dispersion.Rd: Yet another documentation
+	fix
+
+2020-06-19  Martin Elff <martin@elff.eu>
+
+	* : commit f1f1fc0199ba2ff6c43d1e62c528bd0422bc36ac Author: Martin
+	Elff <martin@elff.eu> Date:   Fri Jun 19 23:33:22 2020 +0200
+
+2020-06-13  Martin Elff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2020-06-13  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update
+	NEWS.Rd and ChangeLog
+
+2020-06-12  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/man/mblogit.Rd,
+	pkg/man/mclogit.Rd, pkg/man/mclogit.fit.Rd: Make documentation about
+	new arguments complete.
+
+2020-06-11  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Further fixes, REML seems to work now
+
+2020-06-07  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R, pkg/R/mmclogit-fitPQLMQL.R: Fix
+	support for "estimator" argument
+
+2020-06-07  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/mblogit.R, pkg/R/mclogit.R: 
+	Added simulate methods
+
+2020-05-28  Martin Elff <martin@elff.eu>
+
+	* : commit 137bae4a63f7bd062ba1fc6ebe5899c420676f3d Author: Martin
+	Elff <martin@elff.eu> Date:   Thu May 28 23:39:29 2020 +0200
+
+2020-05-28  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE: Export 'mmclogit.control()'
+
+2020-05-26  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Modified algorithm to enable REML (not
+	yet tested, frontend missing)
+
+2020-05-24  Martin Elff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2020-05-24  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Release number update
+
+2020-05-24  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd, pkg/man/mclogit.Rd: Added
+	see-also references to other packages
+
+2020-05-24  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd, pkg/man/mclogit.Rd: Added
+	missing aliases to the documentation
+
+2020-05-24  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd: Fix title of 'mblogit' docu
+
+2020-05-24  Martin Elff <martin@elff.eu>
+
+	* pkg/man/dispersion.Rd, pkg/man/mclogit.Rd: Move docu of
+	update.mclogit and summary.mclogit from dispersion page to mclogit
+	page
+
+2020-05-24  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE: Make the package work with R 4.0 by explicitly
+	esporting S3 methods
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/.Rbuildignore, pkg/R/mblogit.R, pkg/examples/.Rhistory,
+	pkg/examples/.Rsession.info, pkg/examples/mblogit-ex.R,
+	pkg/man/getSummary-mclogit.Rd, pkg/man/mblogit.Rd: Add example for
+	'mblogit'
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/mblogit.R, pkg/R/{mclogit-overdispersion.R
+	=> mclogit-dispersion.R}, pkg/R/mclogit-fit.R, pkg/R/mclogit.R,
+	pkg/man/{overdispersion.Rd => dispersion.Rd}, pkg/man/mblogit.Rd,
+	pkg/man/mclogit.Rd, pkg/man/mclogit.fit.Rd: Rename 'overdispersion'
+	parameters into 'dispersion' parameters etc.
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/man/mblogit.Rd,
+	pkg/man/mclogit.Rd, pkg/man/mclogit.fit.Rd,
+	pkg/man/overdispersion.Rd: Added documentation for overdispersion
+	functions and arguments
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mblogit.Rd: Fix reference list formatting in 'mblogit.Rd'
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/man/getSummary-mclogit.Rd: change 'mtable' to 'memisc::mtable'
+	in getSummary docu.
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Remove period from title in DESCRIPTION
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mblogit.Rd: Documentation format fix
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/man/overdispersion.Rd: Added documentation about
+	overdispersion function.
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Revise package DESCRIPTION blurb
+
+2020-05-23  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/mclogit-overdispersion.R: Make the
+	'overdispersion' function S3-generic
+
+2020-05-22  Martin Elff <martin@elff.eu>
+
+	* : commit 35082fc3ddd0c6533cfcdc81dcd5d3b519787a18 Author: Martin
+	Elff <martin@elff.eu> Date:   Fri May 22 23:19:33 2020 +0200
+
+2020-05-22  Martin Elff <martin@elff.eu>
+
+	* appveyor.yml: Update appveyor.yml
+
+2020-05-22  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd, pkg/man/mclogit.Rd,
+	pkg/man/mclogit.fit.Rd: Fix documentation mismatches
+
+2020-05-22  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/mblogit.R, pkg/R/mclogit-fit.R,
+	pkg/R/mclogit-overdispersion.R, pkg/R/mclogit.R: Add support for
+	overdispersion parameters
+
+2020-05-22  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Remove loglikelihood from objects
+	fitted with MQL/PQL
+
+2020-05-21  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update version number
+
+2020-05-21  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: Do not use starting values from
+	non-random effects model
+
+2020-05-21  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/{mmclogit-PQLfit.R => mmclogit-fitPQLMQL.R}: Implemented MQL
+	estimation technique
+
+2020-05-19  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-PQLfit.R,
+	pkg/man/mclogit_control.Rd: Handle numeric difficulties more
+	gracefully and give users options to deal with them
+
+2020-05-19  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-PQLfit.R: Fixed embarrassing bug that prevented
+	estimation of models with more than 2 levels
+
+2020-05-14  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-PQLfit.R: Warn about and correct
+	singular matrices in initial estimates
+
+2020-05-13  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-PQLfit.R: Assimilate convergence
+	criterion to MASS::glmmPQL
+
+2020-05-11  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Updated release number
+
+2020-05-11  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd, pkg/man/mclogit.Rd,
+	pkg/man/mclogit.fit.Rd, pkg/man/mclogit_control.Rd: Fixed
+	documentation so that R CMD check succeeds
+
+2020-05-11  Martin Elff <martin@elff.eu>
+
+	* pkg/R/blockMatrices.R, pkg/R/mblogit.R, pkg/R/mclogit.R,
+	pkg/R/mmclogit-PQLfit.R: Implement Cholesky-factor parametrisation
+
+2020-05-09  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE, pkg/R/blockMatrices.R, pkg/R/mblogit.R,
+	pkg/R/mclogit-fit.R, pkg/R/mclogit.R, pkg/R/mmclogit-PQLfit.R: Make
+	the algorithm work again
+
+2020-01-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/anova-mclogit.R, pkg/R/mclogit-fit.R, pkg/R/mclogit.R,
+	pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Renamed 'residual.df' to
+	'df.residual' in results objects (Fixes issue #4)
+
+2020-01-09  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update 'ChangeLog' and
+	'NEWS.Rd'
+
+2020-01-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Make 'mblogit' handle matrix responses with
+	zero-sum rows
+
+2020-01-09  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/getSummary-mclogit.R,
+	pkg/man/getSummary-mclogit.Rd: Document getSummary.mmclogit,
+	getSummary.mmblogit
+
+2019-10-23  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE: Export getSummary.mmclogit, getSummary.mmblogit
+
+2019-10-23  Martin Elff <melff@users.noreply.github.com>
+
+	* : Merge pull request #3 from skyborla/fix-mblogit fix mblogit for responses with only two levels
+
+2019-04-20  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R: Let 'mmblogit' models inherit
+	from class 'mblogit'
+
+2019-02-04  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Pump up release number and date
+
+2019-02-04  Martin Elff <melff@users.noreply.github.com>
+
+	* : Merge pull request #2 from pmcharrison/ftt-fix Fixed typo (ftt -> fit)
+
+2018-09-26  Martin Elff <martin@elff.eu>
+
+	* appveyor.yml: Update appveyor.yml
+
+2018-09-26  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog: Updated ChangeLog
+
+2018-09-26  Martin Elff <melff@users.noreply.github.com>
+
+	* : Merge pull request #1 from skyborla/master fix matrix column selection in predict.mclogit if there is only one
+	predictor left.
+
+2018-05-10  Martin Elff <elff@zen11f>
+
+	* pkg/DESCRIPTION: Minor cosmetic changes in DESCRIPTION
+
+2018-05-05  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/NEWS.Rd: Update NEWS.Rd
+
+2018-05-05  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog: Updated ChangeLog
+
+2018-04-27  Martin Elff <melff@users.noreply.github.com>
+
+	* .travis.yml: Update .travis.yml
+
+2018-04-25  Martin Elff <elff@zen11f>
+
+	* pkg/man/mclogit.Rd: Corrected documentation about mixed
+	conditional logit models about random-effects.
+
+2018-04-25  Martin Elff <elff@zen11f>
+
+	* pkg/man/mclogit.Rd: Added documentation about new handling of
+	misspecified models.
+
+2018-04-25  Martin Elff <elff@zen11f>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R: Improved handling of with
+	mis-specified random effect structures
+
+2017-10-25  Martin Elff <elff@zen11f>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog,
+	pkg/man/electors.Rd: Fixed handling of dropped predictors in
+	`predict.mclogit`.
+
+2017-04-12  Martin Elff <martin@elff.eu>
+
+	* appveyor.yml: Update appveyor.xml
+
+2017-04-12  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/NEWS.Rd: Correct silly error in NEWS.Rd
+
+2017-01-27  Martin Elff <martin@elff.eu>
+
+	* .travis.yml, appveyor.yml: Update travis and appveyor control
+	files.
+
+2017-01-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2017-01-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2017-01-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2017-01-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2017-01-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2017-01-27  Martin Elff <melff@users.noreply.github.com>
+
+	* appveyor.yml: Update appveyor.yml
+
+2017-01-26  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update
+	DESCRIPTION, NEWS.Rd, and ChangeLog
+
+2017-01-26  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Make sure that response factors are always
+	dummy-coded.
+
+2017-01-26  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Fix some bugs in predict method for `mclogit`
+	objects.
+
+2017-01-26  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mclogit.Rd: Fix minor documentation error.
+
+2017-01-08  Martin Elff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2017-01-07  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/getSummary-mblogit.R,
+	pkg/R/mblogit.R, pkg/man/mblogit.Rd: Added support for multinomial
+	baseline logit model with random effects.
+
+2017-01-07  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mclogit.Rd: Delete outdated details from documentation of
+	'mclogit'.
+
+2017-01-07  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R, pkg/R/mclogit.R: Moved fitting functions into
+	separate file.
+
+2017-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/man/mclogit.Rd, pkg/man/mclogit.fit.Rd: Fix
+	documentation
+
+2017-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Refactored algorithm. Improved handling of bad
+	data and improved output.
+
+2017-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Bugfix - may work with multiple levels now
+
+2017-01-04  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE: Corrected NAMESPACE exports
+
+2017-01-04  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Algorithm works and converges for a single level
+
+2017-01-03  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R, pkg/inst/ChangeLog: Runs now, but diverges ...
+
+2017-01-02  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R: First stage of implementation of
+	random slopes (not yet tested)
+
+2016-12-25  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Corrected typo in DESCRIPTION
+
+2016-12-25  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update ChangeLog and News.Rd
+
+2016-12-25  Martin Elff <martin@elff.eu>
+
+	* .travis.yml: Use default R-infrastructure of Travis-CI again
+
+2016-12-25  Martin Elff <martin@elff.eu>
+
+	* .gitignore: Modified .gitignore
+
+2016-12-25  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R: Bugfixes in `mclogit.fit()` and
+	`predict.mclogit()`
+
+2016-02-07  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Create
+	NEWS.Rd. Bump up version number.
+
+2016-02-07  Martin Elff <martin@elff.eu>
+
+	* .travis.yml, builitin.travis.yml: Use pkg-build infrastructure to
+	check with multiple R versions.
+
+2016-02-06  Martin Elff <martin@elff.eu>
+
+	* appveyor.yml: Add Appveyor deployment.
+
+2016-02-06  Martin Elff <martin@elff.eu>
+
+	* .gitignore: Ignore .gitignore
+
+2016-01-25  Martin Elff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* .gitignore, pkg/DESCRIPTION, pkg/demo/00Index, pkg/inst/ChangeLog: 
+	Update package date in DESCRIPTION and ChangeLog
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Explicitly import "methods" package.
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* pkg/NAMESPACE: Import `as` from package "methods".
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* README.md: Reorganise batches in README.md, add AppVeyor badge
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* .gitattributes, .travis.yml, appveyor.yml: Add support for
+	AppVeyor
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* .gitignore, .travis.yml, README.md: Added .gitignore and
+	.travis.yml to repo.
+
+2016-01-17  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Make sure `nobs` is defined in
+	`mclogit.fit.rePQL`
+
+2016-01-16  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Updated `DESCRIPTION` file: Maintainer email
+	address changed and no "This package" at start of package
+	discriptions.
+
+2015-10-08  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R, pkg/inst/ChangeLog: 2015-10-08:  - Fix display of number of observations  - Drop redundant coefficients
+
+2015-08-01  Martin Elff <elff@gmx.com>
+
+	* pkg/inst/ChangeLog: Update ChangeLog
+
+2015-08-01  Martin Elff <elff@gmx.com>
+
+	* pkg/data/Transport.R, pkg/data/electors.R: Make sure that scripts
+	run with "mclogit" loaded by devtools::load_all
+
+2015-08-01  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R: Added row and column names to
+	estimator result of `vcov()`
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/inst/ChangeLog: Update ChangeLog
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION: Fix DESCRIPTION and bump up patchlevel.
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/man/getSummary-mclogit.Rd: Add documentation for
+	`getSummary.mblogit`
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd: Add documentation for
+	`mblogit`
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/R/mclogit.R: Fix undefined variable error in `predict.mclogit`
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/man/mclogit.Rd: Fix documentation of `mclogit`
+
+2015-07-19  Martin Elff <elff@gmx.com>
+
+	* pkg/NAMESPACE: Fix imports from `memisc`
+
+2015-07-15  Martin Elff <elff@gmx.com>
+
+	* pkg/R/mclogit.R: mclogit, mclogit.fit: Added support for starting
+	values
+
+2015-07-03  Martin Elff <elff@gmx.com>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: predict-methods now should
+	handle NAs in newdata arguments better
+
+2015-07-03  Martin Elff <elff@gmx.com>
+
+	* pkg/R/mblogit.R: predict.mblogit: 'contrasts.arg' not
+	'contast.arg' ...
+
+2015-06-17  Martin Elff <elff@gmx.com>
+
+	* pkg/NAMESPACE, pkg/R/mblogit.R, pkg/R/mclogit.R: 2015-06-17:
+	Corrected handling of weights, and standard errors of prediction
+
+2015-06-15  Martin Elff <elff@gmx.com>
+
+	* pkg/inst/{NEWS => ChangeLog}: Rename NEWS file into ChangeLog
+
+2015-06-15  Martin Elff <elff@gmx.com>
+
+	* pkg/NAMESPACE, pkg/R/mblogit.R: Added 'fitted' and 'predict'
+	methods for 'mblogit' results
+
+2015-06-15  Martin Elff <elff@gmx.com>
+
+	* pkg/R/mclogit.R: Fixed prediction method for 'mclogit' results.
+
+2015-06-15  Martin Elff <elff@gmx.com>
+
+	* : commit d7536bf25b3170dc61c00e6464cb920c4fb587bb Author: Martin
+	Elff <elff@gmx.com> Date:   Mon Jun 15 11:32:53 2015 +0200
+
+2015-05-22  melff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2015-01-25  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/getSummary-mblogit.R,
+	pkg/R/mblogit.R, pkg/R/zzz.R: 2015-01-25: Added support for
+	multinomial baseline logit models in form of 'mblogit' as a frontend
+	to 'mclogit.fit'
+
+2015-01-25  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION: Delete reference to r-forge
+
+2015-01-23  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION: Added URLs to DESCRIPTION file
+
+2015-01-23  melff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2015-01-23  melff <melff@users.noreply.github.com>
+
+	* README.md: Create README.md
+
+2015-01-22  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/getSummary-mclogit.R,
+	pkg/R/mclogit.R, pkg/inst/NEWS, pkg/man/mclogit.Rd,
+	pkg/man/mclogit.fit.Rd: 2015-01-21:   Added `nobs` and `extractAIC` methods for `mclogit` objects, so
+	  that `drop1.default` should work with these.  2015-01-19:   Added call to result of `getSummary.mclogit`.  2015-01-18:   - Cleanup of NAMESPACE file; added aliases to methods for
+	  `mclogit` objects so that users can see that they are present.  - Export `mclogit.fit`, and `mclogit.fit.rePQL` to enable use by
+	other packages.
+
+2014-10-13  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/getSummary-mclogit.R,
+	pkg/R/mclogit.R, pkg/R/zzz.R, pkg/inst/NEWS: 2014-10-13: Simplified
+	some namespace dependencies. Eliminated useless pseudo-R-squared
+	statistics form getSummary.mclogit
+
+2014-10-12  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/anova-mclogit.R,
+	pkg/R/mclogit.R, pkg/inst/NEWS: 2014-08-23: Added 'anova' methods
+
+2014-03-10  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/mclogit.R, pkg/R/zzz.R,
+	pkg/inst/NEWS: 2014-03-10:   Refactored code -- algorithms should be more transparent and
+	  robust now (hopefully!).  mclogit without and with random effects
+	  can handle missing values now.  Fixed predict method -- use of
+	  napredict; handles single indep-variable situation now.  Fixed
+	embarassing typo -- prior weights do work now (again?).
+
+2013-09-20  Martin Elff <elff@gmx.com>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/AIC-mclogit.R,
+	pkg/R/mclogit.R, pkg/data/Transport.R, pkg/data/electors.R,
+	pkg/man/mclogit.Rd: 2013-09-20: Fixes some namespace issues indicted
+	by Prof Brian Ripley. Adds AIC and BIC methods for 'mclogit' objects
+
+2013-02-16  Martin Elff <elff@gmx.com>
+
+	* 2013-02-16: Initial commit
+
