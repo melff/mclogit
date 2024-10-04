@@ -1,5 +1,5 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   approximations: approximations.html
@@ -8,7 +8,7 @@ articles:
   conditional-logit: conditional-logit.html
   fitting-mclogit: fitting-mclogit.html
   random-effects: random-effects.html
-last_built: 2024-07-07T21:15Z
+last_built: 2024-10-04T22:18Z
 urls:
   reference: https://melff.github.io/mclogit/reference
   article: https://melff.github.io/mclogit/articles
