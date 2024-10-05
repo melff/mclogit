@@ -21,7 +21,8 @@ Imports:
     nlme
 Suggests:
     MASS,
-    nnet
+    nnet,
+    ucminf
 LazyLoad: Yes
 URL: http://melff.github.io/mclogit/,https://github.com/melff/mclogit/
 BugReports: https://github.com/melff/mclogit/issues

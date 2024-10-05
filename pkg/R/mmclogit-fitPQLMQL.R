@@ -411,13 +411,14 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
         }
         lambda <- res.optim$par
     }
-    else if(control$inner.optimizer == "ucminf" && require(ucminf)){
+    else if(control$inner.optimizer == "ucminf" && 
+            requireNamespace("ucminf", quietly = TRUE)){
         ucminf.control <- list(
             trace = as.integer(control$trace.inner)
             )
         for(nn in c("grtol","xtol","stepmax","maxeval","grad"))
             if(length(control[nn])) ucminf.control[[nn]] <- control[[nn]]
-        res.ucminf <- ucminf(par     = lambda.start,
+        res.ucminf <- ucminf::ucminf(par     = lambda.start,
                              fn      = devfunc,
                              gr      = gradfunc,
                              control = ucminf.control
