@@ -13,6 +13,8 @@ rebase(object, to, ...)
 \item{object}{a statistical model object}
 
 \item{to}{usually, a string; the baseline category}
+
+\item{...}{other arguments, currently ignored}
 }
 \description{
 `rebase` returns an model object that is equivalent to the one

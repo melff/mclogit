@@ -30,6 +30,7 @@ rebase_mat <- function(categs,from,to){
 #'
 #' @param object a statistical model object
 #' @param to usually, a string; the baseline category
+#' @param ... other arguments, currently ignored
 rebase <- function(object,to,...) UseMethod("rebase")
 
 #' @rdname rebase

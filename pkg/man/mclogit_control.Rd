@@ -27,7 +27,12 @@ mmclogit.control(epsilon = 1e-08,
                  NM.beta = 0.5,
                  NM.gamma = 2.0,
                  SANN.temp = 10,
-                 SANN.tmax = 10)
+                 SANN.tmax = 10,
+                 grtol = 1e-6,
+                 xtol = 1e-8,
+                 maxeval = 100,
+                 gradstep = c(1e-6, 1e-8),
+                 use.gradient = c("analytic","numeric"))
 }
 \arguments{
    \item{epsilon}{positive convergence tolerance \eqn{\epsilon};
@@ -71,6 +76,17 @@ mmclogit.control(epsilon = 1e-08,
    \item{SANN.tmax}{integer; the \code{tmax} argument passed to
      \code{\link{optim}} if
      "SANN" is selected as inner optimizer.}
+   \item{grtol}{numeric; the \code{grtol} control parameter
+     for \code{ucminf} if "ucminf" is selected as inner optimizer.}
+   \item{xtol}{numeric; the \code{xtol} control parameter
+     for \code{ucminf} if "ucminf" is selected as inner optimizer.}
+   \item{maxeval}{integer; the \code{maxeval} control parameter
+     for \code{ucminf} if "ucminf" is selected as inner optimizer.}
+   \item{gradstep}{a numeric vector of length; the \code{gradstep} control parameter
+     for \code{ucminf} if "ucminf" is selected as inner optimizer.}
+   \item{use.gradient}{a character string; whether the gradient should
+     be computed analytically or whether a finite-difference approximation
+     should be used.}
 }
 \value{
   A list.
