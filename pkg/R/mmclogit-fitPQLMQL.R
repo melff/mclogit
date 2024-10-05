@@ -420,7 +420,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
             if(length(control[nn])) ucminf.control[[nn]] <- control[[nn]]
         res.ucminf <- ucminf::ucminf(par     = lambda.start,
                              fn      = devfunc,
-                             gr      = gradfunc,
+                             gr      = if(control$use.gradient == "analytic") gradfunc,
                              control = ucminf.control
                            )
         if(res.ucminf$convergence > 2){
