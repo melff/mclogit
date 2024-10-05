@@ -116,7 +116,12 @@
 <span>                 NM.beta <span class="op">=</span> <span class="fl">0.5</span>,</span>
 <span>                 NM.gamma <span class="op">=</span> <span class="fl">2.0</span>,</span>
 <span>                 SANN.temp <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>                 SANN.tmax <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></code></pre></div>
+<span>                 SANN.tmax <span class="op">=</span> <span class="fl">10</span>,</span>
+<span>                 grtol <span class="op">=</span> <span class="fl">1e-6</span>,</span>
+<span>                 xtol <span class="op">=</span> <span class="fl">1e-8</span>,</span>
+<span>                 maxeval <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>                 gradstep <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1e-6</span>, <span class="fl">1e-8</span><span class="op">)</span>,</span>
+<span>                 use.gradient <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"analytic"</span>,<span class="st">"numeric"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
@@ -158,7 +163,7 @@
 <dd><p>a character string, one of
      "nlminb", "nlm", "ucminf", "Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "SANN".
      See <code><a href="https://rdrr.io/r/stats/nlminb.html" class="external-link">nlminb</a></code>, <code><a href="https://rdrr.io/r/stats/nlm.html" class="external-link">nlm</a></code>,
-     <code>ucminf</code>, or
+     <code><a href="https://rdrr.io/pkg/ucminf/man/ucminf.html" class="external-link">ucminf</a></code>, or
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code>.</p></dd>
 
    <dt id="arg-maxit-inner">maxit.inner<a class="anchor" aria-label="anchor" href="#arg-maxit-inner"></a></dt>
@@ -193,6 +198,27 @@
 <dd><p>integer; the <code>tmax</code> argument passed to
      <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">optim</a></code> if
      "SANN" is selected as inner optimizer.</p></dd>
+
+   <dt id="arg-grtol">grtol<a class="anchor" aria-label="anchor" href="#arg-grtol"></a></dt>
+<dd><p>numeric; the <code>grtol</code> control parameter
+     for <code>ucminf</code> if "ucminf" is selected as inner optimizer.</p></dd>
+
+   <dt id="arg-xtol">xtol<a class="anchor" aria-label="anchor" href="#arg-xtol"></a></dt>
+<dd><p>numeric; the <code>xtol</code> control parameter
+     for <code>ucminf</code> if "ucminf" is selected as inner optimizer.</p></dd>
+
+   <dt id="arg-maxeval">maxeval<a class="anchor" aria-label="anchor" href="#arg-maxeval"></a></dt>
+<dd><p>integer; the <code>maxeval</code> control parameter
+     for <code>ucminf</code> if "ucminf" is selected as inner optimizer.</p></dd>
+
+   <dt id="arg-gradstep">gradstep<a class="anchor" aria-label="anchor" href="#arg-gradstep"></a></dt>
+<dd><p>a numeric vector of length; the <code>gradstep</code> control parameter
+     for <code>ucminf</code> if "ucminf" is selected as inner optimizer.</p></dd>
+
+   <dt id="arg-use-gradient">use.gradient<a class="anchor" aria-label="anchor" href="#arg-use-gradient"></a></dt>
+<dd><p>a character string; whether the gradient should
+     be computed analytically or whether a finite-difference approximation
+     should be used.</p></dd>
 
 </dl></div>
     <div id="value">

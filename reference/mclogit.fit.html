@@ -100,7 +100,8 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">mclogit.fit</span><span class="op">(</span><span class="va">y</span>, <span class="va">s</span>, <span class="va">w</span>, <span class="va">X</span>,</span>
 <span>            dispersion<span class="op">=</span><span class="cn">FALSE</span>,</span>
 <span>            start <span class="op">=</span> <span class="cn">NULL</span>, offset <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>            control <span class="op">=</span> <span class="fu"><a href="mclogit_control.html">mclogit.control</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span></span>
+<span>            control <span class="op">=</span> <span class="fu"><a href="mclogit_control.html">mclogit.control</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>            groups<span class="op">=</span><span class="cn">NULL</span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu">mmclogit.fitPQLMQL</span><span class="op">(</span><span class="va">y</span>, <span class="va">s</span>, <span class="va">w</span>, <span class="va">X</span>, <span class="va">Z</span>, <span class="va">d</span>, </span>
 <span>                   start <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -129,6 +130,10 @@
   <dt id="arg-dispersion">dispersion<a class="anchor" aria-label="anchor" href="#arg-dispersion"></a></dt>
 <dd><p>a logical value or a character string; whether and how
      a dispersion parameter should be estimated. For details see <code><a href="dispersion.html">dispersion</a></code>.</p></dd>
+
+  <dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
+<dd><p>a vector that identifies the groups relevant
+     for the estimation of the dispersion parameter.</p></dd>
 
   <dt id="arg-z">Z<a class="anchor" aria-label="anchor" href="#arg-z"></a></dt>
 <dd><p>the random effects design matrix.</p></dd>
