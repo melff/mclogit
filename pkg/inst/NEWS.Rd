@@ -33,8 +33,6 @@
       \item \code{mclogit()} and \code{mblogit()} check whether the list
       passed as \code{control} is complete i.e. contains all the relevant
       named arguments.
-    }
-    \itemize{
       \item A \code{ranef()} method is provided for objects created
       by \code{mclogit()} or \code{mblogit()}.
     }
