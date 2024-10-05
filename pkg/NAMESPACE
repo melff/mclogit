@@ -71,3 +71,5 @@ S3method(rebase,mblogit)
 importFrom(nlme,ranef)
 export(ranef)
 S3method(ranef,mmclogit)
+
+importFrom(MASS,ginv)

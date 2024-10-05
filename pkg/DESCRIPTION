@@ -16,11 +16,11 @@ Depends:
     stats,
     Matrix
 Imports:
+    MASS,
     memisc,
     methods,
     nlme
 Suggests:
-    MASS,
     nnet,
     ucminf
 LazyLoad: Yes
