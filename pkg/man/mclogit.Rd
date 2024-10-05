@@ -16,7 +16,7 @@
 \alias{anova.mclogit}
 \alias{summary.mmclogit}
 \alias{print.summary.mmclogit}
-
+\alias{ranef.mmclogit}
 
 \title{Conditional Logit Models and Mixed Conditional Logit Models}
 \description{
