@@ -19,6 +19,7 @@ mblogit(
   catCov = c("free", "diagonal", "single"),
   subset,
   weights = NULL,
+  offset = NULL,
   na.action = getOption("na.action"),
   model = TRUE,
   x = FALSE,
@@ -58,6 +59,8 @@ used in the fitting process.}
 
 \item{weights}{an optional vector of weights to be used in the fitting
 process.  Should be \code{NULL} or a numeric vector.}
+
+\item{offset}{an optional model offset.}
 
 \item{na.action}{a function which indicates what should happen when the data
 contain \code{NA}s.  The default is set by the \code{na.action} setting

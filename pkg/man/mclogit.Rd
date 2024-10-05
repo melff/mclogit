@@ -76,14 +76,13 @@ mclogit(formula, data=parent.frame(), random=NULL,
   \item{random}{an optional formula or list of formulas that specify the
     random-effects structure or NULL.}
 
+  \item{subset}{an optional vector specifying a subset of observations
+    to be used in the fitting process.}
+
   \item{weights}{an optional vector of weights to be used in the fitting
     process.  Should be \code{NULL} or a numeric vector.}
 
-  \item{offset}{an optional model offset. Currently only supported
-    for models without random effects.}
-
-  \item{subset}{an optional vector specifying a subset of observations
-    to be used in the fitting process.}
+  \item{offset}{an optional model offset.}
 
   \item{na.action}{a function which indicates what should happen
     when the data contain \code{NA}s.  The default is set by

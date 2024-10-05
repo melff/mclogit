@@ -21,6 +21,7 @@
 #'     used in the fitting process.
 #' @param weights an optional vector of weights to be used in the fitting
 #'     process.  Should be \code{NULL} or a numeric vector.
+#' @param offset an optional model offset.
 #' @param na.action a function which indicates what should happen when the data
 #'     contain \code{NA}s.  The default is set by the \code{na.action} setting
 #'     of \code{\link{options}}, and is \code{\link{na.fail}} if that is unset.
@@ -107,6 +108,7 @@ mblogit <- function(formula,
                     catCov=c("free","diagonal","single"),
                     subset,
                     weights=NULL,
+                    offset=NULL,
                     na.action = getOption("na.action"),
                     model = TRUE, x = FALSE, y = TRUE,
                     contrasts=NULL,
@@ -319,8 +321,9 @@ mblogit <- function(formula,
     if(!length(random))
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
                            dispersion=dispersion,
-                           start=start,
                            control=control,
+                           start=start,
+                           offset = offset,
                            groups=groups)
     else { ## random effects
 

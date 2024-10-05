@@ -69,6 +69,7 @@ mclogit <- function(
                 estimator=c("ML","REML"),
                 dispersion = FALSE,
                 start=NULL,
+                groups = NULL,
                 control=if(length(random))
                             mmclogit.control(...)
                         else mclogit.control(...),
@@ -118,6 +119,28 @@ mclogit <- function(
                     "break.on.increase",
                     "break.on.infinite",
                     "break.on.negative")
+    }
+    else if(length(groups)){
+        mf0 <- eval(mf, parent.frame())
+        mt <- attr(mf0,"terms")
+        gf <- paste(c(".~.",all.vars(groups)),collapse="+")
+        gf <- as.formula(gf)
+        if (typeof(mf$formula) == "symbol") {
+          mff <- formula
+        }
+        else {
+          mff <- structure(mf$formula,class="formula")
+        }
+        mff <- eval(mff, parent.frame())
+        mf$formula <- update(mff,gf)
+        mf <- eval(mf, parent.frame())
+        groups <- all.vars(groups)
+        groups <- mf[groups]
+        if(length(groups) > 1) stop("Multiple groups not supported")
+        check.names(control,
+                    "epsilon","maxit",
+                    "trace"
+                    )
     }
     else {
         mf <- eval(mf, parent.frame())
@@ -193,8 +216,8 @@ mclogit <- function(
                        dispersion=dispersion,
                        control=control,
                        start = start,
-                       offset = offset)
-        groups <- NULL
+                       offset = offset,
+                       groups=groups)
     }
     else { ## random effects
         

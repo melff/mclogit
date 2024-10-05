@@ -32,7 +32,7 @@ rebase_mat <- function(categs,from,to){
 #' @param to usually, a string; the baseline category
 rebase <- function(object,to,...) UseMethod("rebase")
 
-#' @describeIn rebase
+#' @rdname rebase
 rebase.mblogit <- function(object,to,...){
     categs <- get_categs(object)
     m <- length(categs)

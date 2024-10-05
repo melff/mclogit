@@ -26,4 +26,5 @@ Suggests:
 LazyLoad: Yes
 URL: http://melff.github.io/mclogit/,https://github.com/melff/mclogit/
 BugReports: https://github.com/melff/mclogit/issues
-RoxygenNote: 7.2.3
+Encoding: UTF-8
+RoxygenNote: 7.3.1

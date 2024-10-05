@@ -2,9 +2,12 @@
 % Please edit documentation in R/mclogit-rebase.R
 \name{rebase}
 \alias{rebase}
+\alias{rebase.mblogit}
 \title{Change baseline category of multinomial logit or similar model}
 \usage{
 rebase(object, to, ...)
+
+\method{rebase}{mblogit}(object, to, ...)
 }
 \arguments{
 \item{object}{a statistical model object}

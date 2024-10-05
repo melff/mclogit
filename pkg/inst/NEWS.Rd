@@ -18,6 +18,12 @@
       \code{ucminf()}, and most techniques provided by \code{optim()}.
       \item With \code{rebase()} the baseline category of a model
       can be changed without the need of refitting the model.
+      \item \code{mblogit()} and \code{mclogit()} now have a
+      \code{groups=} argument that allows to estimated 
+      overdispersion (across groups).
+      \item \code{mblogit()} and \code{mclogit()} now also have an
+      \code{offset=} argument that to add an offset to the model
+      (i.e. a covariate with coeffecient fixed to unity).
     }
   }
   \subsection{BUGFIXES}{
