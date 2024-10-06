@@ -1,3 +1,48 @@
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Declare vignette builder packages
+
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-rebase.R, pkg/man/mclogit_control.Rd,
+	pkg/man/rebase.Rd: Add missing documentation of arguments.
+
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Make analytical gradient optional for
+	"ucminf" inner optimizer.
+
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE, pkg/R/mblogit.R,
+	pkg/R/mclogit-rebase.R, pkg/R/mclogit.R, pkg/inst/NEWS.Rd,
+	pkg/man/mblogit.Rd, pkg/man/mclogit.Rd, pkg/man/mclogit.fit.Rd,
+	pkg/man/rebase.Rd: Add missing support for offsets in 'mblogit()'
+	and for group-wise overdispersion in 'mclogit()'.
+
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mclogit.Rd: Include ref to 'ranef.mmclogit' in
+	documentation.
+
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/NAMESPACE: Correctly import 'ginv' from
+	'MASS'
+
+2024-10-06  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mmclogit-fitPQLMQL.R: Correct conditional
+	import of 'ucminf'
+
+2024-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/NEWS.Rd: Remove duplicated '\itemize' in NEWS.Rd
+
+2024-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/.Rbuildignore: Include 'pkgdown' file in .Rbuildignore
+
 2024-10-05  Martin Elff <martin@elff.eu>
 
 	* pkg/inst/ChangeLog, pkg/inst/ChangeLog-old: Use autocreated
