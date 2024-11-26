@@ -1,6 +1,8 @@
 url: https://melff.github.io/mclogit
 template:
-  package: preferably
+  bootstrap: 5
+  bootswatch: zephyr
+  light-switch: true
 articles:
 - title: The statistical models
   navbar: The statistical models
