@@ -1164,7 +1164,6 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
             d <- unlist(d)
             ZD <- blockMatrix(ZD,ncol=length(ZD))
         }
-        browser()
 
         b <- object$random.effects
         nlev <- length(ZD)
