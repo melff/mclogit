@@ -188,12 +188,19 @@ bM_fill <- function(x){
 solve.blockMatrix <- function(a,b,...){
     nnrow.a <- bM_nrow(a)
     nncol.a <- bM_ncol(a)
-    a <- fuseMat(a)
     if(missing(b)){
-        x <- solve(a)
-        return(to_bM(x,nnrow=nnrow.a,nncol=nncol.a))
+        if(!all(nnrow.a == nncol.a)) {
+            a <- fuseMat(a) 
+            x <- solve(a)
+            return(to_bM(x,nnrow=nnrow.a,nncol=nncol.a))
+        }
+        else {
+            x <- blk_inv.squareBlockMatrix(a)
+            return(x)
+        }
     }
     else {
+        a <- fuseMat(a) 
         nnrow.b <- bM_nrow(b)
         nncol.b <- bM_ncol(b)
         b <- fuseMat(b)
@@ -281,4 +288,52 @@ kron_bM <- function(x,y){
     y <- rep(y,lx)
     xy <- mapply(`%x%`,x,y,SIMPLIFY=FALSE)
     blockMatrix(xy,m1*m2,n1*n2)
+}
+
+blk_inv.squareBlockMatrix <- function(A){
+    stopifnot(nrow(A)==ncol(A))
+    n <- nrow(A)
+    if(n == 1) {
+        R <- A
+        R[[1,1]] <- solve(A[[1,1]])
+        return(R)
+    }
+    else {
+        nnrow <- bM_nrow(A)
+        nncol <- bM_ncol(A)
+        stopifnot(all(nnrow==nncol))
+        nn <- nnrow
+        sum_nn <- sum(nn)
+        B <- to_bM(Diagonal(sum_nn),nn,nn)
+        # Gauss-Jordan Phase 1
+        for(i in seq.int(from=1,to=n-1)) {
+            for(j in seq.int(from=i+1,to=n)){
+                C.ji <- A[[j,i]]%*%solve(A[[i,i]])
+                for(k in 1:n) {
+                    A[[j,k]] <- A[[j,k]] - C.ji%*%A[[i,k]]
+                    B[[j,k]] <- B[[j,k]] - C.ji%*%B[[i,k]]
+                }
+            }
+        }
+        # Phase 2
+        for(i in 1:n) {
+            A_ii <- solve(A[[i,i]])
+            for(j in 1:n) {
+                A[[i,j]] <- A_ii %*% A[[i,j]]
+                B[[i,j]] <- A_ii %*% B[[i,j]]
+            }
+        }
+        # Phase 3
+        for(i in seq.int(from=n,to=2)) {
+            for(j in seq.int(from=1,to=i-1)){
+                A.ji <- A[[j,i]]
+                for(k in 1:n) {
+                    A[[j,k]] <- A[[j,k]] - A.ji%*%A[[i,k]]
+                    B[[j,k]] <- B[[j,k]] - A.ji%*%B[[i,k]]
+                }
+            }
+        }
+        B
+    }
+
 }
