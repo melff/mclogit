@@ -454,7 +454,13 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
     Phi <- lapply(Psi,safeInverse)
     
     ZWZiSigma <- ZWZ + iSigma
-    K <- solve(ZWZiSigma)
+    if(getOption("mclogit.use_blkinv", TRUE)) {
+        K <- blk_inv.squareBlockMatrix(ZWZiSigma)
+    }
+    else {
+        K <- solve(ZWZiSigma)
+    }
+
 
     log.det.iSigma <- Lambda2log.det.iSigma(Lambda,m)
     
@@ -558,7 +564,12 @@ PQLMQL_pseudoLogLik <- function(lambda,
     iSigma <- Psi2iSigma(Psi,m)
 
     H <- ZWZ + iSigma
-    K <- solve(H)
+    if(getOption("mclogit.use_blkinv", TRUE)) {
+        K <- blk_inv.squareBlockMatrix(H)
+    }
+    else {
+        K <- solve(H)
+    }
 
     XiVX <- XWX - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWX)))
     XiVy <- XWy - fuseMat(bMatCrsProd(ZWX,bMatProd(K,ZWy)))
