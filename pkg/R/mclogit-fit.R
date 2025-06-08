@@ -6,8 +6,7 @@ mclogit.fit <- function(
       dispersion=FALSE,
       start=NULL,
       offset=NULL,
-      control=mclogit.control(),
-      groups=NULL
+      control=mclogit.control()
       ){
 
     nvar <- ncol(X)
@@ -105,10 +104,7 @@ mclogit.fit <- function(
                                         "Fletcher",
                                         "Pearson",
                                         "Deviance"))
-        phi <- mclogit.dispersion(y,w,s,pi,coef,
-                                  method=odisp.method,
-                                  groups=groups
-                                  )
+        phi <- mclogit.dispersion(y,w,s,pi,coef,method=odisp.method)
     }
     else phi <- 1
 
@@ -132,8 +128,7 @@ mclogit.fit <- function(
         offset = offset,
         converged = converged,
         control=control,
-        information.matrix=XWX,
-        groups=groups
+        information.matrix=XWX
         ))
 }
 

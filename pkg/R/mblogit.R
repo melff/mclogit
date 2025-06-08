@@ -318,13 +318,13 @@ mblogit <- function(formula,
                                   "~",
                                   rep(colnames(X),each=ncol(D)))
 
-    if(!length(random))
+    if(!length(random)){
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
                            dispersion=dispersion,
                            control=control,
                            start=start,
-                           offset = offset,
-                           groups=groups)
+                           offset = offset)
+    }
     else { ## random effects
 
         if(!length(method)) method <- "PQL"
