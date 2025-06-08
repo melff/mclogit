@@ -184,7 +184,7 @@ mblogit <- function(formula,
         mf <- eval(mf, parent.frame())
         groups <- all.vars(groups)
         groups <- mf[groups]
-        if(length(groups) > 1) stop("Multiple groups not supported")
+        # if(length(groups) > 1) stop("Multiple groups not supported")
         check.names(control,
                     "epsilon","maxit",
                     "trace"
