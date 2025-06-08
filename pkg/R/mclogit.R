@@ -12,16 +12,18 @@ quickInteraction <- function(by){
       f <- f*l + y - 1
       uf <- unique(na.omit(f))
       f <- match(f,uf,NA)
-      uf <- seq(length(uf))
+      n <- length(uf)
+      uf <- seq.int(n)
     }
   }
   else {
     by <- as.numeric(by)
     uf <- unique(na.omit(by))
     f <- match(by,uf,NA)
-    uf <- seq(length(uf))
+    n <- length(uf)
+    uf <- seq.int(n)
   }
-  return(structure(f,unique=uf))
+  return(structure(f,unique=uf,n=n))
 }
 
 matConstInSets <- function(X,sets){
