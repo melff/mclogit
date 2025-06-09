@@ -218,8 +218,7 @@ mclogit <- function(
                        dispersion=dispersion,
                        control=control,
                        start = start,
-                       offset = offset,
-                       groups=groups)
+                       offset = offset)
     }
     else { ## random effects
         
