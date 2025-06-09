@@ -4,7 +4,7 @@ Title: Multinomial Logit Models, with or without Random Effects or Overdispersio
 Version: 0.9.10
 Date: 2025-06-08
 Author: Martin Elff
-Maintainer: Martin Elff <mclogit@elff.eu>
+Maintainer: Martin Elff <martin@elff.eu>
 Description: Provides estimators for multinomial logit models in their
     conditional logit and baseline logit variants, with or without random effects,
     with or without overdispersion. 
@@ -30,4 +30,4 @@ VignetteBuilder: knitr
 URL: http://melff.github.io/mclogit/,https://github.com/melff/mclogit/
 BugReports: https://github.com/melff/mclogit/issues
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
