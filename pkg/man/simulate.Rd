@@ -59,7 +59,7 @@ library(MASS)
 (house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, 
                           data = housing,
                           weights=Freq,
-                          from.table=TRUE))
+                          aggregate=TRUE))
 sm <- simulate(house.mblogit,nsim=7)
 
 housing.long <- housing[rep(seq.int(nrow(housing)),housing$Freq),]
