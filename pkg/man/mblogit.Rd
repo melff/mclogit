@@ -29,8 +29,9 @@ mblogit(
   estimator = c("ML", "REML"),
   dispersion = FALSE,
   start = NULL,
-  from.table = FALSE,
+  aggregate = !isFALSE(dispersion),
   groups = NULL,
+  from.table = FALSE,
   control = if (length(random)) mmclogit.control(...) else mclogit.control(...),
   ...
 )
@@ -99,18 +100,29 @@ should also have a "random.effects" attribute, which should have
 the same structure as the "random.effects" component of an object
 returned by \code{mblogit()}.}
 
-\item{from.table}{a logical value; do the data represent a contingency table,
-e.g. were created by applying \code{as.data.frame()} a the result of
-\code{table()} or \code{xtabs()}.  This relevant only if the response is
-a factor. This argument should be set to \code{TRUE} if the data do come
-from a contingency table. Correctly setting \code{from.table=TRUE} in
-this case, will lead to efficiency gains in computing, but more
-importantly overdispersion will correctly be computed if present.}
+\item{aggregate}{a logical value; whether to aggregate responses by
+covariate classes and groups before estimating the model
+if the response variable is a factor. 
+
+This will not affect the estimates, but the dispersion and the
+residual degrees of freedom. If \code{aggregate=TRUE}, the 
+dispersion will be relative to a saturated model; it will be much 
+smaller than with \code{aggregate=TRUE}. In particular, with only
+a single covariate and no grouping, the deviance will be close to
+zero. If \code{dispersion} is not \code{FALSE}, then the
+default value of \code{aggregate} will be \code{TRUE}. For details see
+\code{\link{dispersion}}.
+
+This argument has consequences only if the response in \code{formula}
+is a factor.}
 
 \item{groups}{an optional formula that specifies groups of observations
-relevant for the estimation of overdispersion. Covariates should be
-constant within groups, otherwise a warning is generated
-since the overdispersion estimate may be imprecise.}
+relevant for the estimation of overdispersion. For details see
+\code{\link{dispersion}}.}
+
+\item{from.table}{a logical value; should be FALSE. This argument
+only exists for the sake of compatibility and will be removed
+in the next relase.}
 
 \item{control}{a list of parameters for the fitting process.  See
 \code{\link{mclogit.control}}}
