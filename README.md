@@ -4,7 +4,6 @@
 [![CRAN](http://www.r-pkg.org/badges/version/mclogit)](http://cran.rstudio.com/package=mclogit)
 [![Total downloads from RStudio CRAN mirror](http://cranlogs.r-pkg.org/badges/grand-total/mclogit)](http://cran.r-project.org/web/packages/mclogit/index.html)
 [![Current release on GitHub](http://img.shields.io/github/release/melff/mclogit.svg)](http://github.com/melff/mclogit/releases/)
-[![Build Status](https://travis-ci.org/melff/mclogit.svg?branch=master)](https://travis-ci.org/melff/mclogit) 
 
 <!-- [![Build status](https://ci.appveyor.com/api/projects/status/289k656f3jsbotd2?svg=true)](https://ci.appveyor.com/project/melff/mclogit) one CI service is enough -->
 
