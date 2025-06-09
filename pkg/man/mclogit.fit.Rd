@@ -12,8 +12,7 @@
 mclogit.fit(y, s, w, X,
             dispersion=FALSE,
             start = NULL, offset = NULL,
-            control = mclogit.control(),
-            groups=NULL)
+            control = mclogit.control())
 
 mmclogit.fitPQLMQL(y, s, w, X, Z, d, 
                    start = NULL,
@@ -30,8 +29,6 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, d,
   \item{X}{a model matrix; required.}
   \item{dispersion}{a logical value or a character string; whether and how
      a dispersion parameter should be estimated. For details see \code{\link{dispersion}}.}
-  \item{groups}{a vector that identifies the groups relevant 
-     for the estimation of the dispersion parameter.}
   \item{Z}{the random effects design matrix.}
   \item{d}{dimension of random effects. Typically $d=1$ for random intercepts
   only, $d>1$ for models with random intercepts.}
