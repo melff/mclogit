@@ -51,17 +51,27 @@
 #'     should also have a "random.effects" attribute, which should have
 #'     the same structure as the "random.effects" component of an object
 #'     returned by \code{mblogit()}.
-#' @param from.table a logical value; do the data represent a contingency table,
-#'     e.g. were created by applying \code{as.data.frame()} a the result of
-#'     \code{table()} or \code{xtabs()}.  This relevant only if the response is
-#'     a factor. This argument should be set to \code{TRUE} if the data do come
-#'     from a contingency table. Correctly setting \code{from.table=TRUE} in
-#'     this case, will lead to efficiency gains in computing, but more
-#'     importantly overdispersion will correctly be computed if present.
+#' @param aggregate a logical value; whether to aggregate responses by
+#'     covariate classes and groups before estimating the model
+#'     if the response variable is a factor. 
+#'     
+#'     This will not affect the estimates, but the dispersion and the
+#'     residual degrees of freedom. If \code{aggregate=TRUE}, the 
+#'     dispersion will be relative to a saturated model; it will be much 
+#'     smaller than with \code{aggregate=TRUE}. In particular, with only
+#'     a single covariate and no grouping, the deviance will be close to
+#'     zero. If \code{dispersion} is not \code{FALSE}, then the
+#'     default value of \code{aggregate} will be \code{TRUE}. For details see
+#'     \code{\link{dispersion}}.
+#'     
+#'     This argument has consequences only if the response in \code{formula}
+#'     is a factor.
 #' @param groups an optional formula that specifies groups of observations
-#'     relevant for the estimation of overdispersion. Covariates should be
-#'     constant within groups, otherwise a warning is generated
-#'     since the overdispersion estimate may be imprecise.
+#'     relevant for the estimation of overdispersion. For details see
+#'     \code{\link{dispersion}}.
+#' @param from.table a logical value; should be FALSE. This argument
+#'     only exists for the sake of compatibility and will be removed
+#'     in the next relase.
 #' @param control a list of parameters for the fitting process.  See
 #'     \code{\link{mclogit.control}}
 #' @param \dots arguments to be passed to \code{mclogit.control} or
@@ -116,15 +126,26 @@ mblogit <- function(formula,
                     estimator=c("ML","REML"),
                     dispersion = FALSE,
                     start = NULL,
-                    from.table = FALSE,
+                    aggregate = !isFALSE(dispersion),
                     groups = NULL,
+                    from.table = FALSE,
                     control=if(length(random))
                                 mmclogit.control(...)
                             else mclogit.control(...),
                     ...){
-    
+
     call <- match.call(expand.dots = TRUE)
     
+    if(!missing(from.table)) {
+        warning("Argument 'from.table' is inconsequential since mclogit 0.9.10. Use 'aggregate=TRUE' instead.")
+    }
+    if(!aggregate) {
+        if(!isFALSE(dispersion)) 
+            warning("Cannot compute dispersion unless aggregate=TRUE")
+        if(length(groups))
+            warning("Argument 'groups' is inconsequential unless aggregate=TRUE")
+    }
+
     if(missing(data)) data <- environment(formula)
     else if(is.table(data)){
         from.table <- TRUE
@@ -216,48 +237,32 @@ mblogit <- function(formula,
 
     if(is.factor(Y)){
         response.type <- "factor"
-        n.categs <- nlevels(Y)
-        n.obs <- length(Y)
-        if(from.table){
-            # Create an appropriate response matrix if data
-            # come from a table of frequencies
+        if(aggregate && !length(random)) {
+            n.categs <- nlevels(Y)
+            n.obs <- length(Y)
+            
+            D <- structure(diag(n.categs),
+                        dimnames=rep(list(levels(Y)),2))[,-1, drop=FALSE]
             tmf <- terms(mf)
             respix <- attr(tmf,"response")
             vars <- as.character(attr(tmf,"variables")[-1])
             respname <- vars[respix]
-            respix <- match(respname,names(mf))
+            respix <- match(respname,names(mf),nomatch=0L)
         
-            wghix <- match("(weights)",names(mf))
+            wghix <- match("(weights)",names(mf),nomatch=0L)
             mf1 <- mf[-c(respix,wghix)]
 
-            umf1 <- !duplicated(mf1)
-            i <- cumsum(umf1)
-            j <- as.integer(Y)
-            attr(mf,"ij") <- cbind(i,j)
-            attr(mf,"j==1") <- umf1
+            strata <- quickInteraction(mf1)
             
-            levs <- levels(Y)
-            m <- nlevels(Y)
-            n <- i[length(i)]
-
-            Y <- matrix(0,nrow=n,ncol=m)
-            Y[cbind(i,j)] <- prior.weights
-            w <- rowSums(Y)
-            Y <- Y/w
-            if(any(w==0)){
-                Y[w==0,] <- 0
-                N <- sum(weights[w>0])
-                warning(sprintf("ignoring %d observerations with counts that sum to zero",
-                                sum(w==0)),
-                        call. = FALSE, immediate. = TRUE)
-            }
-            Y <- as.vector(t(Y))
-            weights <- rep(w,each=m)
-            D <- diag(m)[,-1, drop=FALSE]
-            dimnames(D) <- list(levs,levs[-1])
-            X <- X[umf1,,drop=FALSE]
-        }
-        else {
+            weights.tab <- rowsum(weights,
+                                quickInteraction(list(Y,strata)))
+            dim(weights.tab) <- c(n.categs,attr(strata,"n"))
+            w <- colSums(weights.tab)
+            weights <- rep(w,each=n.categs)
+            Y <- as.vector(weights.tab/weights)
+            keep <- !duplicated(strata)
+            X <- X[keep,,drop=FALSE]
+        } else {
             weights <- rep(weights,each=nlevels(Y))
             D <- diag(nlevels(Y))[,-1, drop=FALSE]
             dimnames(D) <- list(levels(Y),levels(Y)[-1])
@@ -515,7 +520,7 @@ mblogit <- function(formula,
                       D=D,
                       N=N,
                       response.type=response.type,
-                      from.table=from.table))
+                      aggregated = aggregate))
 
     if(length(random)){
         class(fit) <- c("mmblogit","mblogit","mmclogit","mclogit","lm")
@@ -924,7 +929,7 @@ simulate.mblogit <- function(object, nsim = 1, seed = NULL, ...){
     if(object$phi > 1)
         stop("Simulating responses from models with oversdispersion is not supported yet")
 
-    if(object$response.type=="matrix" || object$from.table){
+    if(object$response.type=="matrix" || object$aggregated){
         yy <- NextMethod()
         seed_attr <- attr(yy,"seed")
         nm <- nrow(yy)
@@ -1078,8 +1083,8 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
             d <- unlist(d)
             ZD <- blockMatrix(ZD,ncol=length(ZD))
         } else if(catCov =="single"){
+            n.obs <- nrow(X)
             cc <- rep(1:n.categs,n.obs)
-            stopifnot(length(Y)==length(cc))
             d <- sapply(Z,ncol)
 
             nn <- length(Z)
