@@ -9,7 +9,7 @@ and multinomial count responses with fixed alternatives."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,8 +77,9 @@ and multinomial count responses with fixed alternatives.</p>
 <span>  estimator <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"ML"</span>, <span class="st">"REML"</span><span class="op">)</span>,</span>
 <span>  dispersion <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  start <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  from.table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  aggregate <span class="op">=</span> <span class="op">!</span><span class="fu"><a href="https://rdrr.io/r/base/Logic.html" class="external-link">isFALSE</a></span><span class="op">(</span><span class="va">dispersion</span><span class="op">)</span>,</span>
 <span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  from.table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  control <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">random</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="mclogit_control.html">mmclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="kw">else</span> <span class="fu"><a href="mclogit_control.html">mclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -181,21 +182,32 @@ the same structure as the "random.effects" component of an object
 returned by <code>mblogit()</code>.</p></dd>
 
 
-<dt id="arg-from-table">from.table<a class="anchor" aria-label="anchor" href="#arg-from-table"></a></dt>
-<dd><p>a logical value; do the data represent a contingency table,
-e.g. were created by applying <code><a href="https://rdrr.io/r/base/as.data.frame.html" class="external-link">as.data.frame()</a></code> a the result of
-<code><a href="https://rdrr.io/r/base/table.html" class="external-link">table()</a></code> or <code><a href="https://rdrr.io/r/stats/xtabs.html" class="external-link">xtabs()</a></code>.  This relevant only if the response is
-a factor. This argument should be set to <code>TRUE</code> if the data do come
-from a contingency table. Correctly setting <code>from.table=TRUE</code> in
-this case, will lead to efficiency gains in computing, but more
-importantly overdispersion will correctly be computed if present.</p></dd>
+<dt id="arg-aggregate">aggregate<a class="anchor" aria-label="anchor" href="#arg-aggregate"></a></dt>
+<dd><p>a logical value; whether to aggregate responses by
+covariate classes and groups before estimating the model
+if the response variable is a factor.</p>
+<p>This will not affect the estimates, but the dispersion and the
+residual degrees of freedom. If <code>aggregate=TRUE</code>, the
+dispersion will be relative to a saturated model; it will be much
+smaller than with <code>aggregate=TRUE</code>. In particular, with only
+a single covariate and no grouping, the deviance will be close to
+zero. If <code>dispersion</code> is not <code>FALSE</code>, then the
+default value of <code>aggregate</code> will be <code>TRUE</code>. For details see
+<code><a href="dispersion.html">dispersion</a></code>.</p>
+<p>This argument has consequences only if the response in <code>formula</code>
+is a factor.</p></dd>
 
 
 <dt id="arg-groups">groups<a class="anchor" aria-label="anchor" href="#arg-groups"></a></dt>
 <dd><p>an optional formula that specifies groups of observations
-relevant for the estimation of overdispersion. Covariates should be
-constant within groups, otherwise a warning is generated
-since the overdispersion estimate may be imprecise.</p></dd>
+relevant for the estimation of overdispersion. For details see
+<code><a href="dispersion.html">dispersion</a></code>.</p></dd>
+
+
+<dt id="arg-from-table">from.table<a class="anchor" aria-label="anchor" href="#arg-from-table"></a></dt>
+<dd><p>a logical value; should be FALSE. This argument
+only exists for the sake of compatibility and will be removed
+in the next relase.</p></dd>
 
 
 <dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
@@ -405,7 +417,7 @@ since the overdispersion estimate may be imprecise.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>

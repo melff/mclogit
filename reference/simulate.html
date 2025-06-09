@@ -11,7 +11,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.9</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.10</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,7 +126,7 @@
 <span class="r-in"><span><span class="op">(</span><span class="va">house.mblogit</span> <span class="op">&lt;-</span> <span class="fu"><a href="mblogit.html">mblogit</a></span><span class="op">(</span><span class="va">Sat</span> <span class="op">~</span> <span class="va">Infl</span> <span class="op">+</span> <span class="va">Type</span> <span class="op">+</span> <span class="va">Cont</span>, </span></span>
 <span class="r-in"><span>                          data <span class="op">=</span> <span class="va">housing</span>,</span></span>
 <span class="r-in"><span>                          weights<span class="op">=</span><span class="va">Freq</span>,</span></span>
-<span class="r-in"><span>                          from.table<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>                          aggregate<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - deviance = 38.84842 - criterion = 0.992521</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721</span>
@@ -135,7 +135,7 @@
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     from.table = TRUE)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     aggregate = TRUE)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             Predictors</span>
@@ -216,14 +216,14 @@
 <span class="r-in"><span><span class="va">smm</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/simulate.html" class="external-link">simulate</a></span><span class="op">(</span><span class="va">housem.mblogit</span>,nsim<span class="op">=</span><span class="fl">7</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	72 obs. of  7 variables:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_1: int  30 19 21 24 24 44 10 9 38 55 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_2: int  33 19 18 23 18 51 7 6 44 54 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_3: int  31 16 23 25 26 41 7 13 37 46 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_4: int  28 14 28 22 32 38 4 7 46 56 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_5: int  32 22 16 27 17 48 8 11 38 58 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_6: int  28 23 19 33 18 41 9 13 35 57 ...</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_7: int  23 18 29 17 24 51 5 11 41 59 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	0 obs. of  7 variables:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_1: int </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_2: int </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_3: int </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_4: int </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_5: int </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_6: int </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ sim_7: int </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  - attr(*, "seed")= int [1:626] 10403 205 1980538363 -125047968 -820381145 -1073960099 -33499050 1164085917 1218464490 -1045685882 ...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="va">sml</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 'data.frame':	1681 obs. of  7 variables:</span>
@@ -286,7 +286,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer></div>
