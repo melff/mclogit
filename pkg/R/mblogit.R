@@ -1002,7 +1002,8 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                              conditional=TRUE, ...){
     
     type <- match.arg(type)
-    rhs <- object$formula[-2]
+    mt <- terms(object)
+    rhs <- delete.response(mt)
     random <- object$random  
     if(missing(newdata)){
         mf <- object$model
