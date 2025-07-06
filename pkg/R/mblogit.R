@@ -21,7 +21,8 @@
 #'     used in the fitting process.
 #' @param weights an optional vector of weights to be used in the fitting
 #'     process.  Should be \code{NULL} or a numeric vector.
-#' @param offset an optional model offset.
+#' @param offset an optional model offset. If not NULL, must be a matrix
+#'     if as many columns as the response has categories or one less.
 #' @param na.action a function which indicates what should happen when the data
 #'     contain \code{NA}s.  The default is set by the \code{na.action} setting
 #'     of \code{\link{options}}, and is \code{\link{na.fail}} if that is unset.
@@ -154,7 +155,11 @@ mblogit <- function(formula,
     else 
         data <- as.data.frame(data)
     mf <- match.call(expand.dots = FALSE)
-    m <- match(c("formula", "data", "subset", "weights", "offset", "na.action"), names(mf), 0)
+    m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
+    if("offset" %in% names(mf)) {
+        # browser()
+        offset <- eval(mf$offset,data,parent.frame())
+    }
     mf <- mf[c(1, m)]
     mf$drop.unused.levels <- TRUE
     mf[[1]] <- as.name("model.frame")
@@ -221,7 +226,6 @@ mblogit <- function(formula,
     
     na.action <- attr(mf,"na.action")
     weights <- as.vector(model.weights(mf))
-    offset <- as.vector(model.offset(mf))
     if(!is.null(weights) && !is.numeric(weights))
         stop("'weights' must be a numeric vector")
     
@@ -235,12 +239,35 @@ mblogit <- function(formula,
     N <- sum(weights)
     prior.weights <- weights
 
+    if(is.factor(Y)) {
+        n.categs <- nlevels(Y)
+        n.obs <- length(Y)
+    } else if(is.matrix(Y)) {
+        n.categs <- ncol(Y)
+        n.obs <- nrow(Y)
+    } else {
+        stop("Response must be either a factor or a matrix of counts")
+    }
+    if(length(offset)) {
+        if(!is.matrix(offset)) {
+            if(length(offset) != n.obs) stop("'offset' has wrong length")
+            offset <- matrix(offset,ncol=n.categs-1) 
+            offset <- cbind(0, offset)
+        } else {
+            if(nrow(offset) != n.obs) 
+                stop("'offset' has wrong number of rows")
+            if(ncol(offset) != n.categs) {
+                if(ncol(offset) != n.categs - 1)
+                    stop(sprintf("'offset' must either have %d or %d columns",
+                                n.categs-1, n.categs))
+                offset <- cbind(0, offset)
+            }
+        }
+    }
+
     if(is.factor(Y)){
         response.type <- "factor"
         if(aggregate && !length(random)) {
-            n.categs <- nlevels(Y)
-            n.obs <- length(Y)
-            
             D <- structure(diag(n.categs),
                         dimnames=rep(list(levels(Y)),2))[,-1, drop=FALSE]
             tmf <- terms(mf)
@@ -262,6 +289,8 @@ mblogit <- function(formula,
             Y <- as.vector(weights.tab/weights)
             keep <- !duplicated(strata)
             X <- X[keep,,drop=FALSE]
+            if(is.matrix(offset))
+                offset <- offset[keep,,drop=FALSE]
         } else {
             weights <- rep(weights,each=nlevels(Y))
             D <- diag(nlevels(Y))[,-1, drop=FALSE]
@@ -274,7 +303,7 @@ mblogit <- function(formula,
         response.type <- "matrix"
         n.categs <- ncol(Y)
         n.obs <- nrow(Y)
-        
+
         D <- diag(ncol(Y))[,-1, drop=FALSE]
         if(length(colnames(Y))){
             rownames(D) <- colnames(Y)
@@ -322,6 +351,9 @@ mblogit <- function(formula,
     colnames(XD) <- paste0(rep(colnames(D),ncol(X)),
                                   "~",
                                   rep(colnames(X),each=ncol(D)))
+
+    if(is.matrix(offset))
+        offset <- as.vector(t(offset))
 
     if(!length(random)){
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
