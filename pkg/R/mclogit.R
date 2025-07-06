@@ -530,6 +530,7 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
         m <- model.frame(fo,data=object$data)
         set <- m[[1]][,2]
         na.act <- object$na.action
+        offset <- object$offset
     }
     else{
         lhs <- lhs[[3]]
@@ -537,6 +538,16 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
         m <- model.frame(fo,data=newdata)
         set <- m[[1]]
         na.act <- attr(m,"na.action")
+        offset <- model.offset(m)
+        offset_in_call <- object$call$offset
+        if(!is.null(offset_in_call)){
+            offset_in_call <- eval(offset_in_call,newdata,
+                                   environment(terms(object)))
+            if(length(offset))
+                offset <- offset + offset_in_call
+            else
+                offset <- offset_in_call
+        }
     }
     X <- model.matrix(rhs,m,
                       contasts.arg=object$contrasts,
@@ -547,6 +558,8 @@ predict.mclogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
     X <- X[,names(cf), drop=FALSE]
     
     eta <- c(X %*% cf)
+    if(!is.null(offset)) eta <- eta + offset
+
     if(se.fit){
         V <- vcov(object)
         stopifnot(ncol(X)==ncol(V))
