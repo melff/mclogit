@@ -157,7 +157,6 @@ mblogit <- function(formula,
     mf <- match.call(expand.dots = FALSE)
     m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
     if("offset" %in% names(mf)) {
-        # browser()
         offset <- eval(mf$offset,data,environment(formula))
     }
     mf <- mf[c(1, m)]
@@ -352,8 +351,12 @@ mblogit <- function(formula,
                                   "~",
                                   rep(colnames(X),each=ncol(D)))
 
-    if(is.matrix(offset))
+    if(is.matrix(offset)){
+        Offset <- offset
         offset <- as.vector(t(offset))
+    } else {
+        Offset <- NULL
+    }
 
     if(!length(random)){
         fit <- mclogit.fit(y=Y,s=s,w=weights,X=XD,
@@ -520,13 +523,13 @@ mblogit <- function(formula,
             dimnames(fit$VarCov[[k]]) <- list(VarCov.names[[k]],VarCov.names[[k]])
         names(fit$VarCov) <- names(groups)
     }
-    
+    fit$offset <- Offset
+
     coefficients <- fit$coefficients
     coefmat <- matrix(coefficients,nrow=ncol(D),
                       dimnames=list("Logit eqn."=colnames(D),
                                     "Predictors"=colnames(X)
                                     ))
-    
     
     fit$coefmat <- coefmat
     fit$coefficients <- coefficients
@@ -691,10 +694,21 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
   if(missing(newdata)){
     m <- object$model
     na.act <- object$na.action
+    offset <- object$offset
   }
   else{
     m <- model.frame(rhs,data=newdata,na.action=na.exclude)
     na.act <- attr(m,"na.action")
+    offset <- model.offset(m)
+    offset_in_call <- object$call$offset
+    if(!is.null(offset_in_call)){
+        offset_in_call <- eval(offset_in_call,newdata,
+                               environment(terms(object)))
+        if(length(offset))
+            offset <- offset + offset_in_call
+        else
+            offset <- offset_in_call
+    }
   }
   X <- model.matrix(rhs,m,
                     contrasts.arg=object$contrasts,
@@ -702,14 +716,35 @@ predict.mblogit <- function(object, newdata=NULL,type=c("link","response"),se.fi
   )
   rn <- rownames(X)
   D <- object$D
+  n.obs <- nrow(X)
+  n.categs <- nrow(D)
   XD <- X%x%D
+  eta <- c(XD %*% coef(object))
+  
+  if(length(offset)) {
+      if(!is.matrix(offset)) {
+          if(length(offset) != n.obs) stop("'offset' has wrong length")
+          offset <- matrix(offset,ncol=n.categs-1) 
+          offset <- cbind(0, offset)
+      } else {
+          if(nrow(offset) != n.obs) 
+              stop("'offset' has wrong number of rows")
+          if(ncol(offset) != n.categs) {
+              if(ncol(offset) != n.categs - 1)
+                  stop(sprintf("'offset' must either have %d or %d columns",
+                              n.categs-1, n.categs))
+              offset <- cbind(0, offset)
+          }
+      }
+      offset <- as.vector(t(offset))
+      eta <- eta + offset
+  }
+
   rspmat <- function(x){
     y <- t(matrix(x,nrow=nrow(D)))
     colnames(y) <- rownames(D)
     y
   }
-  
-  eta <- c(XD %*% coef(object))
   eta <- rspmat(eta)
   rownames(eta) <- rn
   if(se.fit){
