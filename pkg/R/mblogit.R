@@ -158,7 +158,7 @@ mblogit <- function(formula,
     m <- match(c("formula", "data", "subset", "weights", "na.action"), names(mf), 0)
     if("offset" %in% names(mf)) {
         # browser()
-        offset <- eval(mf$offset,data,parent.frame())
+        offset <- eval(mf$offset,data,environment(formula))
     }
     mf <- mf[c(1, m)]
     mf$drop.unused.levels <- TRUE
