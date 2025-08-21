@@ -55,7 +55,7 @@ bMatProd <- function(x,y){
     res <- blockMatrix(nrow=m,ncol=n)
     for(i in 1:m)
         for(j in 1:n){
-            res[[i,j]] <- inner_p(x[i,],y[,j])
+            res[[i,j]] <- inner_p(x[i,,drop=FALSE],y[,j,drop=FALSE])
         }
     res
 }
@@ -74,7 +74,7 @@ bMatCrsProd <- function(x,y=NULL){
     res <- blockMatrix(nrow=m,ncol=n)
     for(i in 1:m)
         for(j in 1:n){
-            res[[i,j]] <- inner_crsp(x[,i],y[,j])
+            res[[i,j]] <- inner_crsp(x[,i,drop=FALSE],y[,j,drop=FALSE])
         }
     res
 }
@@ -93,7 +93,7 @@ bMatTCrsProd <- function(x,y=NULL){
     res <- blockMatrix(nrow=m,ncol=n)
     for(i in 1:m)
         for(j in 1:n){
-            res[[i,j]] <- inner_tcrsp(x[i,],y[j,])
+            res[[i,j]] <- inner_tcrsp(x[i,,drop=FALSE],y[j,,drop=FALSE])
         }
     res
 }
@@ -104,7 +104,7 @@ bMatTrns <- function(x){
     res <- blockMatrix(nrow=n,ncol=m)
     for(i in 1:n)
         for(j in 1:m){
-            res[[i,j]] <- t(x[[j,i]])
+            res[[i,j]] <- t(x[[j,i,drop=FALSE]])
         }
     res
 }
@@ -163,7 +163,7 @@ to_bM <- function(x,nnrow,nncol){
     y <- blockMatrix(nrow=m,ncol=n)
     for(i in 1:m)
         for(j in 1:n)
-            y[i,j] <- list(Matrix(x[rows[[i]],cols[[j]]]))
+            y[i,j] <- list(Matrix(x[rows[[i]],cols[[j]],drop=FALSE]))
     return(y)
 }
 
@@ -308,10 +308,10 @@ blk_inv.squareBlockMatrix <- function(A){
         # Gauss-Jordan Phase 1
         for(i in seq.int(from=1,to=n-1)) {
             for(j in seq.int(from=i+1,to=n)){
-                C.ji <- A[[j,i]]%*%solve(A[[i,i]])
+                C.ji <- A[[j,i,drop=FALSE]]%*%solve(A[[i,i,drop=FALSE]])
                 for(k in 1:n) {
-                    A[[j,k]] <- A[[j,k]] - C.ji%*%A[[i,k]]
-                    B[[j,k]] <- B[[j,k]] - C.ji%*%B[[i,k]]
+                    A[[j,k]] <- A[[j,k,drop=FALSE]] - C.ji%*%A[[i,k,drop=FALSE]]
+                    B[[j,k]] <- B[[j,k,drop=FALSE]] - C.ji%*%B[[i,k,drop=FALSE]]
                 }
             }
         }
@@ -319,17 +319,17 @@ blk_inv.squareBlockMatrix <- function(A){
         for(i in 1:n) {
             A_ii <- solve(A[[i,i]])
             for(j in 1:n) {
-                A[[i,j]] <- A_ii %*% A[[i,j]]
-                B[[i,j]] <- A_ii %*% B[[i,j]]
+                A[[i,j]] <- A_ii %*% A[[i,j,drop=FALSE]]
+                B[[i,j]] <- A_ii %*% B[[i,j,drop=FALSE]]
             }
         }
         # Phase 3
         for(i in seq.int(from=n,to=2)) {
             for(j in seq.int(from=1,to=i-1)){
-                A.ji <- A[[j,i]]
+                A.ji <- A[[j,i,drop=FALSE]]
                 for(k in 1:n) {
-                    A[[j,k]] <- A[[j,k]] - A.ji%*%A[[i,k]]
-                    B[[j,k]] <- B[[j,k]] - A.ji%*%B[[i,k]]
+                    A[[j,k]] <- A[[j,k,drop=FALSE]] - A.ji%*%A[[i,k,drop=FALSE]]
+                    B[[j,k]] <- B[[j,k,drop=FALSE]] - A.ji%*%B[[i,k,drop=FALSE]]
                 }
             }
         }
