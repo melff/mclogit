@@ -1099,7 +1099,6 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
     eta <- c(XD %*% coef(object))
 
     if(object$method=="PQL" && conditional){
-
         rf <- lapply(random,"[[","formula")
         rt <- lapply(rf,terms)
         suppressWarnings(Z <- lapply(rt,model.matrix,rmf,
@@ -1124,7 +1123,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
 
             randstruct <- lapply(1:nn,function(k){
                 group.labels <- random[[k]]$groups
-                groups <- mf[group.labels]
+                groups <- rmf[group.labels]
                 groups <- lapply(groups,as.factor)
                 nlev <- length(groups)
                 if(nlev > 1){
