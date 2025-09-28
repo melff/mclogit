@@ -1,6 +1,6 @@
 Package: mclogit
 Type: Package
-Title: Multinomial Logit Models, with or without Random Effects or Overdispersion
+Title: Multinomial Logit Models for Polychotogomous Responses and Discrete Choices
 Version: 0.9.14
 Date: 2025-09-28
 Authors@R: person(given = "Martin",
@@ -9,8 +9,9 @@ Authors@R: person(given = "Martin",
                     email = "martin@elff.eu")
 Maintainer: Martin Elff <martin@elff.eu>
 Description: Provides estimators for multinomial logit models in their
-    conditional logit and baseline logit variants, with or without random effects,
-    with or without overdispersion. 
+    conditional logit (for discrete choices) and 
+    baseline logit variants (for polychotomous responses), optionally with
+    overdispersion or random effects. 
     Random effects models are estimated using the PQL technique (based on a Laplace approximation)
     or the MQL technique (based on a Solomon-Cox approximation). Estimates should be treated
     with caution if the group sizes are small.
