@@ -146,8 +146,6 @@ mclogit.control <- function(
     list(epsilon = epsilon, maxit = maxit, trace = trace)
 }
 
-log.Det <- function(x) determinant(x,logarithm=TRUE)$modulus
-
 mclogitP <- function(eta,s){
   expeta <- exp(eta)
   sum.expeta <- rowsum(expeta,s)

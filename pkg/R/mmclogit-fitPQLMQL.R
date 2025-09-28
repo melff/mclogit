@@ -539,6 +539,9 @@ PQLMQL_eval_parms <- function(parms,model.struct,method,estimator){
     )
 }
 
+log_Det <- function(x) determinant(x,logarithm=TRUE)$modulus
+
+
 PQLMQL_pseudoLogLik <- function(lambda,
                                 model.struct,
                                 estimator,
@@ -585,7 +588,7 @@ PQLMQL_pseudoLogLik <- function(lambda,
     log.det.H <- 2*sum(log(diag(chol_blockMatrix(H,resplit=FALSE))))
     logLik <- (log.det.iSigma - log.det.H - y.aXiVXa.y)/2
     if(estimator == "REML"){
-        log.det.XiVX <- log.Det(XiVX)
+        log.det.XiVX <- log_Det(XiVX)
         logLik <- logLik - log.det.XiVX/2
     }
     res <- list(
