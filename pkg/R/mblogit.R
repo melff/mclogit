@@ -127,7 +127,7 @@ mblogit <- function(formula,
                     estimator=c("ML","REML"),
                     dispersion = FALSE,
                     start = NULL,
-                    aggregate = !isFALSE(dispersion),
+                    aggregate = FALSE,
                     groups = NULL,
                     from.table = FALSE,
                     control=if(length(random))
@@ -138,11 +138,18 @@ mblogit <- function(formula,
     call <- match.call(expand.dots = TRUE)
     
     if(!missing(from.table)) {
-        warning("Argument 'from.table' is inconsequential since mclogit 0.9.10. Use 'aggregate=TRUE' instead.")
+        warning("Argument 'from.table' is deprecated. Use 'aggregate=TRUE' instead.")
+        if(missing(aggregate))
+            aggregate <- from.table
     }
+    if(!isFALSE(dispersion)) {
+        if(!aggregate) {
+            warning("Cannot compute dispersion unless aggregate=TRUE") 
+            dispersion <- FALSE
+        }
+    }
+
     if(!aggregate) {
-        if(!isFALSE(dispersion)) 
-            warning("Cannot compute dispersion unless aggregate=TRUE")
         if(length(groups))
             warning("Argument 'groups' is inconsequential unless aggregate=TRUE")
     }
@@ -267,29 +274,33 @@ mblogit <- function(formula,
     if(is.factor(Y)){
         response.type <- "factor"
         if(aggregate && !length(random)) {
-            D <- structure(diag(n.categs),
-                        dimnames=rep(list(levels(Y)),2))[,-1, drop=FALSE]
-            tmf <- terms(mf)
-            respix <- attr(tmf,"response")
-            vars <- as.character(attr(tmf,"variables")[-1])
-            respname <- vars[respix]
-            respix <- match(respname,names(mf),nomatch=0L)
-        
-            wghix <- match("(weights)",names(mf),nomatch=0L)
-            mf1 <- mf[-c(respix,wghix)]
-
-            strata <- quickInteraction(mf1)
+            if(!length(random)) {
+                D <- structure(diag(n.categs),
+                            dimnames=rep(list(levels(Y)),2))[,-1, drop=FALSE]
+                tmf <- terms(mf)
+                respix <- attr(tmf,"response")
+                vars <- as.character(attr(tmf,"variables")[-1])
+                respname <- vars[respix]
+                respix <- match(respname,names(mf),nomatch=0L)
             
-            weights.tab <- rowsum(weights,
-                                quickInteraction(list(Y,strata)))
-            dim(weights.tab) <- c(n.categs,attr(strata,"n"))
-            w <- colSums(weights.tab)
-            weights <- rep(w,each=n.categs)
-            Y <- as.vector(weights.tab/weights)
-            keep <- !duplicated(strata)
-            X <- X[keep,,drop=FALSE]
-            if(is.matrix(offset))
-                offset <- offset[keep,,drop=FALSE]
+                wghix <- match("(weights)",names(mf),nomatch=0L)
+                mf1 <- mf[-c(respix,wghix)]
+
+                strata <- quickInteraction(mf1)
+                
+                weights.tab <- rowsum(weights,
+                                    quickInteraction(list(Y,strata)))
+                dim(weights.tab) <- c(n.categs,attr(strata,"n"))
+                w <- colSums(weights.tab)
+                weights <- rep(w,each=n.categs)
+                Y <- as.vector(weights.tab/weights)
+                keep <- !duplicated(strata)
+                X <- X[keep,,drop=FALSE]
+                if(is.matrix(offset))
+                    offset <- offset[keep,,drop=FALSE]
+            } else {
+                stop("'aggregate' is not yet supported with random effects")
+            }
         } else {
             weights <- rep(weights,each=nlevels(Y))
             D <- diag(nlevels(Y))[,-1, drop=FALSE]
