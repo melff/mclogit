@@ -330,7 +330,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
                            )
         if(res.port$convergence != 0){
             cat("\n")
-            warning(sprintf("Possible non-convergence of inner iterations - nlminb message: %s",res.port$message),
+            warning(sprintf("Inner iterations did not coverge - nlminb message: %s",res.port$message),
                     call.=FALSE,immediate.=TRUE)
         }
         
@@ -455,7 +455,6 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
     
     ZWZiSigma <- ZWZ + iSigma
     K <- solve(ZWZiSigma)
-    }
 
 
     log.det.iSigma <- Lambda2log.det.iSigma(Lambda,m)
