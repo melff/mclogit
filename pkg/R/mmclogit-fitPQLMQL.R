@@ -454,11 +454,7 @@ PQLMQL_innerFit <- function(parms,aux,model.struct,method,estimator,control){
     Phi <- lapply(Psi,safeInverse)
     
     ZWZiSigma <- ZWZ + iSigma
-    if(getOption("mclogit.use_blkinv", TRUE)) {
-        K <- blk_inv.squareBlockMatrix(ZWZiSigma)
-    }
-    else {
-        K <- solve(ZWZiSigma)
+    K <- solve(ZWZiSigma)
     }
 
 
