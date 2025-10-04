@@ -95,7 +95,7 @@ dispersion(house.mblogit.o.0)
 anova(house.mblogit.o.0,
       house.mblogit.odsp)
 
-# These complications with the deviances do not arrise if no aggregation is 
+# These complications with the deviances do not arise if no aggregation is 
 # requested:
 house.mblogit.0 <- mblogit(Sat ~ Infl, 
                            weights = Freq,
