@@ -562,7 +562,8 @@ mblogit <- function(formula,
                       D=D,
                       N=N,
                       response.type=response.type,
-                      aggregated = aggregate))
+                      aggregated = aggregate,
+                      catCov = catCov))
 
     if(length(random)){
         class(fit) <- c("mmblogit","mblogit","mmclogit","mclogit","lm")
@@ -1112,7 +1113,7 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                                      contrasts.arg=object$contrasts,
                                      xlev=object$xlevels))
         
-        catCov <- eval(substitute(object$call$catCov))
+        catCov <- object$catCov
         if(!length(catCov)) catCov <- "free"
         n.categs <- nrow(D)
 
