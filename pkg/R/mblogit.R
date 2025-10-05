@@ -1116,6 +1116,9 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
         if(!length(catCov)) catCov <- "free"
         n.categs <- nrow(D)
 
+        orig.groups <- object$groups
+        olevels <- lapply(orig.groups,levels)
+
         if(catCov == "free"){
             ZD <- lapply(Z,`%x%`,D)
             d <- sapply(ZD,ncol)
@@ -1140,6 +1143,8 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                     }
                 }
                 groups <- lapply(groups,rep,each=nrow(D))
+                olevels <- olevels[group.labels]
+                groups <- Map(factor,x=groups,levels=olevels)
                 
                 VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
                 ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
@@ -1180,6 +1185,9 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                         group.labels[i] <- paste(group.labels[i-1],group.labels[i],sep=":")
                     }
                 }
+                groups <- lapply(groups,rep,each=nrow(D))
+                olevels <- olevels[group.labels]
+                groups <- Map(factor,x=groups,levels=olevels)
                 
                 VarCov.names.k <- rep(list(colnames(Z[[k]])),nlev)
                 ZD_k <- lapply(groups,mkZ,rX=Z[[k]])
@@ -1224,7 +1232,9 @@ predict.mmblogit <- function(object, newdata=NULL,type=c("link","response"),se.f
                         }
                     }
                     groups <- lapply(groups,rep,each=nrow(D))
-                    
+                    olevels <- olevels[group.labels]
+                    groups <- Map(factor,x=groups,levels=olevels)
+                   
                     VarCov.names.k <- rep(list(colnames(ZD[[k]])),nlev)
                     ZD_k <- lapply(groups,mkZ,rX=ZD[[k]])
                     d <- rep(d[k],nlev)
