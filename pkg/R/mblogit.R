@@ -142,13 +142,6 @@ mblogit <- function(formula,
         if(missing(aggregate))
             aggregate <- from.table
     }
-    if(!isFALSE(dispersion)) {
-        if(!aggregate) {
-            warning("Cannot compute dispersion unless aggregate=TRUE") 
-            dispersion <- FALSE
-        }
-    }
-
     if(!aggregate) {
         if(length(groups))
             warning("Argument 'groups' is inconsequential unless aggregate=TRUE")
@@ -273,6 +266,9 @@ mblogit <- function(formula,
 
     if(is.factor(Y)){
         response.type <- "factor"
+        if(!isFALSE(dispersion)) {
+            aggregate <- TRUE
+        }
         if(aggregate && !length(random)) {
             if(!length(random)) {
                 D <- structure(diag(n.categs),
