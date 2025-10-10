@@ -23,7 +23,11 @@
       overdispersion (across groups).
       \item \code{mblogit()} and \code{mclogit()} now also have an
       \code{offset=} argument that to add an offset to the model
-      (i.e. a covariate with coeffecient fixed to unity).
+      (i.e. a covariate with coeffecient fixed to unity). For \code{mblogit()}
+      the offset can be a matrix with a column for each logit equation.
+      \item It is now possible to pass a string to \code{mblogit()} as 
+      \code{dispersion=} argument that specifies the method of estimating
+      overdispersion.
     }
   }
   \subsection{BUGFIXES}{

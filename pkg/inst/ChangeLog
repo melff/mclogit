@@ -1,7 +1,175 @@
+2025-10-10  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/man/mblogit.Rd: Documentation fix
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: mblogit: store catCov in fit object
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Make out-of-sample predictions work again with
+	random effects
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R: More consistent handling of
+	'dispersion' and 'aggregate' args
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update DESCRIPTION
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Change warning about inner iterations
+	to earlier wording
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Remove option 'mclogit.use.blkinv'
+
+2025-10-05  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: 'mblogit': 'from.table' arg is no longer
+	inconsequential, but still deprecated
+
+2025-10-04  Martin Elff <martin@elff.eu>
+
+	* pkg/man/dispersion.Rd: Spell correction in doc for 'dispersion'
+
+2025-09-28  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Removed some extarnous spaces from DESCRIPTION
+
+2025-09-28  Martin Elff <martin@elff.eu>
+
+	* README.md, pkg/DESCRIPTION: Update README.md and correct
+	DESCRIPTION
+
+2025-09-28  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Imrove package title and description
+
+2025-09-28  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit-fit.R, pkg/R/mmclogit-fitPQLMQL.R: 
+	Make R check --as-cran pass
+
+2025-08-21  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Description update
+
+2025-08-21  Martin Elff <martin@elff.eu>
+
+	* pkg/R/blockMatrices.R: Add ',drop=FALSE' to block matrix
+	operations
+
+2025-08-21  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Fixed bug in predict method
+
+2025-07-06  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Support for offsets in predict.mblogit
+
+2025-07-06  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit.R: Support for offsets in
+	predict.mclogit
+
+2025-07-06  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: Use environment(formula) for offset
+
+2025-07-06  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/man/mblogit.Rd: Fix support
+	for offsets in mblogit models
+
+2025-06-22  Martin Elff <martin@elff.eu>
+
+	* .github/workflows/check.yml, .travis.yml, appveyor.yml,
+	builitin.travis.yml: Use github action for checking instead of
+	Travis/Appveyor
+
+2025-06-14  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R: Fix predict method - make it
+	work correctly with poly(), ns() etc.
+
+2025-06-09  Martin Elff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2025-06-09  Martin Elff <melff@users.noreply.github.com>
+
+	* README.md: Update README.md
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Drop vanity email address
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/man/dispersion.Rd, pkg/man/mblogit.Rd: Update doc of
+	'dispersion'
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mclogit.fit.Rd: Update doc of mclogit.fit
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/man/simulate.Rd: Fix example in 'simulate.Rd'
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Remove 'groups' from call of 'mclogit.fit'
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R: New 'aggregate' argument for 'mblogit'
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R: Minor improvement of quickInteraction
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: Enable multiple grouping factors
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit-dispersion.R, pkg/R/mclogit-fit.R: 
+	Partly revert #6409819
+
+2025-06-09  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update DESCRIPTION
+
+2024-12-14  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Use block inverse in random effects
+	model fitting
+
+2024-12-13  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/blockMatrices.R: Implement blockwise matrix
+	inversion
+
 2024-11-26  Martin Elff <martin@elff.eu>
 
-	* pkg/R/mblogit.R: Fix construction of ZD-matrix in
-	'predict.mmblogit'
+	* pkg/R/mblogit.R: Removed call to 'browser()'
+
+2024-11-26  Martin Elff <melff@users.noreply.github.com>
+
+	* pkg/pkgdown/_pkgdown.yml: Update _pkgdown.yml
+
+2024-11-26  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mblogit.R, pkg/inst/ChangeLog: Fix
+	construction of ZD-matrix in 'predict.mmblogit'
 
 2024-10-06  Martin Elff <martin@elff.eu>
 
