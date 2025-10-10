@@ -8,7 +8,7 @@ articles:
   conditional-logit: conditional-logit.html
   fitting-mclogit: fitting-mclogit.html
   random-effects: random-effects.html
-last_built: 2025-10-05T20:35Z
+last_built: 2025-10-10T09:59Z
 urls:
   reference: https://melff.github.io/mclogit/reference
   article: https://melff.github.io/mclogit/articles
