@@ -44,7 +44,7 @@
 #' @param dispersion a logical value or a character string; whether and how a
 #'     dispersion parameter should be estimated. For details see
 #'     \code{\link{dispersion}}.
-#' @param  start an optional matrix of starting values (with as many rows
+#' @param start an optional matrix of starting values (with as many rows
 #'     as logit equations). If the model has random effects, the matrix
 #'     should have a "VarCov" attribute wtih starting values for
 #'     the random effects (co-)variances. If the random effects model

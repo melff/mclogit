@@ -29,7 +29,7 @@ mblogit(
   estimator = c("ML", "REML"),
   dispersion = FALSE,
   start = NULL,
-  aggregate = !isFALSE(dispersion),
+  aggregate = FALSE,
   groups = NULL,
   from.table = FALSE,
   control = if (length(random)) mmclogit.control(...) else mclogit.control(...),
