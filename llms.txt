@@ -1,0 +1,80 @@
+# mclogit: Multinomial Logit Models for Categorical Responses and Discrete Choices
+
+[![CRAN](http://www.r-pkg.org/badges/version/mclogit)](http://cran.rstudio.com/package=mclogit)
+[![Total downloads from RStudio CRAN
+mirror](http://cranlogs.r-pkg.org/badges/grand-total/mclogit)](http://cran.r-project.org/web/packages/mclogit/index.md)
+[![Current release on
+GitHub](http://img.shields.io/github/release/melff/mclogit.svg)](http://github.com/melff/mclogit/releases/)
+[![Total downloads from RStudio CRAN
+mirror](http://cranlogs.r-pkg.org/badges/mclogit)](http://cran.r-project.org/web/packages/mclogit/index.md)
+
+This packages provides estimators for multinomial logit models in their
+conditional logit (for discrete choices) and baseline logit variants
+(for categorical responses), optionally with overdispersion or random
+effects. . Random effects models are estimated using the PQL technique
+(based on a Laplace approximation) or the MQL technique (based on a
+Solomon-Cox approximation). Estimates should be treated with caution if
+the group sizes are small.
+
+# Package index
+
+## All functions
+
+- [`Transport`](https://melff.github.io/mclogit/reference/Transport.md)
+  : Choice of Means of Transport
+- [`dispersion()`](https://melff.github.io/mclogit/reference/dispersion.md)
+  : Overdispersion in Multinomial Logit Models
+- [`electors`](https://melff.github.io/mclogit/reference/electors.md) :
+  Class, Party Position, and Electoral Choice
+- [`getSummary(`*`<mblogit>`*`)`](https://melff.github.io/mclogit/reference/getSummary-mclogit.md)
+  [`getSummary(`*`<mclogit>`*`)`](https://melff.github.io/mclogit/reference/getSummary-mclogit.md)
+  [`getSummary(`*`<mmblogit>`*`)`](https://melff.github.io/mclogit/reference/getSummary-mclogit.md)
+  [`getSummary(`*`<mmclogit>`*`)`](https://melff.github.io/mclogit/reference/getSummary-mclogit.md)
+  : \`getSummary\` Methods
+- [`mblogit()`](https://melff.github.io/mclogit/reference/mblogit.md) :
+  Baseline-Category Logit Models for Categorical and Multinomial
+  Responses
+- [`mclogit()`](https://melff.github.io/mclogit/reference/mclogit.md)
+  [`update(`*`<mclogit>`*`)`](https://melff.github.io/mclogit/reference/mclogit.md)
+  [`summary(`*`<mclogit>`*`)`](https://melff.github.io/mclogit/reference/mclogit.md)
+  : Conditional Logit Models and Mixed Conditional Logit Models
+- [`mclogit.fit()`](https://melff.github.io/mclogit/reference/mclogit.fit.md)
+  [`mmclogit.fitPQLMQL()`](https://melff.github.io/mclogit/reference/mclogit.fit.md)
+  : Internal functions used for model fit.
+- [`mclogit.control()`](https://melff.github.io/mclogit/reference/mclogit_control.md)
+  [`mmclogit.control()`](https://melff.github.io/mclogit/reference/mclogit_control.md)
+  : Control Parameters for the Fitting Process
+- [`predict(`*`<mblogit>`*`)`](https://melff.github.io/mclogit/reference/predict.md)
+  [`predict(`*`<mclogit>`*`)`](https://melff.github.io/mclogit/reference/predict.md)
+  [`predict(`*`<mmblogit>`*`)`](https://melff.github.io/mclogit/reference/predict.md)
+  [`predict(`*`<mmclogit>`*`)`](https://melff.github.io/mclogit/reference/predict.md)
+  : Predicting responses or linear parts of the baseline-category and
+  conditional logit models
+- [`rebase()`](https://melff.github.io/mclogit/reference/rebase.md) :
+  Change baseline category of multinomial logit or similar model
+- [`simulate(`*`<mblogit>`*`)`](https://melff.github.io/mclogit/reference/simulate.md)
+  [`simulate(`*`<mclogit>`*`)`](https://melff.github.io/mclogit/reference/simulate.md)
+  [`simulate(`*`<mmblogit>`*`)`](https://melff.github.io/mclogit/reference/simulate.md)
+  [`simulate(`*`<mmclogit>`*`)`](https://melff.github.io/mclogit/reference/simulate.md)
+  : Simulating responses from baseline-category and conditional logit
+  models
+
+# Articles
+
+### The statistical models
+
+- [Conditional logit
+  models](https://melff.github.io/mclogit/articles/conditional-logit.md):
+- [Baseline-category logit
+  models](https://melff.github.io/mclogit/articles/baseline-logit.md):
+- [The relation between baseline logit and conditional logit
+  models](https://melff.github.io/mclogit/articles/baseline-and-conditional-logit.md):
+- [Random effects in baseline logit models and conditional logit
+  models](https://melff.github.io/mclogit/articles/random-effects.md):
+
+### Technical aspects of model fitting
+
+- [The IWLS algorithm used to fit conditional logit
+  models](https://melff.github.io/mclogit/articles/fitting-mclogit.md):
+- [Approximate Inference for Multinomial Logit Models with Random
+  Effects](https://melff.github.io/mclogit/articles/approximations.md):
