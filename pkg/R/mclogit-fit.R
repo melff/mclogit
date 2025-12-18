@@ -6,7 +6,8 @@ mclogit.fit <- function(
       dispersion=FALSE,
       start=NULL,
       offset=NULL,
-      control=mclogit.control()
+      control=mclogit.control(),
+      Firth=FALSE
       ){
 
     nvar <- ncol(X)
@@ -30,9 +31,16 @@ mclogit.fit <- function(
     converged <- FALSE
     for(iter in 1:control$maxit){
         y.star <- eta - offset + (y-pi)/pi
-        yP.star <- y.star - rowsum(pi*y.star,s)[s]
         XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
-        ww <- w*pi
+        if(Firth) {
+            zeta <- zeta(XP,pi,s)
+            ww <- w*pi
+            XWX <- crossprod(XP,ww*XP)
+            iXWX <- solve(XWX)
+            Firth.offs <- as.vector(zeta %*% as.vector(iXWX))/2
+            y.star <- y.star + Firth.offs
+        }
+        yP.star <- y.star - rowsum(pi*y.star,s)[s]
         good <- ww > 0 & is.finite(yP.star)
         wlsFit <- lm.wfit(x=XP[good,,drop=FALSE],y=yP.star[good],w=ww[good])
         last.coef <- coef
@@ -168,3 +176,13 @@ mclogitLinkInv <- function(y,s,w){
   log(f) - ave(log(f),s)
 }
 
+zeta <- function(XP,pi,i) {
+     nvar <- ncol(XP)
+     nobs <- nrow(XP)
+     rnms <- rownames(XP)
+     cnms <- colnames(XP)
+     r <- rep(seq.int(nvar),nvar)
+     s <- rep(seq.int(nvar),each=nvar)
+     XPXP <- XP[,r,drop=FALSE] * XP[,s,drop=FALSE]
+     XPXP - as.matrix(rowsum(p*XPXP,i))[i,,drop=FALSE]
+}
