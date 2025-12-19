@@ -9,7 +9,7 @@ electoral choice as influenced by class and party positions."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -180,44 +180,7 @@ electoral choice as influenced by class and party positions.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 947.5081 - criterion = 2.557556e-07</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 947.5042 - criterion = 4.672682e-13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mclogit(formula = cbind(Freq, interaction(time, class)) ~ econ.left/(class * </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     time) + welfare/class + auth/class, data = within(electors, </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     {</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         party.time &lt;- interaction(party, time)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>         econ.left.sq &lt;- (econ.left - mean(econ.left))^2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     }), random = ~1 | party.time)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficents:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                                Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left                      -0.13335    0.20837  -0.640    0.522    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> welfare                         2.05552    0.21245   9.675   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> auth                            0.08071    0.11717   0.689    0.491    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classnew.middle      -1.69581    0.11631 -14.580   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classold.middle      -3.04338    0.20351 -14.954   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:time                 -0.07782    0.30228  -0.257    0.797    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classnew.middle:welfare        -0.99267    0.06073 -16.346   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classold.middle:welfare        -1.62088    0.12850 -12.614   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classnew.middle:auth           -1.39056    0.04673 -29.754   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classold.middle:auth            1.45722    0.05814  25.063   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classnew.middle:time  0.06049    0.14449   0.419    0.675    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classold.middle:time  0.14723    0.26232   0.561    0.575    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Co-)Variances:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: party.time </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate   Std.Err.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          (Const.)   (Const.)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Const.)  1.604      0.3098 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual deviance: 947.5 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Groups by party.time: 150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Individual observations:  37500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'summary': argument is of length zero</span>
 <span class="r-in"><span> <span class="co"># \dontrun{}</span></span></span>
 </code></pre></div>
     </div>

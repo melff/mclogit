@@ -132,43 +132,6 @@ summary(mclogit(
 #> Iteration 5 - deviance = 947.5081 - criterion = 2.557556e-07
 #> Iteration 6 - deviance = 947.5042 - criterion = 4.672682e-13
 #> converged
-#> 
-#> Call:
-#> mclogit(formula = cbind(Freq, interaction(time, class)) ~ econ.left/(class * 
-#>     time) + welfare/class + auth/class, data = within(electors, 
-#>     {
-#>         party.time <- interaction(party, time)
-#>         econ.left.sq <- (econ.left - mean(econ.left))^2
-#>     }), random = ~1 | party.time)
-#> 
-#> Coefficents:
-#>                                Estimate Std. Error z value Pr(>|z|)    
-#> econ.left                      -0.13335    0.20837  -0.640    0.522    
-#> welfare                         2.05552    0.21245   9.675   <2e-16 ***
-#> auth                            0.08071    0.11717   0.689    0.491    
-#> econ.left:classnew.middle      -1.69581    0.11631 -14.580   <2e-16 ***
-#> econ.left:classold.middle      -3.04338    0.20351 -14.954   <2e-16 ***
-#> econ.left:time                 -0.07782    0.30228  -0.257    0.797    
-#> classnew.middle:welfare        -0.99267    0.06073 -16.346   <2e-16 ***
-#> classold.middle:welfare        -1.62088    0.12850 -12.614   <2e-16 ***
-#> classnew.middle:auth           -1.39056    0.04673 -29.754   <2e-16 ***
-#> classold.middle:auth            1.45722    0.05814  25.063   <2e-16 ***
-#> econ.left:classnew.middle:time  0.06049    0.14449   0.419    0.675    
-#> econ.left:classold.middle:time  0.14723    0.26232   0.561    0.575    
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#> 
-#> (Co-)Variances:
-#> Grouping level: party.time 
-#>          Estimate   Std.Err.
-#>          (Const.)   (Const.)
-#> (Const.)  1.604      0.3098 
-#> 
-#> Approximate residual deviance: 947.5 
-#> Number of Fisher scoring iterations:  6
-#> Number of observations
-#>   Groups by party.time: 150
-#>   Individual observations:  37500
-#> 
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': argument is of length zero
  # \dontrun{}
 ```

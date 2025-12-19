@@ -142,41 +142,15 @@ data(electors)
 #> Iteration 5 - deviance = 947.8468 - criterion = 2.469648e-07
 #> Iteration 6 - deviance = 947.8431 - criterion = 4.94197e-13
 #> converged
-#> mclogit(formula = cbind(Freq, interaction(time, class)) ~ econ.left/class + 
-#>     welfare/class + auth/class, data = within(electors, party.time <- interaction(party, 
-#>     time)), random = ~1 | party.time)
-#> 
-#> Coefficients:
-#>                 econ.left                    welfare  
-#>                  -0.17380                    2.05525  
-#>                      auth  econ.left:classnew.middle  
-#>                   0.08059                   -1.66428  
-#> econ.left:classold.middle    classnew.middle:welfare  
-#>                  -2.96667                   -0.99252  
-#>   classold.middle:welfare       classnew.middle:auth  
-#>                  -1.62032                   -1.39064  
-#>      classold.middle:auth  
-#>                   1.45728  
-#> 
-#> (Co-)Variances:
-#> Grouping level: party.time 
-#>           (Const.)
-#> (Const.)  1.604   
-#> 
-#> Approximate residual deviance: 947.8
+#> Error in if (X.qr$rank < ncol(X.orig)) {    coef_ <- coef    coef <- rep(NA, ncol(X.orig))    names(coef) <- colnames(X.orig)    coef[keep] <- coef_}: argument is of length zero
 
 str(predict(mcre))
-#>  num [1:450] 1.168 4.367 0.148 -1.285 -1.378 ...
+#> Error: object 'mcre' not found
 str(predict(mcre,type="response"))
-#>  num [1:450] 0.03789 0.92862 0.01366 0.00326 0.00297 ...
+#> Error: object 'mcre' not found
 
 str(predict(mcre,se.fit=TRUE))
-#> List of 2
-#>  $ fit   : num [1:450] 1.168 4.367 0.148 -1.285 -1.378 ...
-#>  $ se.fit: Named num [1:450] 0.533 0.531 0.609 0.536 0.539 ...
-#>   ..- attr(*, "names")= chr [1:450] "1" "2" "3" "4" ...
+#> Error: object 'mcre' not found
 str(predict(mcre,type="response",se.fit=TRUE))
-#> List of 2
-#>  $ fit   : num [1:450] 0.03789 0.92862 0.01366 0.00326 0.00297 ...
-#>  $ se.fit: num [1:450] 0.004138 0.007417 0.004969 0.000562 0.000509 ...
+#> Error: object 'mcre' not found
 ```

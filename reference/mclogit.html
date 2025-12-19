@@ -19,7 +19,7 @@ Conditional logit models without random effects are fitted by
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -375,43 +375,7 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 362.7685 - criterion = 6.930491e-07</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 362.7684 - criterion = 2.672469e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mclogit(formula = Freq | time.class ~ econ.left/class + welfare/class + </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     auth/class, data = electors, random = ~1 | party/time)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficents:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left                 -0.04035    0.73004  -0.055   0.9559    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> welfare                    1.95936    1.16585   1.681   0.0928 .  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> auth                       0.16811    0.62796   0.268   0.7889    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classnew.middle -2.04700    0.11816 -17.324   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classold.middle -3.39457    0.17416 -19.491   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classnew.middle:welfare   -0.75181    0.07501 -10.023   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classold.middle:welfare   -1.27119    0.14517  -8.757   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classnew.middle:auth      -1.49715    0.05188 -28.855   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classold.middle:auth       1.40982    0.05997  23.510   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Co-)Variances:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: party </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate   Std.Err.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          (Const.)   (Const.)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Const.)  2.002      2.143  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: party:time </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate    Std.Err.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          (Const.)    (Const.)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Const.) 2.372e-08   1.09e-24</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual deviance: 362.8 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Groups by party: 6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Groups by party:time: 150</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Individual observations:  37500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'summary': argument is of length zero</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># Party-level random intercepts and random slopes varying over time points</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu">mclogit</span><span class="op">(</span></span></span>
@@ -426,44 +390,7 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 362.5743 - criterion = 6.960937e-07</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 362.574 - criterion = 2.692628e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> mclogit(formula = Freq | time.class ~ econ.left/class + welfare/class + </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     auth/class, data = electors, random = list(~1 | party, ~econ.left + </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>     0 | time))</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficents:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                           Estimate Std. Error z value Pr(&gt;|z|)    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left                 -0.04034    0.73006  -0.055   0.9559    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> welfare                    1.95937    1.16587   1.681   0.0928 .  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> auth                       0.16811    0.62797   0.268   0.7889    </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classnew.middle -2.04703    0.11816 -17.324   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classold.middle -3.39462    0.17416 -19.492   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classnew.middle:welfare   -0.75181    0.07501 -10.023   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classold.middle:welfare   -1.27119    0.14517  -8.757   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classnew.middle:auth      -1.49715    0.05188 -28.855   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> classold.middle:auth       1.40982    0.05997  23.510   &lt;2e-16 ***</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> ---</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Co-)Variances:</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: party </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          Estimate   Std.Err.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>          (Const.)   (Const.)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Const.)  2.002      2.143  </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: time </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           Estimate    Std.Err. </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           econ.left   econ.left</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left 0.0002345   2.579e-12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual deviance: 362.6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Number of observations</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Groups by party: 6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Groups by time: 25</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   Individual observations:  37500</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in h(simpleError(msg, call)):</span> error in evaluating the argument 'object' in selecting a method for function 'summary': argument is of length zero</span>
 <span class="r-in"><span> <span class="co"># \dontrun{}</span></span></span>
 </code></pre></div>
     </div>

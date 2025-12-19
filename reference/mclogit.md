@@ -328,43 +328,7 @@ summary(mclogit(
 #> Iteration 5 - deviance = 362.7685 - criterion = 6.930491e-07
 #> Iteration 6 - deviance = 362.7684 - criterion = 2.672469e-12
 #> converged
-#> 
-#> Call:
-#> mclogit(formula = Freq | time.class ~ econ.left/class + welfare/class + 
-#>     auth/class, data = electors, random = ~1 | party/time)
-#> 
-#> Coefficents:
-#>                           Estimate Std. Error z value Pr(>|z|)    
-#> econ.left                 -0.04035    0.73004  -0.055   0.9559    
-#> welfare                    1.95936    1.16585   1.681   0.0928 .  
-#> auth                       0.16811    0.62796   0.268   0.7889    
-#> econ.left:classnew.middle -2.04700    0.11816 -17.324   <2e-16 ***
-#> econ.left:classold.middle -3.39457    0.17416 -19.491   <2e-16 ***
-#> classnew.middle:welfare   -0.75181    0.07501 -10.023   <2e-16 ***
-#> classold.middle:welfare   -1.27119    0.14517  -8.757   <2e-16 ***
-#> classnew.middle:auth      -1.49715    0.05188 -28.855   <2e-16 ***
-#> classold.middle:auth       1.40982    0.05997  23.510   <2e-16 ***
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#> 
-#> (Co-)Variances:
-#> Grouping level: party 
-#>          Estimate   Std.Err.
-#>          (Const.)   (Const.)
-#> (Const.)  2.002      2.143  
-#> 
-#> Grouping level: party:time 
-#>          Estimate    Std.Err.
-#>          (Const.)    (Const.)
-#> (Const.) 2.372e-08   1.09e-24
-#> 
-#> Approximate residual deviance: 362.8 
-#> Number of Fisher scoring iterations:  6
-#> Number of observations
-#>   Groups by party: 6
-#>   Groups by party:time: 150
-#>   Individual observations:  37500
-#> 
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': argument is of length zero
 
 # Party-level random intercepts and random slopes varying over time points
 summary(mclogit(
@@ -379,43 +343,6 @@ summary(mclogit(
 #> Iteration 5 - deviance = 362.5743 - criterion = 6.960937e-07
 #> Iteration 6 - deviance = 362.574 - criterion = 2.692628e-12
 #> converged
-#> 
-#> Call:
-#> mclogit(formula = Freq | time.class ~ econ.left/class + welfare/class + 
-#>     auth/class, data = electors, random = list(~1 | party, ~econ.left + 
-#>     0 | time))
-#> 
-#> Coefficents:
-#>                           Estimate Std. Error z value Pr(>|z|)    
-#> econ.left                 -0.04034    0.73006  -0.055   0.9559    
-#> welfare                    1.95937    1.16587   1.681   0.0928 .  
-#> auth                       0.16811    0.62797   0.268   0.7889    
-#> econ.left:classnew.middle -2.04703    0.11816 -17.324   <2e-16 ***
-#> econ.left:classold.middle -3.39462    0.17416 -19.492   <2e-16 ***
-#> classnew.middle:welfare   -0.75181    0.07501 -10.023   <2e-16 ***
-#> classold.middle:welfare   -1.27119    0.14517  -8.757   <2e-16 ***
-#> classnew.middle:auth      -1.49715    0.05188 -28.855   <2e-16 ***
-#> classold.middle:auth       1.40982    0.05997  23.510   <2e-16 ***
-#> ---
-#> Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
-#> 
-#> (Co-)Variances:
-#> Grouping level: party 
-#>          Estimate   Std.Err.
-#>          (Const.)   (Const.)
-#> (Const.)  2.002      2.143  
-#> 
-#> Grouping level: time 
-#>           Estimate    Std.Err. 
-#>           econ.left   econ.left
-#> econ.left 0.0002345   2.579e-12
-#> 
-#> Approximate residual deviance: 362.6 
-#> Number of Fisher scoring iterations:  6
-#> Number of observations
-#>   Groups by party: 6
-#>   Groups by time: 25
-#>   Individual observations:  37500
-#> 
+#> Error in h(simpleError(msg, call)): error in evaluating the argument 'object' in selecting a method for function 'summary': argument is of length zero
  # \dontrun{}
 ```
