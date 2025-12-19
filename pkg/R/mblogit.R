@@ -75,6 +75,7 @@
 #'     in the next relase.
 #' @param control a list of parameters for the fitting process.  See
 #'     \code{\link{mclogit.control}}
+#' @param Firth a logical value; whether to use Firth's bias correction.
 #' @param \dots arguments to be passed to \code{mclogit.control} or
 #'     \code{mmclogit.control}
 #'
@@ -110,6 +111,9 @@
 #'    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
 #'    \doi{10.1080/01621459.1993.10594284}
 #'
+#'    Firth, David. 1993.
+#'    "Bias Reduction of Maximum Likelihood Estimates". \emph{Biometrika} 80 (1): 27–38.
+#'    \doi{10.1093/biomet/80.1.27}
 #' 
 #' @aliases print.mblogit summary.mblogit print.summary.mblogit fitted.mblogit
 #'     weights.mblogit print.mmblogit summary.mmblogit print.summary.mmblogit
@@ -130,6 +134,7 @@ mblogit <- function(formula,
                     aggregate = FALSE,
                     groups = NULL,
                     from.table = FALSE,
+                    Firth = FALSE,
                     control=if(length(random))
                                 mmclogit.control(...)
                             else mclogit.control(...),
@@ -370,9 +375,12 @@ mblogit <- function(formula,
                            dispersion=dispersion,
                            control=control,
                            start=start,
-                           offset = offset)
+                           offset = offset,
+                           Firth = Firth)
     }
     else { ## random effects
+
+        if(Firth) warning("Firth bias correction is not yet supported for models with random effects.")
 
         if(!length(method)) method <- "PQL"
 

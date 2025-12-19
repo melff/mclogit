@@ -72,6 +72,7 @@ mclogit <- function(
                 dispersion = FALSE,
                 start=NULL,
                 groups = NULL,
+                Firth = FALSE,
                 control=if(length(random))
                             mmclogit.control(...)
                         else mclogit.control(...),
@@ -218,9 +219,12 @@ mclogit <- function(
                        dispersion=dispersion,
                        control=control,
                        start = start,
-                       offset = offset)
+                       offset = offset,
+                       Firth = Firth)
     }
     else { ## random effects
+
+        if(Firth) warning("Firth bias correction is not yet supported for models with random effects.")
         
         if(!length(method)) method <- "PQL"
 
