@@ -711,7 +711,13 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
 
     coef <- object$coefficients
     info.coef <- object$info.coef
-    vcov.cf <- safeInverse(info.coef)
+    use <- is.finite(coef)
+    lcoef <- length(coef)
+    vcov.cf <- array(NA,
+                     dim=c(lcoef,lcoef),
+                     dimnames=list(names(coef),
+                                   names(coef)))
+    vcov.cf[use,use] <- safeInverse(info.coef)
     var.cf <- diag(vcov.cf)
     s.err <- sqrt(var.cf)
     zvalue <- coef/s.err
