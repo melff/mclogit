@@ -199,17 +199,43 @@ For models with random effecs fitted using the PQL-method, it is
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 947.8468 - criterion = 2.469648e-07</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 947.8431 - criterion = 4.94197e-13</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (X.qr$rank &lt; ncol(X.orig)) {    coef_ &lt;- coef    coef &lt;- rep(NA, ncol(X.orig))    names(coef) &lt;- colnames(X.orig)    coef[keep] &lt;- coef_}:</span> argument is of length zero</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> mclogit(formula = cbind(Freq, interaction(time, class)) ~ econ.left/class + </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     welfare/class + auth/class, data = within(electors, party.time &lt;- interaction(party, </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     time)), random = ~1 | party.time)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Coefficients:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                 econ.left                    welfare  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  -0.17380                    2.05525  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                      auth  econ.left:classnew.middle  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   0.08059                   -1.66428  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left:classold.middle    classnew.middle:welfare  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  -2.96667                   -0.99252  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   classold.middle:welfare       classnew.middle:auth  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                  -1.62032                   -1.39064  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>      classold.middle:auth  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   1.45728  </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Co-)Variances:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: party.time </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>           (Const.)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Const.)  1.604   </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual deviance: 947.8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mcre</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'mcre' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  num [1:450] 1.168 4.367 0.148 -1.285 -1.378 ...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mcre</span>,type<span class="op">=</span><span class="st">"response"</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'mcre' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  num [1:450] 0.03789 0.92862 0.01366 0.00326 0.00297 ...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mcre</span>,se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'mcre' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ fit   : num [1:450] 1.168 4.367 0.148 -1.285 -1.378 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ se.fit: Named num [1:450] 0.533 0.531 0.609 0.536 0.539 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>   ..- attr(*, "names")= chr [1:450] "1" "2" "3" "4" ...</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/str.html" class="external-link">str</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">mcre</span>,type<span class="op">=</span><span class="st">"response"</span>,se.fit<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'mcre' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> List of 2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ fit   : num [1:450] 0.03789 0.92862 0.01366 0.00326 0.00297 ...</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  $ se.fit: num [1:450] 0.004138 0.007417 0.004969 0.000562 0.000509 ...</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
