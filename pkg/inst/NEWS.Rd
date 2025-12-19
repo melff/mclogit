@@ -45,6 +45,8 @@
       named arguments.
       \item A \code{ranef()} method is provided for objects created
       by \code{mclogit()} or \code{mblogit()}.
+      \item Redundant columns are now handled in the same way as in
+      \code{glm()} by setting their coefficients ot \code{NA}.
     }
   }
 }

@@ -45,7 +45,14 @@ mclogit.fit <- function(
         wlsFit <- lm.wfit(x=XP[good,,drop=FALSE],y=yP.star[good],w=ww[good])
         last.coef <- coef
         coef <- wlsFit$coefficients
-        eta <- c(X%*%coef) + offset
+        if(wlsFit$rank < ncol(X)) {
+            # Make NA coefficients ineffective in computing eta
+            coef_ <- coef
+            coef_[!is.finite(coef)] <- 0
+            eta <- c(X%*%coef_) + offset
+        } else {
+            eta <- c(X%*%coef) + offset
+        }
         pi <- mclogitP(eta,s)
         last.deviance <- deviance
         dev.resids <- ifelse(y>0,
@@ -64,7 +71,13 @@ mclogit.fit <- function(
                   stop("inner loop; cannot correct step size")
                 ii <- ii + 1
                 coef <- (coef + last.coef)/2
-                eta <- c(X %*% coef) + offset
+                if(any(is.na(last.coef))){
+                    coef_ <- coef
+                    coef_[!is.finite(last.coef)] <- 0
+                    eta <- c(X%*%coef_) + offset
+                }
+                else 
+                    eta <- c(X %*% coef) + offset
                 pi <- mclogitP(eta,s)
                 dev.resids <- ifelse(y>0,2*w*y*(log(y)-log(pi)),0)
                 deviance <- sum(dev.resids)

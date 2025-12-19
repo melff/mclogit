@@ -393,7 +393,12 @@ print.mclogit <- function(x,digits= max(3, getOption("digits") - 3), ...){
 vcov.mclogit <- function(object,...){
     phi <- object$phi
     if(!length(phi)) phi <- 1
-    cov.unscaled <- safeInverse(object$information.matrix)
+    use <- is.finite(object$coefficients)
+    info <- object$information.matrix
+    cov.unscaled <- array(NA,
+                           dim=dim(info),
+                           dimnames=dimnames(info))
+    cov.unscaled[use,use] <- safeInverse(info[use,use])
     return(cov.unscaled * phi)
 }
 
@@ -706,7 +711,13 @@ summary.mmclogit <- function(object,dispersion=NULL,correlation = FALSE, symboli
 
     coef <- object$coefficients
     info.coef <- object$info.coef
-    vcov.cf <- safeInverse(info.coef)
+    use <- is.finite(coef)
+    lcoef <- length(coef)
+    vcov.cf <- array(NA,
+                     dim=c(lcoef,lcoef),
+                     dimnames=list(names(coef),
+                                   names(coef)))
+    vcov.cf[use,use] <- safeInverse(info.coef)
     var.cf <- diag(vcov.cf)
     s.err <- sqrt(var.cf)
     zvalue <- coef/s.err

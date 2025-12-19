@@ -16,7 +16,6 @@ mmclogit.fitPQLMQL <- function(
     method <- match.arg(method)
     estimator <- match.arg(estimator)
 
-    nvar <- ncol(X)
     nobs <- length(y)
     nsets <- length(unique(s))
     nlevs <- length(Z)
@@ -46,6 +45,18 @@ mmclogit.fitPQLMQL <- function(
                          2*w*y*(log(y)-log(pi)),
                          0)
     deviance <- sum(dev.resids)
+
+    # Check rank of design matrix
+    X.orig <- NULL
+    X.qr <- qr(X)
+    keep <- TRUE
+    rank_deficient <- FALSE
+    if(X.qr$rank < ncol(X)) {
+        X.orig <- X
+        keep <- X.qr$pivot[seq.int(X.qr$rank)]
+        X <- X[,keep,drop=FALSE]
+        rank_deficient <- TRUE
+    }
 
     # Outer iterations: update non-linear part of the model
     converged <- FALSE
@@ -77,6 +88,7 @@ Please reconsider your model specification."
                          sqrt.w=sqrt.w,
                          offset=offset,
                          X=X,
+                         X.orig = X.orig,
                          Z=Z,
                          d=d,
                          m=m,
@@ -208,10 +220,17 @@ Please reconsider your model specification."
     resid.df <- length(y) - length(unique(s))
     model.df <- ncol(X) + length(parms$lambda)
     resid.df <- resid.df - model.df
-    
+
+    coef <- parms$coefficients$fixed
+    if(rank_deficient) {
+        coef_ <- coef
+        coef <- rep(NA,ncol(X.orig))
+        names(coef) <- colnames(X.orig)
+        coef[keep] <- coef_
+    }
     return(
           list(
-              coefficients = parms$coefficients$fixed,
+              coefficients = coef,
               random.effects = parms$coefficients$random,
               VarCov = parms$Phi,
               lambda = parms$lambda,

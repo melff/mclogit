@@ -1,3 +1,33 @@
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mmclogit-fitPQLMQL.R: Fix(mmclogit-fitPQLMQL): improve rank
+	deficiency handling Use a boolean flag to track rank deficiency instead of checking the
+	rank of the QR decomposition object multiple times.
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit.R, pkg/R/mmclogit-fitPQLMQL.R: Feat(mmclogit): add
+	handling of rank-deficient design matrices - Use only full-rank columns of design matrix X - Update coefficient names to match original design matrix - Preserve original design matrix for coefficient naming - Update coefficient extraction to handle rank-deficient cases
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit-dispersion.R, pkg/R/mclogit-fit.R,
+	pkg/R/mclogit.R: feat(mclogit): handle NA coefficients in
+	calculations Handle NA coefficients in mclogit calculations which may arise due
+	to multicollinearity and aliasing.
+
+2025-12-15  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: chore: update package date to 2025-12-15
+
+2025-10-10  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update date in DESCRIPTION
+
+2025-10-10  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: Update NEWS and ChangeLog
+
 2025-10-10  Martin Elff <martin@elff.eu>
 
 	* pkg/R/mblogit.R, pkg/man/mblogit.Rd: Documentation fix

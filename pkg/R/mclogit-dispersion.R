@@ -1,7 +1,7 @@
 mclogit.dispersion <- function(y,w,s,pi,coef,method){
     N <- length(w)
     n <- length(unique(s))
-    p <- length(coef)
+    p <- length(coef[is.finite(coef)])
     res.df <- N - n - p
     if(method=="Deviance"){
         Dresid <- 2*w*y*(log(y)-log(pi))

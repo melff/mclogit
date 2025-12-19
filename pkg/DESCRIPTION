@@ -2,7 +2,7 @@ Package: mclogit
 Type: Package
 Title: Multinomial Logit Models for Categorical Responses and Discrete Choices
 Version: 0.9.16
-Date: 2025-12-18
+Date: 2025-12-19
 Authors@R: person(given = "Martin",
                     family = "Elff",
                     role = c("aut", "cre"),
