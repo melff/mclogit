@@ -50,10 +50,12 @@ mmclogit.fitPQLMQL <- function(
     X.orig <- NULL
     X.qr <- qr(X)
     keep <- TRUE
+    rank_deficient <- FALSE
     if(X.qr$rank < ncol(X)) {
         X.orig <- X
         keep <- X.qr$pivot[seq.int(X.qr$rank)]
         X <- X[,keep,drop=FALSE]
+        rank_deficient <- TRUE
     }
 
     # Outer iterations: update non-linear part of the model
@@ -220,7 +222,7 @@ Please reconsider your model specification."
     resid.df <- resid.df - model.df
 
     coef <- parms$coefficients$fixed
-    if(X.qr$rank < ncol(X.orig)) {
+    if(rank_deficient) {
         coef_ <- coef
         coef <- rep(NA,ncol(X.orig))
         names(coef) <- colnames(X.orig)
