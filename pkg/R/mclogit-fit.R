@@ -32,9 +32,9 @@ mclogit.fit <- function(
     for(iter in 1:control$maxit){
         y.star <- eta - offset + (y-pi)/pi
         XP <- X - as.matrix(rowsum(pi*X,s))[s,,drop=FALSE]
+        ww <- w*pi
         if(Firth) {
             zeta <- zeta(XP,pi,s)
-            ww <- w*pi
             XWX <- crossprod(XP,ww*XP)
             iXWX <- solve(XWX)
             Firth.offs <- as.vector(zeta %*% as.vector(iXWX))/2
@@ -197,5 +197,5 @@ zeta <- function(XP,pi,i) {
      r <- rep(seq.int(nvar),nvar)
      s <- rep(seq.int(nvar),each=nvar)
      XPXP <- XP[,r,drop=FALSE] * XP[,s,drop=FALSE]
-     XPXP - as.matrix(rowsum(p*XPXP,i))[i,,drop=FALSE]
+     XPXP - as.matrix(rowsum(pi*XPXP,i))[i,,drop=FALSE]
 }
