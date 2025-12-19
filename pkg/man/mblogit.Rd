@@ -32,6 +32,7 @@ mblogit(
   aggregate = FALSE,
   groups = NULL,
   from.table = FALSE,
+  Firth = FALSE,
   control = if (length(random)) mmclogit.control(...) else mclogit.control(...),
   ...
 )
@@ -125,6 +126,8 @@ relevant for the estimation of overdispersion. For details see
 only exists for the sake of compatibility and will be removed
 in the next relase.}
 
+\item{Firth}{a logical value; whether to use Firth's bias correction.}
+
 \item{control}{a list of parameters for the fitting process.  See
 \code{\link{mclogit.control}}}
 
@@ -175,6 +178,10 @@ Agresti, Alan. 2002.
    "Approximate Inference in Generalized Linear Mixed Models".
    \emph{Journal of the American Statistical Association} 88 (421): 9-25.
    \doi{10.1080/01621459.1993.10594284}
+
+   Firth, David. 1993.
+   "Bias Reduction of Maximum Likelihood Estimates". \emph{Biometrika} 80 (1): 27–38.
+   \doi{10.1093/biomet/80.1.27}
 }
 \seealso{
 The function \code{\link[nnet]{multinom}} in package \pkg{nnet} also

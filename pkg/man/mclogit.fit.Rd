@@ -12,7 +12,8 @@
 mclogit.fit(y, s, w, X,
             dispersion=FALSE,
             start = NULL, offset = NULL,
-            control = mclogit.control())
+            control = mclogit.control(),
+            Firth=FALSE)
 
 mmclogit.fitPQLMQL(y, s, w, X, Z, d, 
                    start = NULL,
@@ -47,6 +48,7 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, d,
     specifies which estimator is to be used/approximated.}
   \item{control}{a list of parameters for the fitting process.
     See \code{\link{mclogit.control}} }
+  \item{Firth}{a logical value; whether to use Firth's bias correction}
 
 }
 \value{
