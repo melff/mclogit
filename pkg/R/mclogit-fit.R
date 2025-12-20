@@ -114,7 +114,7 @@ mclogit.fit <- function(
     resid.df <- length(y)-length(unique(s))
     model.df <- ncol(X)
     resid.df <- resid.df - model.df
-    ll <- mclogit.logLik(y,pi,w)
+    ll <- mclogit.logLik(y,pi,w,s)
 
     if(Firth) {
         penalty <- as.numeric(log_Det(XWX))
@@ -184,7 +184,11 @@ mclogitP <- function(eta,s){
 #                 2*w*y*(log(y)-log(p)),
 #                 0)
 
-mclogit.logLik <- function(y,p,w) sum(w*y*log(p))
+mclogit.logLik <- function(y,p,w,s){
+    n <- w*y
+    m <- rowsum(n,s)
+    sum(n*log(p)) + sum(lfactorial(m)) - sum(lfactorial(n))
+}
                 
                 
 mclogitLinkInv <- function(y,s,w){
