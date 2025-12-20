@@ -28,6 +28,10 @@
       \item It is now possible to pass a string to \code{mblogit()} as 
       \code{dispersion=} argument that specifies the method of estimating
       overdispersion.
+      \item \code{mblogit()} and \code{mclogit()} can now be estimated
+      with Firth's penalized likelihood method, which reduces the
+      asymptotic bias and leads to finite estimats in case of complete separation
+      and quasi-complete separation.
     }
   }
   \subsection{BUGFIXES}{
