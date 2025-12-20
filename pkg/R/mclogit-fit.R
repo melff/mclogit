@@ -116,6 +116,10 @@ mclogit.fit <- function(
     resid.df <- resid.df - model.df
     ll <- mclogit.logLik(y,pi,w)
 
+    if(Firth) {
+        penalty <- as.numeric(log_Det(XWX))
+    }
+    
     if(!isFALSE(dispersion)){
         if(isTRUE(dispersion))
             odisp.method <- "Afroz"
@@ -140,7 +144,9 @@ mclogit.fit <- function(
         model.df = model.df,
         fitted.values = pi,
         deviance=deviance,
+        penalized.deviance = if(Firth) deviance - penalty,
         ll=ll,
+        penalized.logLik = if(Firth) ll + penalty/2,
         deviance.residuals=dev.resids,
         null.deviance=null.deviance,
         iter = iter,
