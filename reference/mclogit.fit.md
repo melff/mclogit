@@ -9,7 +9,8 @@ They are not intended for end users.
 mclogit.fit(y, s, w, X,
             dispersion=FALSE,
             start = NULL, offset = NULL,
-            control = mclogit.control())
+            control = mclogit.control(),
+            Firth=FALSE)
 
 mmclogit.fitPQLMQL(y, s, w, X, Z, d, 
                    start = NULL,
@@ -86,6 +87,10 @@ mmclogit.fitPQLMQL(y, s, w, X, Z, d,
 
   a list of parameters for the fitting process. See
   [`mclogit.control`](https://melff.github.io/mclogit/reference/mclogit_control.md)
+
+- Firth:
+
+  a logical value; whether to use Firth's bias correction
 
 ## Value
 

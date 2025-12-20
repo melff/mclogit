@@ -26,6 +26,7 @@ mblogit(
   aggregate = FALSE,
   groups = NULL,
   from.table = FALSE,
+  Firth = FALSE,
   control = if (length(random)) mmclogit.control(...) else mclogit.control(...),
   ...
 )
@@ -156,6 +157,10 @@ mblogit(
   a logical value; should be FALSE. This argument only exists for the
   sake of compatibility and will be removed in the next relase.
 
+- Firth:
+
+  a logical value; whether to use Firth's bias correction.
+
 - control:
 
   a list of parameters for the fitting process. See
@@ -190,6 +195,10 @@ Breslow, N.E. and D.G. Clayton. 1993. "Approximate Inference in
 Generalized Linear Mixed Models". *Journal of the American Statistical
 Association* 88 (421): 9-25.
 [doi:10.1080/01621459.1993.10594284](https://doi.org/10.1080/01621459.1993.10594284)
+
+Firth, David. 1993. "Bias Reduction of Maximum Likelihood Estimates".
+*Biometrika* 80 (1): 27–38.
+[doi:10.1093/biomet/80.1.27](https://doi.org/10.1093/biomet/80.1.27)
 
 ## See also
 
