@@ -1,3 +1,59 @@
+2025-12-20  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Update date in DESCRIPTION
+
+2025-12-20  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/NEWS.Rd: Update NEWS.Rd
+
+2025-12-20  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R: More accurate values of the log-likelihood
+	function.  This modification adds the data-dependent component of the value of
+	the log-likelihood function. While this does not affect the results
+	of likelihood ratio tests it improves the accuracy of reports about
+	the the model.
+
+2025-12-20  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R: mclogit-fit.R: Provide penalized deviance and
+	log-likelihood in fit objects
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/man/mblogit.Rd, pkg/man/mclogit.Rd, pkg/man/mclogit.fit.Rd: 
+	doc: Document Firth's bias correction option Updated the documentation to include the new parameter and added a
+	reference to Firth's paper on bias reduction of maximum likelihood
+	estimates.
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mblogit.R, pkg/R/mclogit.R: Feat(mblogit & mclogit): add
+	Firth bias correction parameter Add Firth bias correction parameter to mblogit and mclogit functions Add Firth bias correction parameter to mblogit and mclogit functions
+	and include a warning when Firth bias correction is used with random
+	effects.
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/R/mclogit-fit.R: fix(mclogit-fit): Correct variable name in
+	zeta function Fix the variable name from `p` to `pi` in the zeta function for
+	consistency with the rest of the code.
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION: Chore(pkg): update package version to 0.9.17
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* : commit 13a8a25b53b134598f7eb8e2dd7db9e25f4bb423 Author: Martin
+	Elff <melff@users.noreply.github.com> Date:   Fri Dec 19 18:54:50
+	2025 +0100
+
+2025-12-19  Martin Elff <martin@elff.eu>
+
+	* pkg/inst/ChangeLog, pkg/inst/NEWS.Rd: chore: update NEWS and
+	ChangeLog
+
 2025-12-19  Martin Elff <martin@elff.eu>
 
 	* pkg/R/mmclogit-fitPQLMQL.R: Fix(mmclogit-fitPQLMQL): improve rank
@@ -15,6 +71,12 @@
 	pkg/R/mclogit.R: feat(mclogit): handle NA coefficients in
 	calculations Handle NA coefficients in mclogit calculations which may arise due
 	to multicollinearity and aliasing.
+
+2025-12-18  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/R/mclogit-fit.R: New feature: add Firth
+	correction to mclogit model Add Firth correction to mclogit model to handle separation and
+	quasi-complete separation in multinomial logistic regression.
 
 2025-12-15  Martin Elff <martin@elff.eu>
 
