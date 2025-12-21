@@ -71,7 +71,7 @@ library(MASS)
 #> Iteration 1 - deviance = 3493.764 - criterion = 0.9614469
 #> Iteration 2 - deviance = 3470.111 - criterion = 0.00681597
 #> Iteration 3 - deviance = 3470.084 - criterion = 7.82437e-06
-#> Iteration 4 - deviance = 3470.084 - criterion = 7.46957e-11
+#> Iteration 4 - deviance = 3470.084 - criterion = 7.469596e-11
 #> converged
 #> 
 #> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq)
@@ -137,10 +137,10 @@ data(electors)
 #> 
 #> Iteration 1 - deviance = 1070.463 - criterion = 0.1596265
 #> Iteration 2 - deviance = 965.7808 - criterion = 0.0253941
-#> Iteration 3 - deviance = 949.163 - criterion = 0.005112972
-#> Iteration 4 - deviance = 947.9638 - criterion = 0.0002016053
-#> Iteration 5 - deviance = 947.8468 - criterion = 2.470044e-07
-#> Iteration 6 - deviance = 947.8431 - criterion = 4.405134e-13
+#> Iteration 3 - deviance = 949.163 - criterion = 0.005112973
+#> Iteration 4 - deviance = 947.9638 - criterion = 0.0002016051
+#> Iteration 5 - deviance = 947.8468 - criterion = 2.469648e-07
+#> Iteration 6 - deviance = 947.8431 - criterion = 4.94197e-13
 #> converged
 #> mclogit(formula = cbind(Freq, interaction(time, class)) ~ econ.left/class + 
 #>     welfare/class + auth/class, data = within(electors, party.time <- interaction(party, 

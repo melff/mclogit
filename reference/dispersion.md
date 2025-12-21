@@ -56,7 +56,7 @@ house.mblogit <- mblogit(Sat ~ Infl + Type + Cont,
 #> Iteration 1 - deviance = 3493.764 - criterion = 0.9614469
 #> Iteration 2 - deviance = 3470.111 - criterion = 0.00681597
 #> Iteration 3 - deviance = 3470.084 - criterion = 7.82437e-06
-#> Iteration 4 - deviance = 3470.084 - criterion = 7.46957e-11
+#> Iteration 4 - deviance = 3470.084 - criterion = 7.469596e-11
 #> converged
 dispersion(house.mblogit, method = "Afroz")
 #> [1] 20.45129
@@ -76,7 +76,7 @@ house.mblogit.agg <- mblogit(Sat ~ Infl + Type + Cont,
 #> Iteration 1 - deviance = 38.84842 - criterion = 0.992521
 #> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721
 #> Iteration 3 - deviance = 38.6622 - criterion = 3.782555e-07
-#> Iteration 4 - deviance = 38.6622 - criterion = 2.749622e-15
+#> Iteration 4 - deviance = 38.6622 - criterion = 3.666163e-15
 #> converged
 # Now the estimated dispersion parameter is no longer larger than 20,
 # but just bit over 1.0.
@@ -165,7 +165,7 @@ house.mblogit.odsp <- mblogit(Sat ~ Infl + Type + Cont,
 #> Iteration 1 - deviance = 38.84842 - criterion = 0.992521
 #> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721
 #> Iteration 3 - deviance = 38.6622 - criterion = 3.782555e-07
-#> Iteration 4 - deviance = 38.6622 - criterion = 2.749622e-15
+#> Iteration 4 - deviance = 38.6622 - criterion = 3.666163e-15
 #> converged
 summary(house.mblogit.odsp)
 #> 
@@ -210,11 +210,11 @@ house.mblogit.o.00 <- mblogit(Sat ~ Infl,
                               data = housing, 
                               dispersion = TRUE)
 #> 
-#> Iteration 1 - deviance = 2.084162e-10 - criterion = 0.01687143
-#> Iteration 2 - deviance = 1.374456e-13 - criterion = 2.082787e-09
+#> Iteration 1 - deviance = 2.084495e-10 - criterion = 0.01687143
+#> Iteration 2 - deviance = 6.794565e-14 - criterion = 2.083815e-09
 #> converged
 deviance(house.mblogit.o.00)
-#> [1] 1.374456e-13
+#> [1] 6.794565e-14
 dispersion(house.mblogit.o.00)
 #> [1] Inf
 # The deviance is (almost) zero, because aggregation leads to a two-way
@@ -231,7 +231,7 @@ house.mblogit.o.0 <- mblogit(Sat ~ Infl,
 #> Iteration 1 - deviance = 111.578 - criterion = 0.9973916
 #> Iteration 2 - deviance = 111.0847 - criterion = 0.004437062
 #> Iteration 3 - deviance = 111.0846 - criterion = 5.432493e-07
-#> Iteration 4 - deviance = 111.0846 - criterion = 8.563482e-15
+#> Iteration 4 - deviance = 111.0846 - criterion = 9.969427e-15
 #> converged
 deviance(house.mblogit.o.0)
 #> [1] 111.0846
@@ -280,7 +280,7 @@ house.mblogit.wide <- mblogit(cbind(Low,Medium,High) ~ Infl + Type + Cont,
 #> Iteration 1 - deviance = 38.84842 - criterion = 0.992521
 #> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721
 #> Iteration 3 - deviance = 38.6622 - criterion = 3.782555e-07
-#> Iteration 4 - deviance = 38.6622 - criterion = 2.749622e-15
+#> Iteration 4 - deviance = 38.6622 - criterion = 3.666163e-15
 #> converged
 summary(house.mblogit.wide)
 #> 
@@ -323,7 +323,7 @@ house.mblogit.wide.0 <- mblogit(cbind(Low,Medium,High) ~ Infl,
 #> Iteration 1 - deviance = 111.578 - criterion = 0.9973916
 #> Iteration 2 - deviance = 111.0847 - criterion = 0.004437062
 #> Iteration 3 - deviance = 111.0846 - criterion = 5.432493e-07
-#> Iteration 4 - deviance = 111.0846 - criterion = 8.563482e-15
+#> Iteration 4 - deviance = 111.0846 - criterion = 9.969427e-15
 #> converged
 summary(house.mblogit.wide.0)
 #> 

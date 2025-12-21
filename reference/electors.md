@@ -84,7 +84,7 @@ summary(mclogit(
 #> Iteration 3 - deviance = 4293.485 - criterion = 0.06895374
 #> Iteration 4 - deviance = 4277.887 - criterion = 0.00364612
 #> Iteration 5 - deviance = 4277.808 - criterion = 1.852771e-05
-#> Iteration 6 - deviance = 4277.808 - criterion = 5.890774e-10
+#> Iteration 6 - deviance = 4277.808 - criterion = 5.890781e-10
 #> converged
 #> 
 #> Call:
@@ -127,10 +127,10 @@ summary(mclogit(
 #> 
 #> Iteration 1 - deviance = 1071.031 - criterion = 0.1597241
 #> Iteration 2 - deviance = 965.6196 - criterion = 0.02540274
-#> Iteration 3 - deviance = 948.8356 - criterion = 0.005154656
-#> Iteration 4 - deviance = 947.6262 - criterion = 0.000205486
-#> Iteration 5 - deviance = 947.5081 - criterion = 2.557134e-07
-#> Iteration 6 - deviance = 947.5042 - criterion = 5.256386e-13
+#> Iteration 3 - deviance = 948.8356 - criterion = 0.005154655
+#> Iteration 4 - deviance = 947.6262 - criterion = 0.0002054859
+#> Iteration 5 - deviance = 947.5081 - criterion = 2.557556e-07
+#> Iteration 6 - deviance = 947.5042 - criterion = 4.672682e-13
 #> converged
 #> 
 #> Call:

@@ -19,6 +19,7 @@ mclogit(formula, data=parent.frame(), random=NULL,
         dispersion = FALSE,
         start=NULL,
         groups = NULL,
+        Firth = FALSE,
         control=if(length(random))
                     mmclogit.control(...)
                 else mclogit.control(...), ...)
@@ -148,6 +149,10 @@ summary(object, dispersion = NULL, correlation = FALSE,
   a list of parameters for the fitting process. See
   [`mclogit.control`](https://melff.github.io/mclogit/reference/mclogit_control.md)
 
+- Firth:
+
+  a logical value; whether to use Firth's bias correction
+
 - ...:
 
   arguments to be passed to `mclogit.control` or `mmclogit.control`
@@ -223,6 +228,10 @@ Elff, Martin (2009). "Social Divisions, Party Positions, and Electoral
 Behaviour". *Electoral Studies* 28(2): 297-308.
 [doi:10.1016/j.electstud.2009.02.002](https://doi.org/10.1016/j.electstud.2009.02.002)
 
+Firth, David. 1993. "Bias Reduction of Maximum Likelihood Estimates".
+*Biometrika* 80 (1): 27–38.
+[doi:10.1093/biomet/80.1.27](https://doi.org/10.1093/biomet/80.1.27)
+
 McFadden, D. (1973). "Conditionial Logit Analysis of Qualitative Choice
 Behavior". Pp. 105-135 in P. Zarembka (ed.). *Frontiers in
 Econometrics*. New York: Wiley.
@@ -257,7 +266,7 @@ summary(mclogit(
 #> Iteration 2 - deviance = 10.50328 - criterion = 2.758244
 #> Iteration 3 - deviance = 9.231325 - criterion = 0.1363107
 #> Iteration 4 - deviance = 9.227742 - criterion = 0.0003840654
-#> Iteration 5 - deviance = 9.227742 - criterion = 3.446434e-09
+#> Iteration 5 - deviance = 9.227742 - criterion = 3.446459e-09
 #> converged
 #> 
 #> Call:
@@ -285,7 +294,7 @@ summary(mclogit(
 #> Iteration 2 - deviance = 10.50328 - criterion = 2.758244
 #> Iteration 3 - deviance = 9.231325 - criterion = 0.1363107
 #> Iteration 4 - deviance = 9.227742 - criterion = 0.0003840654
-#> Iteration 5 - deviance = 9.227742 - criterion = 3.446434e-09
+#> Iteration 5 - deviance = 9.227742 - criterion = 3.446459e-09
 #> converged
 #> 
 #> Call:
@@ -326,7 +335,7 @@ summary(mclogit(
 #> Iteration 3 - deviance = 363.3644 - criterion = 0.006445485
 #> Iteration 4 - deviance = 362.7738 - criterion = 0.0003382211
 #> Iteration 5 - deviance = 362.7685 - criterion = 6.930491e-07
-#> Iteration 6 - deviance = 362.7684 - criterion = 2.672507e-12
+#> Iteration 6 - deviance = 362.7684 - criterion = 2.672469e-12
 #> converged
 #> 
 #> Call:
@@ -375,9 +384,9 @@ summary(mclogit(
 #> Iteration 1 - deviance = 495.6162 - criterion = 0.1640703
 #> Iteration 2 - deviance = 378.9601 - criterion = 0.02945638
 #> Iteration 3 - deviance = 363.1957 - criterion = 0.006453599
-#> Iteration 4 - deviance = 362.5831 - criterion = 0.000339048
-#> Iteration 5 - deviance = 362.5743 - criterion = 6.961275e-07
-#> Iteration 6 - deviance = 362.574 - criterion = 2.692884e-12
+#> Iteration 4 - deviance = 362.5831 - criterion = 0.0003390485
+#> Iteration 5 - deviance = 362.5743 - criterion = 6.960937e-07
+#> Iteration 6 - deviance = 362.574 - criterion = 2.692628e-12
 #> converged
 #> 
 #> Call:
@@ -408,7 +417,7 @@ summary(mclogit(
 #> Grouping level: time 
 #>           Estimate    Std.Err. 
 #>           econ.left   econ.left
-#> econ.left 0.0002345   2.58e-12 
+#> econ.left 0.0002345   2.579e-12
 #> 
 #> Approximate residual deviance: 362.6 
 #> Number of Fisher scoring iterations:  6

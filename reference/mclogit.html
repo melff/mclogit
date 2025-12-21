@@ -19,7 +19,7 @@ Conditional logit models without random effects are fitted by
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,6 +82,7 @@ Conditional logit models without random effects are fitted by
 <span>        dispersion <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>        start<span class="op">=</span><span class="cn">NULL</span>,</span>
 <span>        groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>        Firth <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>        control<span class="op">=</span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">random</span><span class="op">)</span><span class="op">)</span></span>
 <span>                    <span class="fu"><a href="mclogit_control.html">mmclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span>                <span class="kw">else</span> <span class="fu"><a href="mclogit_control.html">mclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -209,6 +210,10 @@ Conditional logit models without random effects are fitted by
     See <code><a href="mclogit_control.html">mclogit.control</a></code></p></dd>
 
 
+  <dt id="arg-firth">Firth<a class="anchor" aria-label="anchor" href="#arg-firth"></a></dt>
+<dd><p>a logical value; whether to use Firth's bias correction</p></dd>
+
+
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>arguments to be passed to <code>mclogit.control</code> or <code>mmclogit.control</code></p></dd>
 
@@ -271,6 +276,9 @@ Conditional logit models without random effects are fitted by
     "Social Divisions, Party Positions, and Electoral Behaviour".
     <em>Electoral Studies</em> 28(2): 297-308.
     <a href="https://doi.org/10.1016/j.electstud.2009.02.002" class="external-link">doi:10.1016/j.electstud.2009.02.002</a></p>
+<p>Firth, David. 1993.
+    "Bias Reduction of Maximum Likelihood Estimates". <em>Biometrika</em> 80 (1): 27–38.
+    <a href="https://doi.org/10.1093/biomet/80.1.27" class="external-link">doi:10.1093/biomet/80.1.27</a></p>
 <p>McFadden, D. (1973).
     "Conditionial Logit Analysis of Qualitative Choice Behavior".
     Pp. 105-135 in P. Zarembka (ed.).
@@ -304,7 +312,7 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 10.50328 - criterion = 2.758244</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 9.231325 - criterion = 0.1363107</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 9.227742 - criterion = 0.0003840654</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 9.227742 - criterion = 3.446434e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 9.227742 - criterion = 3.446459e-09</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
@@ -332,7 +340,7 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 10.50328 - criterion = 2.758244</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 9.231325 - criterion = 0.1363107</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 9.227742 - criterion = 0.0003840654</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 9.227742 - criterion = 3.446434e-09</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 9.227742 - criterion = 3.446459e-09</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
@@ -373,7 +381,7 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 363.3644 - criterion = 0.006445485</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 362.7738 - criterion = 0.0003382211</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 362.7685 - criterion = 6.930491e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 362.7684 - criterion = 2.672507e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 362.7684 - criterion = 2.672469e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
@@ -422,9 +430,9 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - deviance = 495.6162 - criterion = 0.1640703</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 378.9601 - criterion = 0.02945638</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 363.1957 - criterion = 0.006453599</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 362.5831 - criterion = 0.000339048</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 362.5743 - criterion = 6.961275e-07</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 362.574 - criterion = 2.692884e-12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 362.5831 - criterion = 0.0003390485</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 5 - deviance = 362.5743 - criterion = 6.960937e-07</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 6 - deviance = 362.574 - criterion = 2.692628e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call:</span>
@@ -455,7 +463,7 @@ aggregated choices of many individuals facing identical alternatives.</p></div>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Grouping level: time </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           Estimate    Std.Err. </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>           econ.left   econ.left</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left 0.0002345   2.58e-12 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> econ.left 0.0002345   2.579e-12</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Approximate residual deviance: 362.6 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Number of Fisher scoring iterations:  6</span>

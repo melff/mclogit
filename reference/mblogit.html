@@ -9,7 +9,7 @@ and multinomial count responses with fixed alternatives."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.16</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -49,7 +49,7 @@ and multinomial count responses with fixed alternatives."></head><body>
   <main id="main" class="col-md-9"><div class="page-header">
 
       <h1>Baseline-Category Logit Models for Categorical and Multinomial Responses</h1>
-      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/0.9.16/R/mblogit.R" class="external-link"><code>R/mblogit.R</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/0.9.17/R/mblogit.R" class="external-link"><code>R/mblogit.R</code></a></small>
       <div class="d-none name"><code>mblogit.Rd</code></div>
     </div>
 
@@ -80,6 +80,7 @@ and multinomial count responses with fixed alternatives.</p>
 <span>  aggregate <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  from.table <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  Firth <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  control <span class="op">=</span> <span class="kw">if</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">random</span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="mclogit_control.html">mmclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span> <span class="kw">else</span> <span class="fu"><a href="mclogit_control.html">mclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -211,6 +212,10 @@ only exists for the sake of compatibility and will be removed
 in the next relase.</p></dd>
 
 
+<dt id="arg-firth">Firth<a class="anchor" aria-label="anchor" href="#arg-firth"></a></dt>
+<dd><p>a logical value; whether to use Firth's bias correction.</p></dd>
+
+
 <dt id="arg-control">control<a class="anchor" aria-label="anchor" href="#arg-control"></a></dt>
 <dd><p>a list of parameters for the fitting process.  See
 <code><a href="mclogit_control.html">mclogit.control</a></code></p></dd>
@@ -245,6 +250,9 @@ in the next relase.</p></dd>
    "Approximate Inference in Generalized Linear Mixed Models".
    <em>Journal of the American Statistical Association</em> 88 (421): 9-25.
    <a href="https://doi.org/10.1080/01621459.1993.10594284" class="external-link">doi:10.1080/01621459.1993.10594284</a></p>
+<p>Firth, David. 1993.
+   "Bias Reduction of Maximum Likelihood Estimates". <em>Biometrika</em> 80 (1): 27–38.
+   <a href="https://doi.org/10.1093/biomet/80.1.27" class="external-link">doi:10.1093/biomet/80.1.27</a></p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
@@ -305,7 +313,7 @@ in the next relase.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 1 - deviance = 3493.764 - criterion = 0.9614469</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 2 - deviance = 3470.111 - criterion = 0.00681597</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 3 - deviance = 3470.084 - criterion = 7.82437e-06</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 3470.084 - criterion = 7.46957e-11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Iteration 4 - deviance = 3470.084 - criterion = 7.469596e-11</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> converged</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq)</span>
