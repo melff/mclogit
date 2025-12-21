@@ -250,7 +250,7 @@ library(memisc)
 #> Iteration 1 - deviance = 3493.764 - criterion = 0.9614469
 #> Iteration 2 - deviance = 3470.111 - criterion = 0.00681597
 #> Iteration 3 - deviance = 3470.084 - criterion = 7.82437e-06
-#> Iteration 4 - deviance = 3470.084 - criterion = 7.469596e-11
+#> Iteration 4 - deviance = 3470.084 - criterion = 7.46957e-11
 #> converged
 #> 
 #> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq)

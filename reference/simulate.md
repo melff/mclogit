@@ -84,7 +84,7 @@ library(MASS)
 #> Iteration 1 - deviance = 38.84842 - criterion = 0.992521
 #> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721
 #> Iteration 3 - deviance = 38.6622 - criterion = 3.782555e-07
-#> Iteration 4 - deviance = 38.6622 - criterion = 3.666163e-15
+#> Iteration 4 - deviance = 38.6622 - criterion = 2.749622e-15
 #> converged
 #> 
 #> Call: mblogit(formula = Sat ~ Infl + Type + Cont, data = housing, weights = Freq, 
@@ -148,7 +148,7 @@ head(housing.mat)
 #> Iteration 1 - deviance = 38.84842 - criterion = 0.992521
 #> Iteration 2 - deviance = 38.66222 - criterion = 0.004803721
 #> Iteration 3 - deviance = 38.6622 - criterion = 3.782555e-07
-#> Iteration 4 - deviance = 38.6622 - criterion = 3.666163e-15
+#> Iteration 4 - deviance = 38.6622 - criterion = 2.749622e-15
 #> converged
 #> 
 #> Call: mblogit(formula = cbind(Low, Medium, High) ~ Infl + Type + Cont, 
