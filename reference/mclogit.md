@@ -19,7 +19,6 @@ mclogit(formula, data=parent.frame(), random=NULL,
         dispersion = FALSE,
         start=NULL,
         groups = NULL,
-        Firth = FALSE,
         control=if(length(random))
                     mmclogit.control(...)
                 else mclogit.control(...), ...)
@@ -149,10 +148,6 @@ summary(object, dispersion = NULL, correlation = FALSE,
   a list of parameters for the fitting process. See
   [`mclogit.control`](https://melff.github.io/mclogit/reference/mclogit_control.md)
 
-- Firth:
-
-  a logical value; whether to use Firth's bias correction
-
 - ...:
 
   arguments to be passed to `mclogit.control` or `mmclogit.control`
@@ -227,10 +222,6 @@ Association* 88 (421): 9-25.
 Elff, Martin (2009). "Social Divisions, Party Positions, and Electoral
 Behaviour". *Electoral Studies* 28(2): 297-308.
 [doi:10.1016/j.electstud.2009.02.002](https://doi.org/10.1016/j.electstud.2009.02.002)
-
-Firth, David. 1993. "Bias Reduction of Maximum Likelihood Estimates".
-*Biometrika* 80 (1): 27–38.
-[doi:10.1093/biomet/80.1.27](https://doi.org/10.1093/biomet/80.1.27)
 
 McFadden, D. (1973). "Conditionial Logit Analysis of Qualitative Choice
 Behavior". Pp. 105-135 in P. Zarembka (ed.). *Frontiers in

@@ -19,7 +19,7 @@ Conditional logit models without random effects are fitted by
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.15</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -82,7 +82,6 @@ Conditional logit models without random effects are fitted by
 <span>        dispersion <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>        start<span class="op">=</span><span class="cn">NULL</span>,</span>
 <span>        groups <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>        Firth <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>        control<span class="op">=</span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">random</span><span class="op">)</span><span class="op">)</span></span>
 <span>                    <span class="fu"><a href="mclogit_control.html">mmclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span></span>
 <span>                <span class="kw">else</span> <span class="fu"><a href="mclogit_control.html">mclogit.control</a></span><span class="op">(</span><span class="va">...</span><span class="op">)</span>, <span class="va">...</span><span class="op">)</span></span>
@@ -210,10 +209,6 @@ Conditional logit models without random effects are fitted by
     See <code><a href="mclogit_control.html">mclogit.control</a></code></p></dd>
 
 
-  <dt id="arg-firth">Firth<a class="anchor" aria-label="anchor" href="#arg-firth"></a></dt>
-<dd><p>a logical value; whether to use Firth's bias correction</p></dd>
-
-
   <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>arguments to be passed to <code>mclogit.control</code> or <code>mmclogit.control</code></p></dd>
 
@@ -276,9 +271,6 @@ Conditional logit models without random effects are fitted by
     "Social Divisions, Party Positions, and Electoral Behaviour".
     <em>Electoral Studies</em> 28(2): 297-308.
     <a href="https://doi.org/10.1016/j.electstud.2009.02.002" class="external-link">doi:10.1016/j.electstud.2009.02.002</a></p>
-<p>Firth, David. 1993.
-    "Bias Reduction of Maximum Likelihood Estimates". <em>Biometrika</em> 80 (1): 27–38.
-    <a href="https://doi.org/10.1093/biomet/80.1.27" class="external-link">doi:10.1093/biomet/80.1.27</a></p>
 <p>McFadden, D. (1973).
     "Conditionial Logit Analysis of Qualitative Choice Behavior".
     Pp. 105-135 in P. Zarembka (ed.).
