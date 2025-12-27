@@ -20,7 +20,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">mclogit</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.9.17.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -75,7 +75,7 @@
       <h1>The IWLS algorithm used to fit conditional logit models</h1>
             
       
-      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/0.9.17/vignettes/fitting-mclogit.Rmd" class="external-link"><code>vignettes/fitting-mclogit.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/melff/mclogit/blob/main/vignettes/fitting-mclogit.Rmd" class="external-link"><code>vignettes/fitting-mclogit.Rmd</code></a></small>
       <div class="d-none name"><code>fitting-mclogit.Rmd</code></div>
     </div>
 
@@ -97,8 +97,8 @@ chooses alternative
 from his/her choice set
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒮</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{S}_i</annotation></semantics></math>,
 where</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∑</mo><mi>k</mi></munder><mrow><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
-\pi_{ij}=\frac{\exp(\eta_{ij})}{\sum_k{\in\mathcal{S}_i}\exp(\eta_{ik})}
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+\pi_{ij}=\frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
 </annotation></semantics></math></p>
 <p>and if
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">y_{ij}</annotation></semantics></math>

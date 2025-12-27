@@ -11,7 +11,7 @@ which follows the algorithm used by the
 If $\pi_{ij}$ is the probability that individual $i$ chooses alternative
 $j$ from his/her choice set $\mathcal{S}_{i}$, where
 
-$$\pi_{ij} = \frac{\exp\left( \eta_{ij} \right)}{\sum\limits_{k}{\in \mathcal{S}_{i}}\exp\left( \eta_{ik} \right)}$$
+$$\pi_{ij} = \frac{\exp\left( \eta_{ij} \right)}{\sum\limits_{k \in \mathcal{S}_{i}}\exp\left( \eta_{ik} \right)}$$
 
 and if $y_{ij}$ is the dummy variable with equals 1 if individual $i$
 chooses alternative $j$ and equals 0 otherwise, the log-likelihood
