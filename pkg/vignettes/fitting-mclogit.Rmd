@@ -18,7 +18,7 @@ If $\pi_{ij}$ is the probability that individual $i$ chooses
 alternative $j$ from his/her choice set $\mathcal{S}_i$, where
 
 $$
-\pi_{ij}=\frac{\exp(\eta_{ij})}{\sum_k{\in\mathcal{S}_i}\exp(\eta_{ik})}
+\pi_{ij}=\frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
 $$
 
 and if $y_{ij}$ is the dummy variable with equals 1 if individual
