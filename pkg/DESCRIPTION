@@ -28,7 +28,9 @@ Suggests:
     nnet,
     ucminf, 
     knitr, 
-    rmarkdown
+    rmarkdown,
+    brglm,
+    brglm2
 LazyLoad: Yes
 VignetteBuilder: knitr
 URL: http://melff.github.io/mclogit/,https://github.com/melff/mclogit/

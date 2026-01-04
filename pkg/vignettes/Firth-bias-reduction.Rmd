@@ -1,0 +1,132 @@
+---
+title: Bias reduction using Firth's penalized likelihood technique
+output: rmarkdown::html_vignette
+vignette: >
+  % \VignetteIndexEntry{Bias reduction using Firth's penalized likelihood technique}
+  % \VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: mclogit.bib
+---
+
+Firth's penalized likelihood technique [@Firth.1993:Biasreduction] has two advantages in comparison to the
+conventional maximum likelihood estimator:
+
+1. It has a smaller asymptotic bias than the MLE, i.e. it converges "faster" to
+   its limit as the sample size approaches infinity: In somewhat imprecise
+   terms, its bias is $O(n^{-2})$ instead of $O(n^{-1})$, where $n$ is the
+   sample size.
+
+2. In case of logistic regression and other models for categorical responses, 
+   tends to be less afflicted by the problem of complete separation or
+   quasi-complete separation. That is, Firth's penalized likelihood technique
+   gives finite coefficient estimates in cases where a (finite) MLE for the
+   coefficients does not exist.,
+   
+In case of the models supported by the *mclogit* package, the difference between
+Firth's PML technique and conventional ML estimation is that it solves for each
+coefficient $\alpha_q$ the modified gradient equation
+$$
+0
+=
+U^*(\alpha_q)
+=
+\frac{\partial\ell}{\partial\alpha_q}
++
+\frac12
+\mathrm{tr}\left(
+(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})^{-1}
+\boldsymbol{X}'
+\frac{\partial\boldsymbol{W}}{\partial\alpha_q}
+\boldsymbol{X}
+  \right)
+$$
+instead of 
+$$
+0
+=
+U(\alpha_q)
+=
+\frac{\partial\ell}{\partial\alpha_q}
+$$
+for the MLE, where $\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}$ is the
+information matrix for the full coefficient vector. This technique is equivalent
+to maximizing the penalized (log-)likelihood 
+$$
+\mathcal{L}^*(\boldsymbol{\alpha}) = \mathcal{L}(\boldsymbol{\alpha}) 
+\frac12
+\det(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})
+\quad\text{or}\quad
+\ell^*(\boldsymbol{\alpha}) = \ell(\boldsymbol{\alpha}) +
+\frac12
+\ln\det(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}).
+$$
+
+Like the conventional MLE, the *mclogit* package uses an IWLS-algorithm,
+however, using a modified working response vector with elements
+$$
+y_{ij}^*
+=
+\boldsymbol{x}_{ij}'\boldsymbol{\alpha} +
+\frac{y_{ij}-\pi_{ij}}{\pi_{ij}} 
++
+\frac12
+\sum_r
+  \sum_s
+  \zeta_{ij,rs}
+  I^{(r,s)}
+$$
+where $I^{(r,s)}$ is the $r,s$ element of
+$(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})^{-1}$
+and
+$$
+\begin{aligned}
+\zeta_{ij,rs}
+&=
+(x_{ijr}-\sum_kx_{ikr}\pi_{ik})(x_{ijs}-\sum_l\pi_{il}x_{ils})
+-
+\sum_k\pi_{ik}(x_{ikr}-\sum_lx_{ilr}\pi_{il})(x_{iks}-\sum_l\pi_{il}x_{ils})
+\\
+&=
+\Delta_{i,j,\boldsymbol{\pi}_i}
+(\Delta_{i,j,\boldsymbol{\pi}_i}x_{ijr}
+\Delta_{i,j,\boldsymbol{\pi}_i}x_{ijs})
+\end{aligned}
+$$
+where
+$\Delta_{i,j,\boldsymbol{\pi}_i}a_{ij}=a_{ij} - \sum_k\pi_{ik}a_{ik}.$
+
+## A comparison of results obtained with other packages
+
+For a multinomial baseline logit model for a two-category response,
+`mblogit(...,Firth=TRUE)` gives the identical result as function `brglm()` from
+Ioannis Kosmidis' package *brglm* [@kosmidis:brglm]:
+
+```{r, echo = TRUE}
+if(require("brglm", quietly = TRUE)) {
+    suppressMessages(library(mclogit))
+    data(lizards)
+
+  lizards.brglm <- brglm(cbind(grahami, opalinus) ~ height + diameter +
+                         light + time, family = binomial(logit), data=lizards,
+                         method = "brglm.fit")
+
+
+    print(summary(lizards.brglm))
+
+    lizards.mblogit_F <- mblogit(cbind(opalinus, grahami) ~ height + diameter + light + time,
+                                 data = lizards, Firth = TRUE)
+    print(summary(lizards.mblogit_F))
+}
+library(MASS) #For the housing data
+print(house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
+                          data = housing,
+                          Firth = TRUE))
+if(require("brglm2", quietly = TRUE)){
+    print(brmultinom(Sat ~ Infl + Type + Cont, weights = Freq,
+                   data = housing, ref = 1,
+                   type = "AS_mean"))
+}
+```
+
+
+# References
