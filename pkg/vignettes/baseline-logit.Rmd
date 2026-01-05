@@ -30,17 +30,15 @@ variable for individual $i$ is equal to $j$, then the
 baseline-category logit model takes the form:
 
 $$
-\begin{aligned}
 \pi_{ij} =
 \begin{cases}
 \dfrac{\exp(\alpha_{j0}+\alpha_{j1}x_{1i}+\cdots+\alpha_{jr}x_{ri})}
 {1+\sum_{k>1}\exp(\alpha_{k0}+\alpha_{k1}x_{1i}+\cdots+\alpha_{kr}x_{ri})}
-& \text{for } j>1\\[20pt]
+& \text{for } j>1\\
 \dfrac{1}
 {1+\sum_{k>1}\exp(\alpha_{k0}+\alpha_{k1}x_{1i}+\cdots+\alpha_{kr}x_{ri})}
-& \text{for } j=1
+& \text{for } j=1\\
 \end{cases}
-\end{aligned}
 $$
 
 where the first category ($j=1$) is the baseline category.
