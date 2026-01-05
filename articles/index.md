@@ -17,3 +17,5 @@
   models](https://melff.github.io/mclogit/articles/fitting-mclogit.md):
 - [Approximate Inference for Multinomial Logit Models with Random
   Effects](https://melff.github.io/mclogit/articles/approximations.md):
+- [Bias reduction using Firth's penalized likelihood
+  technique](https://melff.github.io/mclogit/articles/Firth-bias-reduction.md):
