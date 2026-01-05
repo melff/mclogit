@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Bias reduction using Firth's penalized likelihood technique • mclogit</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -88,25 +89,16 @@ maximum likelihood estimator:</p>
 <ol style="list-style-type: decimal">
 <li><p>It has a smaller asymptotic bias than the MLE, i.e. it converges
 “faster” to its limit as the sample size approaches infinity: In
-somewhat imprecise terms, its bias is
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><mo>−</mo><mn>2</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">O(n^{-2})</annotation></semantics></math>
-instead of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>O</mi><mrow><mo stretchy="true" form="prefix">(</mo><msup><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">O(n^{-1})</annotation></semantics></math>,
-where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>n</mi><annotation encoding="application/x-tex">n</annotation></semantics></math>
-is the sample size.</p></li>
+somewhat imprecise terms, its bias is <span class="math inline">O(n^{-2})</span> instead of <span class="math inline">O(n^{-1})</span>, where <span class="math inline">n</span> is the sample size.</p></li>
 <li><p>In case of logistic regression and other models for categorical
 responses, tends to be less afflicted by the problem of complete
 separation or quasi-complete separation. That is, Firth’s penalized
 likelihood technique gives finite coefficient estimates in cases where a
-(finite) MLE for the coefficients does not exist.,</p></li>
+(finite) MLE for the coefficients does not exist.</p></li>
 </ol>
 <p>In case of the models supported by the <em>mclogit</em> package, the
 difference between Firth’s PML technique and conventional ML estimation
-is that it solves for each coefficient
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mi>q</mi></msub><annotation encoding="application/x-tex">\alpha_q</annotation></semantics></math>
-the modified gradient equation
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>=</mo><msup><mi>U</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mi>q</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>∂</mi><mo>ℓ</mo></mrow><mrow><mi>∂</mi><msub><mi>α</mi><mi>q</mi></msub></mrow></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>𝐗</mi><mi>′</mi><mfrac><mrow><mi>∂</mi><mi>𝐖</mi></mrow><mrow><mi>∂</mi><msub><mi>α</mi><mi>q</mi></msub></mrow></mfrac><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+is that it solves for each coefficient <span class="math inline">\alpha_q</span> the modified gradient equation <span class="math display">
 0
 =
 U^*(\alpha_q)
@@ -120,48 +112,39 @@ U^*(\alpha_q)
 \frac{\partial\boldsymbol{W}}{\partial\alpha_q}
 \boldsymbol{X}
   \right)
-</annotation></semantics></math> instead of
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0</mn><mo>=</mo><mi>U</mi><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mi>q</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mrow><mi>∂</mi><mo>ℓ</mo></mrow><mrow><mi>∂</mi><msub><mi>α</mi><mi>q</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+</span> instead of <span class="math display">
 0
 =
 U(\alpha_q)
 =
 \frac{\partial\ell}{\partial\alpha_q}
-</annotation></semantics></math> for the MLE, where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi></mrow><annotation encoding="application/x-tex">\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}</annotation></semantics></math>
+</span> for the MLE, where <span class="math inline">\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}</span>
 is the information matrix for the full coefficient vector. This
 technique is equivalent to maximizing the penalized (log-)likelihood
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>ℒ</mi><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>ℒ</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow><mspace width="1.0em"></mspace><mtext mathvariant="normal">or</mtext><mspace width="1.0em"></mspace><msup><mo>ℓ</mo><mo>*</mo></msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mo>ℓ</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝛂</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo>ln</mo><mo>det</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
-\mathcal{L}^*(\boldsymbol{\alpha}) = \mathcal{L}(\boldsymbol{\alpha}) 
+<span class="math display">
+\mathcal{L}^*(\boldsymbol{\alpha}) = \mathcal{L}(\boldsymbol{\alpha})
 \frac12
 \det(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})
 \quad\text{or}\quad
 \ell^*(\boldsymbol{\alpha}) = \ell(\boldsymbol{\alpha}) +
 \frac12
 \ln\det(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}).
-</annotation></semantics></math></p>
+</span></p>
 <p>Like the conventional MLE, the <em>mclogit</em> package uses an
 IWLS-algorithm, however, using a modified working response vector with
-elements
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow><mo>*</mo></msubsup><mo>=</mo><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>′</mi><mi>𝛂</mi><mo>+</mo><mfrac><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mfrac><mo>+</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><munder><mo>∑</mo><mi>r</mi></munder><munder><mo>∑</mo><mi>s</mi></munder><msub><mi>ζ</mi><mrow><mi>i</mi><mi>j</mi><mo>,</mo><mi>r</mi><mi>s</mi></mrow></msub><msup><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>r</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">
+elements <span class="math display">
 y_{ij}^*
 =
 \boldsymbol{x}_{ij}'\boldsymbol{\alpha} +
-\frac{y_{ij}-\pi_{ij}}{\pi_{ij}} 
+\frac{y_{ij}-\pi_{ij}}{\pi_{ij}}
 +
 \frac12
 \sum_r
   \sum_s
   \zeta_{ij,rs}
   I^{(r,s)}
-</annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>I</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>r</mi><mo>,</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><annotation encoding="application/x-tex">I^{(r,s)}</annotation></semantics></math>
-is the
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>r</mi><mo>,</mo><mi>s</mi></mrow><annotation encoding="application/x-tex">r,s</annotation></semantics></math>
-element of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><annotation encoding="application/x-tex">(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})^{-1}</annotation></semantics></math>
-and
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>ζ</mi><mrow><mi>i</mi><mi>j</mi><mo>,</mo><mi>r</mi><mi>s</mi></mrow></msub></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>i</mi><mi>j</mi><mi>r</mi></mrow></msub><mo>−</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>x</mi><mrow><mi>i</mi><mi>k</mi><mi>r</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>i</mi><mi>j</mi><mi>s</mi></mrow></msub><mo>−</mo><munder><mo>∑</mo><mi>l</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>l</mi></mrow></msub><msub><mi>x</mi><mrow><mi>i</mi><mi>l</mi><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>i</mi><mi>k</mi><mi>r</mi></mrow></msub><mo>−</mo><munder><mo>∑</mo><mi>l</mi></munder><msub><mi>x</mi><mrow><mi>i</mi><mi>l</mi><mi>r</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>l</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>i</mi><mi>k</mi><mi>s</mi></mrow></msub><mo>−</mo><munder><mo>∑</mo><mi>l</mi></munder><msub><mi>π</mi><mrow><mi>i</mi><mi>l</mi></mrow></msub><msub><mi>x</mi><mrow><mi>i</mi><mi>l</mi><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr><mtr><mtd columnalign="right" style="text-align: right"></mtd><mtd columnalign="left" style="text-align: left"><mo>=</mo><msub><mi>Δ</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><msub><mi>𝛑</mi><mi>i</mi></msub></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>Δ</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><msub><mi>𝛑</mi><mi>i</mi></msub></mrow></msub><msub><mi>x</mi><mrow><mi>i</mi><mi>j</mi><mi>r</mi></mrow></msub><msub><mi>Δ</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><msub><mi>𝛑</mi><mi>i</mi></msub></mrow></msub><msub><mi>x</mi><mrow><mi>i</mi><mi>j</mi><mi>s</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+</span> where <span class="math inline">I^{(r,s)}</span> is the <span class="math inline">r,s</span> element of <span class="math inline">(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})^{-1}</span>
+and <span class="math display">
 \begin{aligned}
 \zeta_{ij,rs}
 &amp;=
@@ -174,8 +157,8 @@ and
 (\Delta_{i,j,\boldsymbol{\pi}_i}x_{ijr}
 \Delta_{i,j,\boldsymbol{\pi}_i}x_{ijs})
 \end{aligned}
-</annotation></semantics></math> where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>Δ</mi><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><msub><mi>𝛑</mi><mi>i</mi></msub></mrow></msub><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>a</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mo>∑</mo><mi>k</mi></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><msub><mi>a</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">\Delta_{i,j,\boldsymbol{\pi}_i}a_{ij}=a_{ij} - \sum_k\pi_{ik}a_{ik}.</annotation></semantics></math></p>
+</span> where <span class="math inline">\Delta_{i,j,\boldsymbol{\pi}_i}a_{ij}=a_{ij} -
+\sum_k\pi_{ik}a_{ik}.</span></p>
 <div class="section level3">
 <h3 id="a-comparison-of-results-obtained-with-other-packages">A comparison of results obtained with other packages<a class="anchor" aria-label="anchor" href="#a-comparison-of-results-obtained-with-other-packages"></a>
 </h3>

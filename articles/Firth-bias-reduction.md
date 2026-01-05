@@ -5,35 +5,46 @@ in comparison to the conventional maximum likelihood estimator:
 
 1.  It has a smaller asymptotic bias than the MLE, i.e. it converges
     “faster” to its limit as the sample size approaches infinity: In
-    somewhat imprecise terms, its bias is $O\left( n^{- 2} \right)$
-    instead of $O\left( n^{- 1} \right)$, where $n$ is the sample size.
+    somewhat imprecise terms, its bias is O(n^{-2}) instead of
+    O(n^{-1}), where n is the sample size.
 
 2.  In case of logistic regression and other models for categorical
     responses, tends to be less afflicted by the problem of complete
     separation or quasi-complete separation. That is, Firth’s penalized
     likelihood technique gives finite coefficient estimates in cases
-    where a (finite) MLE for the coefficients does not exist.,
+    where a (finite) MLE for the coefficients does not exist.
 
 In case of the models supported by the *mclogit* package, the difference
 between Firth’s PML technique and conventional ML estimation is that it
-solves for each coefficient $\alpha_{q}$ the modified gradient equation
-$$0 = U^{*}\left( \alpha_{q} \right) = \frac{\partial\ell}{\partial\alpha_{q}} + \frac{1}{2}{tr}\left( (\mathbf{X}\prime\mathbf{W}\mathbf{X})^{- 1}\mathbf{X}\prime\frac{\partial\mathbf{W}}{\partial\alpha_{q}}\mathbf{X} \right)$$
-instead of
-$$0 = U\left( \alpha_{q} \right) = \frac{\partial\ell}{\partial\alpha_{q}}$$
-for the MLE, where $\mathbf{X}\prime\mathbf{W}\mathbf{X}$ is the
-information matrix for the full coefficient vector. This technique is
-equivalent to maximizing the penalized (log-)likelihood
-$$\mathcal{L}^{*}({\mathbf{α}}) = \mathcal{L}({\mathbf{α}})\frac{1}{2}\det(\mathbf{X}\prime\mathbf{W}\mathbf{X})\quad\text{or}\quad\ell^{*}({\mathbf{α}}) = \ell({\mathbf{α}}) + \frac{1}{2}\ln\det(\mathbf{X}\prime\mathbf{W}\mathbf{X}).$$
+solves for each coefficient \alpha_q the modified gradient equation 0 =
+U^\*(\alpha_q) = \frac{\partial\ell}{\partial\alpha_q} + \frac12
+\mathrm{tr}\left( (\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})^{-1}
+\boldsymbol{X}' \frac{\partial\boldsymbol{W}}{\partial\alpha_q}
+\boldsymbol{X} \right) instead of 0 = U(\alpha_q) =
+\frac{\partial\ell}{\partial\alpha_q} for the MLE, where
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} is the information matrix
+for the full coefficient vector. This technique is equivalent to
+maximizing the penalized (log-)likelihood
+\mathcal{L}^\*(\boldsymbol{\alpha}) = \mathcal{L}(\boldsymbol{\alpha})
+\frac12 \det(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})
+\quad\text{or}\quad \ell^\*(\boldsymbol{\alpha}) =
+\ell(\boldsymbol{\alpha}) + \frac12
+\ln\det(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}).
 
 Like the conventional MLE, the *mclogit* package uses an IWLS-algorithm,
 however, using a modified working response vector with elements
-$$y_{ij}^{*} = \mathbf{x}_{ij}\prime{\mathbf{α}} + \frac{y_{ij} - \pi_{ij}}{\pi_{ij}} + \frac{1}{2}\sum\limits_{r}\sum\limits_{s}\zeta_{ij,rs}I^{(r,s)}$$
-where $I^{(r,s)}$ is the $r,s$ element of
-$(\mathbf{X}\prime\mathbf{W}\mathbf{X})^{- 1}$ and $$\begin{aligned}
-\zeta_{ij,rs} & {= \left( x_{ijr} - \sum\limits_{k}x_{ikr}\pi_{ik} \right)\left( x_{ijs} - \sum\limits_{l}\pi_{il}x_{ils} \right) - \sum\limits_{k}\pi_{ik}\left( x_{ikr} - \sum\limits_{l}x_{ilr}\pi_{il} \right)\left( x_{iks} - \sum\limits_{l}\pi_{il}x_{ils} \right)} \\
- & {= \Delta_{i,j,{\mathbf{π}}_{i}}\left( \Delta_{i,j,{\mathbf{π}}_{i}}x_{ijr}\Delta_{i,j,{\mathbf{π}}_{i}}x_{ijs} \right)}
-\end{aligned}$$ where
-$\Delta_{i,j,{\mathbf{π}}_{i}}a_{ij} = a_{ij} - \sum_{k}\pi_{ik}a_{ik}.$
+y\_{ij}^\* = \boldsymbol{x}\_{ij}'\boldsymbol{\alpha} +
+\frac{y\_{ij}-\pi\_{ij}}{\pi\_{ij}} + \frac12 \sum_r \sum_s
+\zeta\_{ij,rs} I^{(r,s)} where I^{(r,s)} is the r,s element of
+(\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X})^{-1} and \begin{aligned}
+\zeta\_{ij,rs} &=
+(x\_{ijr}-\sum_kx\_{ikr}\pi\_{ik})(x\_{ijs}-\sum_l\pi\_{il}x\_{ils}) -
+\sum_k\pi\_{ik}(x\_{ikr}-\sum_lx\_{ilr}\pi\_{il})(x\_{iks}-\sum_l\pi\_{il}x\_{ils})
+\\ &= \Delta\_{i,j,\boldsymbol{\pi}\_i}
+(\Delta\_{i,j,\boldsymbol{\pi}\_i}x\_{ijr}
+\Delta\_{i,j,\boldsymbol{\pi}\_i}x\_{ijs}) \end{aligned} where
+\Delta\_{i,j,\boldsymbol{\pi}\_i}a\_{ij}=a\_{ij} -
+\sum_k\pi\_{ik}a\_{ik}.
 
 ### A comparison of results obtained with other packages
 

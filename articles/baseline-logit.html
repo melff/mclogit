@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Baseline-category logit models • mclogit</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -94,19 +95,11 @@ These models are described in <span class="citation">Agresti
 conditional logit models, exploiting the fact that baseline-category
 logit models can be re-expressed as condigional logit models.</p>
 <p>Baseline-category logit models are constructed as follows. Suppose a
-categorical dependent variable or response with categories
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>q</mi></mrow><annotation encoding="application/x-tex">j=1,\ldots,q</annotation></semantics></math>
-is observed for individuals
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">i=1,\ldots,n</annotation></semantics></math>.
-Let
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{ij}</annotation></semantics></math>
-denote the probability that the value of the dependent variable for
-individual
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-is equal to
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>,
-then the baseline-category logit model takes the form:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mtable><mtr><mtd columnalign="right" style="text-align: right"><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">{</mo><mtable><mtr><mtd columnalign="left" style="text-align: left"><mfrac displaystyle="true"><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mrow><mi>j</mi><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>α</mi><mrow><mi>j</mi><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mrow><mi>j</mi><mi>r</mi></mrow></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><mn>1</mn><mo>+</mo><munder><mo>∑</mo><mrow><mi>k</mi><mo>&gt;</mo><mn>1</mn></mrow></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>α</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mrow><mi>k</mi><mi>r</mi></mrow></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>&gt;</mo><mn>1</mn></mtd></mtr><mtr><mtd columnalign="left" style="text-align: left"><mfrac displaystyle="true"><mn>1</mn><mrow><mn>1</mn><mo>+</mo><munder><mo>∑</mo><mrow><mi>k</mi><mo>&gt;</mo><mn>1</mn></mrow></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mrow><mi>k</mi><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>α</mi><mrow><mi>k</mi><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mrow><mi>k</mi><mi>r</mi></mrow></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mtd><mtd columnalign="left" style="text-align: left"><mrow><mtext mathvariant="normal">for </mtext><mspace width="0.333em"></mspace></mrow><mi>j</mi><mo>=</mo><mn>1</mn></mtd></mtr></mtable></mrow></mtd></mtr></mtable><annotation encoding="application/x-tex">
+categorical dependent variable or response with categories <span class="math inline">j=1,\ldots,q</span> is observed for individuals
+<span class="math inline">i=1,\ldots,n</span>. Let <span class="math inline">\pi_{ij}</span> denote the probability that the
+value of the dependent variable for individual <span class="math inline">i</span> is equal to <span class="math inline">j</span>, then the baseline-category logit model
+takes the form:</p>
+<p><span class="math display">
 \begin{aligned}
 \pi_{ij} =
 \begin{cases}
@@ -118,27 +111,22 @@ then the baseline-category logit model takes the form:</p>
 &amp; \text{for } j=1
 \end{cases}
 \end{aligned}
-</annotation></semantics></math></p>
-<p>where the first category
-(<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">j=1</annotation></semantics></math>)
-is the baseline category.</p>
+</span></p>
+<p>where the first category (<span class="math inline">j=1</span>) is
+the baseline category.</p>
 <p>Equivalently, the model can be expressed in terms of log-odds,
 relative to the baseline-category:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mfrac><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub></mfrac><mo>=</mo><msub><mi>α</mi><mrow><mi>j</mi><mn>0</mn></mrow></msub><mo>+</mo><msub><mi>α</mi><mrow><mi>j</mi><mn>1</mn></mrow></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mrow><mi>j</mi><mi>r</mi></mrow></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi></mrow></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \ln\frac{\pi_{ij}}{\pi_{i1}}
 =
 \alpha_{j0}+\alpha_{j1}x_{1i}+\cdots+\alpha_{jr}x_{ri}.
-</annotation></semantics></math></p>
-<p>Here the relevant parameters of the model are the coefficients
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mrow><mi>j</mi><mi>k</mi></mrow></msub><annotation encoding="application/x-tex">\alpha_{jk}</annotation></semantics></math>
-which describe how the values of independent variables (numbered
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">k=1,\ldots,r</annotation></semantics></math>)
-affect the relative chances of the response taking a value
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-versus taking the value
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mn>1</mn><annotation encoding="application/x-tex">1</annotation></semantics></math>.
-Note that there is one coefficient for each independent variable and
-<em>each response</em> other than the baseline category.</p>
+</span></p>
+<p>Here the relevant parameters of the model are the coefficients <span class="math inline">\alpha_{jk}</span> which describe how the values of
+independent variables (numbered <span class="math inline">k=1,\ldots,r</span>) affect the relative chances of
+the response taking a value <span class="math inline">j</span> versus
+taking the value <span class="math inline">1</span>. Note that there is
+one coefficient for each independent variable and <em>each response</em>
+other than the baseline category.</p>
 <div class="section level2">
 <h2 class="unnumbered" id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
 </h2>

@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>The IWLS algorithm used to fit conditional logit models • mclogit</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -89,58 +90,38 @@ algorithm, which follows the algorithm used by the
 <code><a href="https://rdrr.io/r/stats/glm.html" class="external-link">glm.fit()</a></code> function from the “stats” package of <em>R</em>
 <span class="citation">(Nelder and Wedderburn 1972; McCullagh and Nelder
 1989; R Core Team 2023)</span>.</p>
-<p>If
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{ij}</annotation></semantics></math>
-is the probability that individual
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-chooses alternative
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-from his/her choice set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒮</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{S}_i</annotation></semantics></math>,
-where</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">
+<p>If <span class="math inline">\pi_{ij}</span> is the probability that
+individual <span class="math inline">i</span> chooses alternative <span class="math inline">j</span> from his/her choice set <span class="math inline">\mathcal{S}_i</span>, where</p>
+<p><span class="math display">
 \pi_{ij}=\frac{\exp(\eta_{ij})}{\sum_{k\in\mathcal{S}_i}\exp(\eta_{ik})}
-</annotation></semantics></math></p>
-<p>and if
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">y_{ij}</annotation></semantics></math>
-is the dummy variable with equals 1 if individual
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-chooses alternative
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-and equals 0 otherwise, the log-likelihood function (given that the
-choices are identically independent distributed given
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{ij}</annotation></semantics></math>)
+</span></p>
+<p>and if <span class="math inline">y_{ij}</span> is the dummy variable
+with equals 1 if individual <span class="math inline">i</span> chooses
+alternative <span class="math inline">j</span> and equals 0 otherwise,
+the log-likelihood function (given that the choices are identically
+independent distributed given <span class="math inline">\pi_{ij}</span>)
 can be written as</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>ln</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><munder><mo>∑</mo><mi>i</mi></munder><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>j</mi></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \ell=\sum_{i,j}y_{ij}\ln\pi_{ij}
     =\sum_{i,j}y_{ij}\eta_{ij}-\sum_i\ln\left(\sum_j\exp(\eta_{ij})\right)
-</annotation></semantics></math></p>
-<p>If the data are aggregated in the terms of counts such that
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">n_{ij}</annotation></semantics></math>
-is the number of individuals with the same choice set and the same
-choice probabilities
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{ij}</annotation></semantics></math>
-that have chosen alternative
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>,
-the log-likelihood is (given that the choices are identically
-independent distributed given
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><annotation encoding="application/x-tex">\pi_{ij}</annotation></semantics></math>)</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ℓ</mo><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>ln</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><munder><mo>∑</mo><mi>i</mi></munder><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>j</mi></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+</span></p>
+<p>If the data are aggregated in the terms of counts such that <span class="math inline">n_{ij}</span> is the number of individuals with the
+same choice set and the same choice probabilities <span class="math inline">\pi_{ij}</span> that have chosen alternative <span class="math inline">j</span>, the log-likelihood is (given that the
+choices are identically independent distributed given <span class="math inline">\pi_{ij}</span>)</p>
+<p><span class="math display">
 \ell=\sum_{i,j}n_{ij}\ln\pi_{ij}
     =\sum_{i,j}n_{ij}\eta_{ij}-\sum_in_{i+}\ln\left(\sum_j\exp(\eta_{ij})\right)
-</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub><mo>=</mo><msub><mo>∑</mo><mrow><mi>j</mi><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow></msub><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">n_{i+}=\sum_{j\in\mathcal{S}_i}n_{ij}</annotation></semantics></math>.</p>
+</span></p>
+<p>where <span class="math inline">n_{i+}=\sum_{j\in\mathcal{S}_i}n_{ij}</span>.</p>
 <p>If</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>α</mi><mn>1</mn></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mi>r</mi></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>′</mi><mi>𝛂</mi></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \eta_{ij} =
 \alpha_1x_{1ij}+\cdots+\alpha_rx_{rij}=\boldsymbol{x}_{ij}'\boldsymbol{\alpha}
-</annotation></semantics></math></p>
+</span></p>
 <p>then the gradient of the log-likelihood with respect to the
-coefficient vector
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛂</mi><annotation encoding="application/x-tex">\boldsymbol{\alpha}</annotation></semantics></math>
+coefficient vector <span class="math inline">\boldsymbol{\alpha}</span>
 is</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><mi>∂</mi><mo>ℓ</mo></mrow><mrow><mi>∂</mi><mi>𝛂</mi></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mfrac><mrow><mi>∂</mi><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><mrow><mi>∂</mi><mi>𝛂</mi></mrow></mfrac><mfrac><mrow><mi>∂</mi><mo>ℓ</mo></mrow><mrow><mi>∂</mi><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝐗</mi><mi>′</mi><mi>𝐍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \frac{\partial\ell}{\partial\boldsymbol{\alpha}}
 =
 \sum_{i,j}
@@ -157,9 +138,9 @@ n_{i+}
 (y_{ij}-\pi_{ij})
 =
 \boldsymbol{X}'\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi})
-</annotation></semantics></math></p>
+</span></p>
 <p>and the Hessian is</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo></mrow><mrow><mi>∂</mi><mi>𝛂</mi><mi>∂</mi><mi>𝛂</mi><mi>′</mi></mrow></mfrac><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><mfrac><mrow><mi>∂</mi><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><mrow><mi>∂</mi><mi>𝛂</mi></mrow></mfrac><mfrac><mrow><mi>∂</mi><msub><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><mrow><mi>∂</mi><mi>𝛂</mi><mi>′</mi></mrow></mfrac><mfrac><mrow><mi>∂</mi><msup><mo>ℓ</mo><mn>2</mn></msup></mrow><mrow><mi>∂</mi><msubsup><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow><mn>2</mn></msubsup></mrow></mfrac><mo>=</mo><mo>−</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi><mo>,</mo><mi>k</mi></mrow></munder><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>δ</mi><mrow><mi>j</mi><mi>k</mi></mrow></msub><mo>−</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>′</mi><mo>=</mo><mo>−</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \frac{\partial^2\ell}{\partial\boldsymbol{\alpha}\partial\boldsymbol{\alpha}'}
 =
 \sum_{i,j}
@@ -176,15 +157,12 @@ n_{i+}
 =
 -
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}
-</annotation></semantics></math></p>
-<p>Here
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>/</mi><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub></mrow><annotation encoding="application/x-tex">y_{ij}=n_{ij}/n_{i+}</annotation></semantics></math>,
-while
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐍</mi><annotation encoding="application/x-tex">\boldsymbol{N}</annotation></semantics></math>
-is a diagonal matrix with diagonal elements
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>n</mi><mrow><mi>i</mi><mo>+</mo></mrow></msub><annotation encoding="application/x-tex">n_{i+}</annotation></semantics></math>.</p>
+</span></p>
+<p>Here <span class="math inline">y_{ij}=n_{ij}/n_{i+}</span>, while
+<span class="math inline">\boldsymbol{N}</span> is a diagonal matrix
+with diagonal elements <span class="math inline">n_{i+}</span>.</p>
 <p>Newton-Raphson iterations then take the form</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>−</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><msup><mi>∂</mi><mn>2</mn></msup><mo>ℓ</mo></mrow><mrow><mi>∂</mi><mi>𝛂</mi><mi>∂</mi><mi>𝛂</mi><mi>′</mi></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mfrac><mrow><mi>∂</mi><mo>ℓ</mo></mrow><mrow><mi>∂</mi><mi>𝛂</mi></mrow></mfrac><mo>=</mo><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><mo stretchy="true" form="postfix">)</mo></mrow><mrow><mo>−</mo><mn>1</mn></mrow></msup><mi>𝐗</mi><mi>′</mi><mi>𝐍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \boldsymbol{\alpha}^{(s+1)}
 =
 \boldsymbol{\alpha}^{(s)}
@@ -200,17 +178,11 @@ is a diagonal matrix with diagonal elements
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}
 \right)^{-1}
 \boldsymbol{X}'\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi})
-</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>
-are evaluated at
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝛂</mi><mo>=</mo><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{\alpha}=\boldsymbol{\alpha}^{(s)}</annotation></semantics></math>.</p>
-<p>Multiplying by
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi></mrow><annotation encoding="application/x-tex">\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}</annotation></semantics></math>
+</span></p>
+<p>where <span class="math inline">\boldsymbol{\pi}</span> and <span class="math inline">\boldsymbol{W}</span> are evaluated at <span class="math inline">\boldsymbol{\alpha}=\boldsymbol{\alpha}^{(s)}</span>.</p>
+<p>Multiplying by <span class="math inline">\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}</span>
 gives</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo>+</mo><mn>1</mn><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>=</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><mi>𝐗</mi><mi>′</mi><mi>𝐍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐗</mi><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><msup><mi>𝐖</mi><mo>−</mo></msup><mi>𝐍</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>𝐲</mi><mo>−</mo><mi>𝛑</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><msup><mi>𝐲</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}
 \boldsymbol{\alpha}^{(s+1)}
 =
@@ -223,82 +195,65 @@ gives</p>
 \left(\boldsymbol{X}\boldsymbol{\alpha}^{(s)}+\boldsymbol{W}^-\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi})\right)
 =
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^*
-</annotation></semantics></math></p>
-<p>where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐖</mi><mo>−</mo></msup><annotation encoding="application/x-tex">\boldsymbol{W}^-</annotation></semantics></math>
-is a generalized inverse of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>
-is a “working response vector” with elements</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow><mo>*</mo></msubsup><mo>=</mo><msub><mi>𝐱</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mi>′</mi><msup><mi>𝛂</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>s</mi><mo stretchy="true" form="postfix">)</mo></mrow></msup><mo>+</mo><mfrac><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">
+</span></p>
+<p>where <span class="math inline">\boldsymbol{W}^-</span> is a
+generalized inverse of <span class="math inline">\boldsymbol{W}</span>
+and <span class="math inline">\boldsymbol{y}^*</span> is a “working
+response vector” with elements</p>
+<p><span class="math display">
 y_{ij}^*=\boldsymbol{x}_{ij}'\boldsymbol{\alpha}^{(s)}+\frac{y_{ij}-\pi_{ij}}{\pi_{ij}}
-</annotation></semantics></math></p>
+</span></p>
 <p>The IWLS algorithm thus involves the following steps:</p>
 <ol style="list-style-type: decimal">
-<li><p>Create some suitable starting values for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>,
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math></p></li>
-<li><p>Construct the “working dependent variable”
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math></p></li>
+<li><p>Create some suitable starting values for <span class="math inline">\boldsymbol{\pi}</span>, <span class="math inline">\boldsymbol{W}</span>, and <span class="math inline">\boldsymbol{y}^*</span></p></li>
+<li><p>Construct the “working dependent variable” <span class="math inline">\boldsymbol{y}^*</span></p></li>
 <li>
 <p>Solve the equation</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><mi>𝐗</mi><mi>𝛂</mi><mo>=</mo><mi>𝐗</mi><mi>′</mi><mi>𝐖</mi><msup><mi>𝐲</mi><mo>*</mo></msup></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}
 \boldsymbol{\alpha}
 =
 \boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^*
-</annotation></semantics></math></p>
-<p>for
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛂</mi><annotation encoding="application/x-tex">\boldsymbol{\alpha}</annotation></semantics></math>.</p>
+</span></p>
+<p>for <span class="math inline">\boldsymbol{\alpha}</span>.</p>
 </li>
-<li><p>Compute updated
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛈</mi><annotation encoding="application/x-tex">\boldsymbol{\eta}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛑</mi><annotation encoding="application/x-tex">\boldsymbol{\pi}</annotation></semantics></math>,
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝐖</mi><annotation encoding="application/x-tex">\boldsymbol{W}</annotation></semantics></math>,
-and
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>𝐲</mi><mo>*</mo></msup><annotation encoding="application/x-tex">\boldsymbol{y}^*</annotation></semantics></math>.</p></li>
+<li><p>Compute updated <span class="math inline">\boldsymbol{\eta}</span>, <span class="math inline">\boldsymbol{\pi}</span>, <span class="math inline">\boldsymbol{W}</span>, and <span class="math inline">\boldsymbol{y}^*</span>.</p></li>
 <li>
 <p>Compute the updated value for the log-likelihood or the
 deviance</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>d</mi><mo>=</mo><mn>2</mn><munder><mo>∑</mo><mrow><mi>i</mi><mo>,</mo><mi>j</mi></mrow></munder><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>ln</mo><mfrac><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub></mfrac></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 d=2\sum_{i,j}n_{ij}\ln\frac{y_{ij}}{\pi_{ij}}
-</annotation></semantics></math></p>
+</span></p>
 </li>
 <li><p>If the decrease of the deviance (or the increase of the
 log-likelihood) is smaller than a given tolerance criterian (typically
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>Δ</mi><mi>d</mi><mo>≤</mo><msup><mn>10</mn><mrow><mo>−</mo><mn>7</mn></mrow></msup></mrow><annotation encoding="application/x-tex">\Delta d \leq 10^{-7}</annotation></semantics></math>)
-stop the algorighm and declare it as converged. Otherwise go back to
-step 2 with the updated value of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>𝛂</mi><annotation encoding="application/x-tex">\boldsymbol{\alpha}</annotation></semantics></math>.</p></li>
+<span class="math inline">\Delta d \leq 10^{-7}</span>) stop the
+algorighm and declare it as converged. Otherwise go back to step 2 with
+the updated value of <span class="math inline">\boldsymbol{\alpha}</span>.</p></li>
 </ol>
 <p>The starting values for the algorithm used by the <em>mclogit</em>
 package are constructe as follows:</p>
 <ol style="list-style-type: decimal">
 <li>
 <p>Set</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>=</mo><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>+</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mo>−</mo><mfrac><mn>1</mn><msub><mi>q</mi><mi>i</mi></msub></mfrac><munder><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow></munder><mo>ln</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>n</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>+</mo><mfrac displaystyle="false"><mn>1</mn><mn>2</mn></mfrac><mo stretchy="true" form="postfix">)</mo></mrow></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \eta_{ij}^{(0)} = \ln (n_{ij}+\tfrac12)
-                - \frac1{q_i}\sum_{k\in\mathcal{S}_i}\ln (n_{ij}+\tfrac12)
-</annotation></semantics></math></p>
-<p>(where
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mi>i</mi></msub><annotation encoding="application/x-tex">q_i</annotation></semantics></math>
-is the size of the choice set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒮</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{S}_i</annotation></semantics></math>)</p>
+                - \frac1{q_i}\sum_{k\in\mathcal{S}_i}\ln
+(n_{ij}+\tfrac12)
+</span></p>
+<p>(where <span class="math inline">q_i</span> is the size of the choice
+set <span class="math inline">\mathcal{S}_i</span>)</p>
 </li>
-<li><p>Compute the starting values of the choice probabilities
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><annotation encoding="application/x-tex">\pi_{ij}^{(0)}</annotation></semantics></math>
-according to the equation at the beginning of the page</p></li>
+<li><p>Compute the starting values of the choice probabilities <span class="math inline">\pi_{ij}^{(0)}</span> according to the equation at
+the beginning of the page</p></li>
 <li>
 <p>Compute intial values of the working dependent variable according
 to</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo>*</mo><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></mrow></msubsup><mo>=</mo><msubsup><mi>η</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msubsup><mo>+</mo><mfrac><mrow><msub><mi>y</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msubsup><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msubsup></mrow><msubsup><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow><mrow><mo stretchy="true" form="prefix">(</mo><mn>0</mn><mo stretchy="true" form="postfix">)</mo></mrow></msubsup></mfrac></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 y_{ij}^{*(0)}
 =
 \eta_{ij}^{(0)}+\frac{y_{ij}-\pi_{ij}^{(0)}}{\pi_{ij}^{(0)}}
-</annotation></semantics></math></p>
+</span></p>
 </li>
 </ol>
 <div class="section level2">

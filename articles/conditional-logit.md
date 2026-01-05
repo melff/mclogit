@@ -4,18 +4,19 @@ Conditional logit models are motivated by a variety of considerations,
 notably as a way to model binary panel data or responses in
 case-control-studies. The variant supported by the package “mclogit” is
 motivated by the analysis of discrete choices and goes back to McFadden
-(1974). Here, a series of individuals $i = 1,\ldots,n$ is observed to
-have made a choice (represented by a number $j$) from a choice set
-$\mathcal{S}_{i}$, the set of alternatives at the individual’s disposal.
-Each alternatives $j$ in the choice set can be described by the values
-$x_{1ij},\ldots,x_{1ij}$ of $r$ attribute variables (where the variables
-are enumerated as $i = 1,\ldots,r$). (Note that in contrast to the
+(1974). Here, a series of individuals i=1,\ldots,n is observed to have
+made a choice (represented by a number j) from a choice set
+\mathcal{S}\_i, the set of alternatives at the individual’s disposal.
+Each alternatives j in the choice set can be described by the values
+x\_{1ij},\ldots,x\_{1ij} of r attribute variables (where the variables
+are enumerated as i=1,\ldots,r). (Note that in contrast to the
 baseline-category logit model, these values vary between choice
-alternatives.) Conditional logit models then posit that individual $i$
-chooses alternative $j$ from his or her choice set $\mathcal{S}_{i}$
-with probability
+alternatives.) Conditional logit models then posit that individual i
+chooses alternative j from his or her choice set \mathcal{S}\_i with
+probability
 
-$$\pi_{ij} = \frac{\exp\left( \alpha_{1}x_{1ij} + \cdots + \alpha_{r}x_{rij} \right)}{\sum\limits_{k \in \mathcal{S}_{i}}\exp\left( \alpha_{1}x_{1ik} + \cdots + \alpha_{r}x_{rik} \right)}.$$
+\pi\_{ij} = \frac{\exp(\alpha_1x\_{1ij}+\cdots+\alpha_rx\_{rij})}
+{\sum\_{k\in\mathcal{S}\_i}\exp(\alpha_1x\_{1ik}+\cdots+\alpha_rx\_{rik})}.
 
 It is worth noting that the conditional logit model does not require
 that all individuals face the same choice sets. Only that the
@@ -26,7 +27,8 @@ The similarities and differences of these models to baseline-category
 logit model becomes obvious if one looks at the log-odds relative to the
 first alternative in the choice set:
 
-$$\ln\frac{\pi_{ij}}{\pi_{i1}} = \alpha_{1}\left( x_{1ij} - x_{1i1} \right) + \cdots + \alpha_{r}\left( x_{rij} - x_{ri1} \right).$$
+\ln\frac{\pi\_{ij}}{\pi\_{i1}} =
+\alpha\_{1}(x\_{1ij}-x\_{1i1})+\cdots+\alpha\_{r}(x\_{rij}-x\_{ri1}).
 
 Conditional logit models appear more parsimonious than baseline-category
 logit models in so far as they have only one coefficient for each

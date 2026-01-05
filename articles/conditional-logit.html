@@ -6,7 +6,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Conditional logit models • mclogit</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- katex math --><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script><script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous" onload="renderMathInElement(document.body);"></script><script src="../katex-auto.js"></script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
@@ -86,32 +87,19 @@
 considerations, notably as a way to model binary panel data or responses
 in case-control-studies. The variant supported by the package “mclogit”
 is motivated by the analysis of discrete choices and goes back to <span class="citation">McFadden (1974)</span>. Here, a series of individuals
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">i=1,\ldots,n</annotation></semantics></math>
-is observed to have made a choice (represented by a number
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>)
-from a choice set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒮</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{S}_i</annotation></semantics></math>,
-the set of alternatives at the individual’s disposal. Each alternatives
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-in the choice set can be described by the values
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub></mrow><annotation encoding="application/x-tex">x_{1ij},\ldots,x_{1ij}</annotation></semantics></math>
-of
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>r</mi><annotation encoding="application/x-tex">r</annotation></semantics></math>
-attribute variables (where the variables are enumerated as
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>r</mi></mrow><annotation encoding="application/x-tex">i=1,\ldots,r</annotation></semantics></math>).
-(Note that in contrast to the baseline-category logit model, these
-values vary between choice alternatives.) Conditional logit models then
-posit that individual
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
-chooses alternative
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
-from his or her choice set
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>𝒮</mi><mi>i</mi></msub><annotation encoding="application/x-tex">\mathcal{S}_i</annotation></semantics></math>
-with probability</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mfrac><mrow><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mi>r</mi></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi><mi>j</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow><mrow><munder><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msub><mi>𝒮</mi><mi>i</mi></msub></mrow></munder><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>k</mi></mrow></msub><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mi>r</mi></msub><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi><mi>k</mi></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac><mi>.</mi></mrow><annotation encoding="application/x-tex">
+<span class="math inline">i=1,\ldots,n</span> is observed to have made a
+choice (represented by a number <span class="math inline">j</span>) from
+a choice set <span class="math inline">\mathcal{S}_i</span>, the set of
+alternatives at the individual’s disposal. Each alternatives <span class="math inline">j</span> in the choice set can be described by the
+values <span class="math inline">x_{1ij},\ldots,x_{1ij}</span> of <span class="math inline">r</span> attribute variables (where the variables
+are enumerated as <span class="math inline">i=1,\ldots,r</span>). (Note
+that in contrast to the baseline-category logit model, these values vary
+between choice alternatives.) Conditional logit models then posit that
+individual <span class="math inline">i</span> chooses alternative <span class="math inline">j</span> from his or her choice set <span class="math inline">\mathcal{S}_i</span> with probability</p>
+<p><span class="math display">
 \pi_{ij} = \frac{\exp(\alpha_1x_{1ij}+\cdots+\alpha_rx_{rij})}
                 {\sum_{k\in\mathcal{S}_i}\exp(\alpha_1x_{1ik}+\cdots+\alpha_rx_{rik})}.
-</annotation></semantics></math></p>
+</span></p>
 <p>It is worth noting that the conditional logit model does not require
 that all individuals face the same choice sets. Only that the
 alternatives in the choice sets can be distinguished from one another by
@@ -119,11 +107,11 @@ the attribute variables.</p>
 <p>The similarities and differences of these models to baseline-category
 logit model becomes obvious if one looks at the log-odds relative to the
 first alternative in the choice set:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo>ln</mo><mfrac><msub><mi>π</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><msub><mi>π</mi><mrow><mi>i</mi><mn>1</mn></mrow></msub></mfrac><mo>=</mo><msub><mi>α</mi><mn>1</mn></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mn>1</mn><mi>i</mi><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>+</mo><mi>⋯</mi><mo>+</mo><msub><mi>α</mi><mi>r</mi></msub><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi><mi>j</mi></mrow></msub><mo>−</mo><msub><mi>x</mi><mrow><mi>r</mi><mi>i</mi><mn>1</mn></mrow></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+<p><span class="math display">
 \ln\frac{\pi_{ij}}{\pi_{i1}}
 =
 \alpha_{1}(x_{1ij}-x_{1i1})+\cdots+\alpha_{r}(x_{rij}-x_{ri1}).
-</annotation></semantics></math></p>
+</span></p>
 <p>Conditional logit models appear more parsimonious than
 baseline-category logit models in so far as they have only one
 coefficient for each independent variables.[^1] In the “mclogi" package,

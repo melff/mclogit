@@ -8,102 +8,129 @@ which follows the algorithm used by the
 “stats” package of *R* (Nelder and Wedderburn 1972; McCullagh and Nelder
 1989; R Core Team 2023).
 
-If $\pi_{ij}$ is the probability that individual $i$ chooses alternative
-$j$ from his/her choice set $\mathcal{S}_{i}$, where
+If \pi\_{ij} is the probability that individual i chooses alternative j
+from his/her choice set \mathcal{S}\_i, where
 
-$$\pi_{ij} = \frac{\exp\left( \eta_{ij} \right)}{\sum\limits_{k \in \mathcal{S}_{i}}\exp\left( \eta_{ik} \right)}$$
+\pi\_{ij}=\frac{\exp(\eta\_{ij})}{\sum\_{k\in\mathcal{S}\_i}\exp(\eta\_{ik})}
 
-and if $y_{ij}$ is the dummy variable with equals 1 if individual $i$
-chooses alternative $j$ and equals 0 otherwise, the log-likelihood
+and if y\_{ij} is the dummy variable with equals 1 if individual i
+chooses alternative j and equals 0 otherwise, the log-likelihood
 function (given that the choices are identically independent distributed
-given $\pi_{ij}$) can be written as
+given \pi\_{ij}) can be written as
 
-$$\ell = \sum\limits_{i,j}y_{ij}\ln\pi_{ij} = \sum\limits_{i,j}y_{ij}\eta_{ij} - \sum\limits_{i}\ln\left( \sum\limits_{j}\exp\left( \eta_{ij} \right) \right)$$
+\ell=\sum\_{i,j}y\_{ij}\ln\pi\_{ij}
+=\sum\_{i,j}y\_{ij}\eta\_{ij}-\sum_i\ln\left(\sum_j\exp(\eta\_{ij})\right)
 
-If the data are aggregated in the terms of counts such that $n_{ij}$ is
+If the data are aggregated in the terms of counts such that n\_{ij} is
 the number of individuals with the same choice set and the same choice
-probabilities $\pi_{ij}$ that have chosen alternative $j$, the
+probabilities \pi\_{ij} that have chosen alternative j, the
 log-likelihood is (given that the choices are identically independent
-distributed given $\pi_{ij}$)
+distributed given \pi\_{ij})
 
-$$\ell = \sum\limits_{i,j}n_{ij}\ln\pi_{ij} = \sum\limits_{i,j}n_{ij}\eta_{ij} - \sum\limits_{i}n_{i +}\ln\left( \sum\limits_{j}\exp\left( \eta_{ij} \right) \right)$$
+\ell=\sum\_{i,j}n\_{ij}\ln\pi\_{ij}
+=\sum\_{i,j}n\_{ij}\eta\_{ij}-\sum_in\_{i+}\ln\left(\sum_j\exp(\eta\_{ij})\right)
 
-where $n_{i +} = \sum_{j \in \mathcal{S}_{i}}n_{ij}$.
+where n\_{i+}=\sum\_{j\in\mathcal{S}\_i}n\_{ij}.
 
 If
 
-$$\eta_{ij} = \alpha_{1}x_{1ij} + \cdots + \alpha_{r}x_{rij} = \mathbf{x}_{ij}\prime{\mathbf{α}}$$
+\eta\_{ij} =
+\alpha_1x\_{1ij}+\cdots+\alpha_rx\_{rij}=\boldsymbol{x}\_{ij}'\boldsymbol{\alpha}
 
 then the gradient of the log-likelihood with respect to the coefficient
-vector $\mathbf{α}$ is
+vector \boldsymbol{\alpha} is
 
-$$\frac{\partial\ell}{\partial{\mathbf{α}}} = \sum\limits_{i,j}\frac{\partial\eta_{ij}}{\partial{\mathbf{α}}}\frac{\partial\ell}{\partial\eta_{ij}} = \sum\limits_{i,j}\mathbf{x}_{ij}\left( n_{ij} - n_{i +}\pi_{ij} \right) = \sum\limits_{i,j}\mathbf{x}_{ij}n_{i +}\left( y_{ij} - \pi_{ij} \right) = \mathbf{X}\prime\mathbf{N}(\mathbf{y} - {\mathbf{π}})$$
+\frac{\partial\ell}{\partial\boldsymbol{\alpha}} = \sum\_{i,j}
+\frac{\partial\eta\_{ij}}{\partial\boldsymbol{\alpha}}
+\frac{\partial\ell}{\partial\eta\_{ij}} = \sum\_{i,j}
+\boldsymbol{x}\_{ij} (n\_{ij}-n\_{i+}\pi\_{ij}) = \sum\_{i,j}
+\boldsymbol{x}\_{ij} n\_{i+} (y\_{ij}-\pi\_{ij}) =
+\boldsymbol{X}'\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi})
 
 and the Hessian is
 
-$$\frac{\partial^{2}\ell}{\partial{\mathbf{α}}\partial{\mathbf{α}}\prime} = \sum\limits_{i,j}\frac{\partial\eta_{ij}}{\partial{\mathbf{α}}}\frac{\partial\eta_{ij}}{\partial{\mathbf{α}}\prime}\frac{\partial\ell^{2}}{\partial\eta_{ij}^{2}} = - \sum\limits_{i,j,k}\mathbf{x}_{ij}n_{i +}\left( \delta_{jk} - \pi_{ij}\pi_{ik} \right)\mathbf{x}_{ij}\prime = - \mathbf{X}\prime\mathbf{W}\mathbf{X}$$
+\frac{\partial^2\ell}{\partial\boldsymbol{\alpha}\partial\boldsymbol{\alpha}'}
+= \sum\_{i,j} \frac{\partial\eta\_{ij}}{\partial\boldsymbol{\alpha}}
+\frac{\partial\eta\_{ij}}{\partial\boldsymbol{\alpha}'}
+\frac{\partial\ell^2}{\partial\eta\_{ij}^2} = - \sum\_{i,j,k}
+\boldsymbol{x}\_{ij} n\_{i+} (\delta\_{jk}-\pi\_{ij}\pi\_{ik})
+\boldsymbol{x}\_{ij}' = - \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}
 
-Here $y_{ij} = n_{ij}/n_{i +}$, while $\mathbf{N}$ is a diagonal matrix
-with diagonal elements $n_{i +}$.
+Here y\_{ij}=n\_{ij}/n\_{i+}, while \boldsymbol{N} is a diagonal matrix
+with diagonal elements n\_{i+}.
 
 Newton-Raphson iterations then take the form
 
-$${\mathbf{α}}^{(s + 1)} = {\mathbf{α}}^{(s)} - \left( \frac{\partial^{2}\ell}{\partial{\mathbf{α}}\partial{\mathbf{α}}\prime} \right)^{- 1}\frac{\partial\ell}{\partial{\mathbf{α}}} = {\mathbf{α}}^{(s)} + (\mathbf{X}\prime\mathbf{W}\mathbf{X})^{- 1}\mathbf{X}\prime\mathbf{N}(\mathbf{y} - {\mathbf{π}})$$
+\boldsymbol{\alpha}^{(s+1)} = \boldsymbol{\alpha}^{(s)} - \left(
+\frac{\partial^2\ell}{\partial\boldsymbol{\alpha}\partial\boldsymbol{\alpha}'}
+\right)^{-1} \frac{\partial\ell}{\partial\boldsymbol{\alpha}} =
+\boldsymbol{\alpha}^{(s)} + \left(
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} \right)^{-1}
+\boldsymbol{X}'\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi})
 
-where $\mathbf{π}$ and $\mathbf{W}$ are evaluated at
-${\mathbf{α}} = {\mathbf{α}}^{(s)}$.
+where \boldsymbol{\pi} and \boldsymbol{W} are evaluated at
+\boldsymbol{\alpha}=\boldsymbol{\alpha}^{(s)}.
 
-Multiplying by $\mathbf{X}\prime\mathbf{W}\mathbf{X}$ gives
+Multiplying by \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} gives
 
-$$\mathbf{X}\prime\mathbf{W}\mathbf{X}{\mathbf{α}}^{(s + 1)} = \mathbf{X}\prime\mathbf{W}\mathbf{X}{\mathbf{α}}^{(s)} + \mathbf{X}\prime\mathbf{N}(\mathbf{y} - {\mathbf{π}}) = \mathbf{X}\prime\mathbf{W}\left( \mathbf{X}{\mathbf{α}}^{(s)} + \mathbf{W}^{-}\mathbf{N}(\mathbf{y} - {\mathbf{π}}) \right) = \mathbf{X}\prime\mathbf{W}\mathbf{y}^{*}$$
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} \boldsymbol{\alpha}^{(s+1)}
+= \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X}
+\boldsymbol{\alpha}^{(s)} +
+\boldsymbol{X}'\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi}) =
+\boldsymbol{X}'\boldsymbol{W}
+\left(\boldsymbol{X}\boldsymbol{\alpha}^{(s)}+\boldsymbol{W}^-\boldsymbol{N}(\boldsymbol{y}-\boldsymbol{\pi})\right)
+= \boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^\*
 
-where $\mathbf{W}^{-}$ is a generalized inverse of $\mathbf{W}$ and
-$\mathbf{y}^{*}$ is a “working response vector” with elements
+where \boldsymbol{W}^- is a generalized inverse of \boldsymbol{W} and
+\boldsymbol{y}^\* is a “working response vector” with elements
 
-$$y_{ij}^{*} = \mathbf{x}_{ij}\prime{\mathbf{α}}^{(s)} + \frac{y_{ij} - \pi_{ij}}{\pi_{ij}}$$
+y\_{ij}^\*=\boldsymbol{x}\_{ij}'\boldsymbol{\alpha}^{(s)}+\frac{y\_{ij}-\pi\_{ij}}{\pi\_{ij}}
 
 The IWLS algorithm thus involves the following steps:
 
-1.  Create some suitable starting values for $\mathbf{π}$, $\mathbf{W}$,
-    and $\mathbf{y}^{*}$
+1.  Create some suitable starting values for \boldsymbol{\pi},
+    \boldsymbol{W}, and \boldsymbol{y}^\*
 
-2.  Construct the “working dependent variable” $\mathbf{y}^{*}$
+2.  Construct the “working dependent variable” \boldsymbol{y}^\*
 
 3.  Solve the equation
 
-    $$\mathbf{X}\prime\mathbf{W}\mathbf{X}{\mathbf{α}} = \mathbf{X}\prime\mathbf{W}\mathbf{y}^{*}$$
+    \boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} \boldsymbol{\alpha} =
+    \boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^\*
 
-    for $\mathbf{α}$.
+    for \boldsymbol{\alpha}.
 
-4.  Compute updated $\mathbf{η}$, $\mathbf{π}$, $\mathbf{W}$, and
-    $\mathbf{y}^{*}$.
+4.  Compute updated \boldsymbol{\eta}, \boldsymbol{\pi}, \boldsymbol{W},
+    and \boldsymbol{y}^\*.
 
 5.  Compute the updated value for the log-likelihood or the deviance
 
-    $$d = 2\sum\limits_{i,j}n_{ij}\ln\frac{y_{ij}}{\pi_{ij}}$$
+    d=2\sum\_{i,j}n\_{ij}\ln\frac{y\_{ij}}{\pi\_{ij}}
 
 6.  If the decrease of the deviance (or the increase of the
     log-likelihood) is smaller than a given tolerance criterian
-    (typically $\Delta d \leq 10^{- 7}$) stop the algorighm and declare
-    it as converged. Otherwise go back to step 2 with the updated value
-    of $\mathbf{α}$.
+    (typically \Delta d \leq 10^{-7}) stop the algorighm and declare it
+    as converged. Otherwise go back to step 2 with the updated value of
+    \boldsymbol{\alpha}.
 
 The starting values for the algorithm used by the *mclogit* package are
 constructe as follows:
 
 1.  Set
 
-    $$\eta_{ij}^{(0)} = \ln\left( n_{ij} + \frac{1}{2} \right) - \frac{1}{q_{i}}\sum\limits_{k \in \mathcal{S}_{i}}\ln\left( n_{ij} + \frac{1}{2} \right)$$
+    \eta\_{ij}^{(0)} = \ln (n\_{ij}+\tfrac12) -
+    \frac1{q_i}\sum\_{k\in\mathcal{S}\_i}\ln (n\_{ij}+\tfrac12)
 
-    (where $q_{i}$ is the size of the choice set $\mathcal{S}_{i}$)
+    (where q_i is the size of the choice set \mathcal{S}\_i)
 
 2.  Compute the starting values of the choice probabilities
-    $\pi_{ij}^{(0)}$ according to the equation at the beginning of the
+    \pi\_{ij}^{(0)} according to the equation at the beginning of the
     page
 
 3.  Compute intial values of the working dependent variable according to
 
-    $$y_{ij}^{*{(0)}} = \eta_{ij}^{(0)} + \frac{y_{ij} - \pi_{ij}^{(0)}}{\pi_{ij}^{(0)}}$$
+    y\_{ij}^{\*(0)} =
+    \eta\_{ij}^{(0)}+\frac{y\_{ij}-\pi\_{ij}^{(0)}}{\pi\_{ij}^{(0)}}
 
 ## References
 

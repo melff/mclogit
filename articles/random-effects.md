@@ -22,17 +22,17 @@ random-intercept extension of conditional logit models (or “mixed
 conditional logit models”, hence the name of the package). These models
 can be written as
 
-$$\pi_{ij} = \frac{\exp\left( \eta_{ij} \right)}{\sum\limits_{k \in \mathcal{S}_{i}}\exp\left( \eta_{ik} \right)}$$
+\pi\_{ij} =
+\frac{\exp(\eta\_{ij})}{\sum\_{k\in\mathcal{S}\_i}\exp(\eta\_{ik})}
 
 with
 
-$$\eta_{ij} = \sum\limits_{h}\alpha_{h}x_{hij} + \sum\limits_{k}z_{ik}b_{jk}$$
+\eta\_{ij}=\sum_h\alpha_hx\_{hij}+\sum_kz\_{ik}b\_{jk}
 
-where $x_{hij}$ represents values of independent variables, $\alpha_{h}$
-are coefficients, $z_{ik}$ are dummy ariables (that are equal to $1$ if
-$i$ is in cluster $k$ and equal to $0$ otherwise), $b_{jk}$ are random
-effects with a normal distribution with expectation $0$ and variance
-parameter $\sigma^{2}$.
+where x\_{hij} represents values of independent variables, \alpha_h are
+coefficients, z\_{ik} are dummy ariables (that are equal to 1 if i is in
+cluster k and equal to 0 otherwise), b\_{jk} are random effects with a
+normal distribution with expectation 0 and variance parameter \sigma^2.
 
 Later releases also added support for baseline-category logit models
 (initially only without random effects). In order to support random

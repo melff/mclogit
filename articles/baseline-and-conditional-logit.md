@@ -2,47 +2,45 @@
 
 Baseline-category logit models can be expressed as particular form of
 conditional logit models. In a conditional logit model (without random
-effects) the probability that individual $i$ chooses alternative $j$
-from choice set $\mathcal{S}_{i}$ is
+effects) the probability that individual i chooses alternative j from
+choice set \mathcal{S}\_i is
 
-$$\pi_{ij} = \frac{\exp\left( \eta_{ij} \right)}{\sum\limits_{k \in \mathcal{S}_{i}}\exp\left( \eta_{ik} \right)}$$
+\pi\_{ij} =
+\frac{\exp(\eta\_{ij})}{\sum\_{k\in\mathcal{S}\_i}\exp(\eta\_{ik})}
 
 where
 
-$$\eta_{ij} = \alpha_{1}x_{1ij} + \cdots + \alpha_{q}x_{qij}$$
+\eta\_{ij} = \alpha_1x\_{1ij}+\cdots+\alpha_qx\_{qij}
 
 In a baseline-category logit model, the set of alternatives is the same
-for all individuals $i$ that is $\mathcal{S}_{i} = {1,\ldots,q}$ and the
+for all individuals i that is \mathcal{S}\_i = {1,\ldots,q} and the
 linear part of the model can be written like:
 
-$$\eta_{ij} = \beta_{j0} + \beta_{j1}x_{i1} + \cdots + \beta_{jr}x_{ri}$$
+\eta\_{ij} = \beta\_{j0}+\beta\_{j1}x\_{i1}+\cdots+\beta\_{jr}x\_{ri}
 
-where the coefficients in the equation for baseline category $j$ are all
+where the coefficients in the equation for baseline category j are all
 zero, i.e.
 
-$$\beta_{10} = \cdots = \beta_{1r} = 0$$
+\beta\_{10} = \cdots = \beta\_{1r} = 0
 
 After setting
 
-$$\begin{array}{r}
-{x_{{(g \times {(j - 1)})}ij} = d_{gj},\quad x_{{(g \times {(j - 1)} + h)}ij} = d_{gj}x_{hi},\qquad{\text{with}\mspace{6mu}}d_{gj} = \begin{cases}
-0 & {{\text{for}\mspace{6mu}}j \neq g{\mspace{6mu}\text{or}\mspace{6mu}}j = g{\mspace{6mu}\text{and}\mspace{6mu}}j = 0} \\
-1 & {{\text{for}\mspace{6mu}}j = g{\mspace{6mu}\text{and}\mspace{6mu}}j \neq 0} \\
- & 
-\end{cases}}
-\end{array}$$
+\begin{aligned} x\_{(g\times(j-1))ij} = d\_{gj}, \quad
+x\_{(g\times(j-1)+h)ij} = d\_{gj}x\_{hi}, \qquad \text{with }d\_{gj}=
+\begin{cases} 0&\text{for } j\neq g\text{ or } j=g\text{ and } j=0\\
+1&\text{for } j=g \text{ and } j\neq0\\ \end{cases} \end{aligned}
 
 we have for the log-odds:
 
-$$\begin{array}{r}
-\begin{aligned}
-{\ln\frac{\pi_{ij}}{\pi_{i1}}} & {= \beta_{j0} + \beta_{ji}x_{1i} + \cdots + \beta_{jr}x_{ri}} \\
- & {= \sum\limits_{h}\beta_{jh}x_{hi} = \sum\limits_{g,h}\beta_{jh}d_{gj}x_{hi} = \sum\limits_{g,h}\alpha_{g \times {(j - 1)} + h}\left( d_{gj}x_{hi} - d_{g1}x_{hi} \right) = \sum\limits_{g,h}\alpha_{g \times {(j - 1)} + h}\left( x_{{(g \times {(j - 1)} + h)}ij} - x_{{(g \times {(j - 1)} + h)}i1} \right)} \\
- & {= \alpha_{1}\left( x_{1ij} - x_{1i1} \right) + \cdots + \alpha_{s}\left( x_{sij} - x_{si1} \right)}
-\end{aligned}
-\end{array}$$
+\begin{aligned} \begin{aligned} \ln\frac{\pi\_{ij}}{\pi\_{i1}}
+&=\beta\_{j0}+\beta\_{ji}x\_{1i}+\cdots+\beta\_{jr}x\_{ri} \\
+&=\sum\_{h}\beta\_{jh}x\_{hi}=\sum\_{g,h}\beta\_{jh}d\_{gj}x\_{hi}
+=\sum\_{g,h}\alpha\_{g\times(j-1)+h}(d\_{gj}x\_{hi}-d\_{g1}x\_{hi})
+=\sum\_{g,h}\alpha\_{g\times(j-1)+h}(x\_{(g\times(j-1)+h)ij}-x\_{(g\times(j-1)+h)i1})\\
+&=\alpha\_{1}(x\_{1ij}-x\_{1i1})+\cdots+\alpha\_{s}(x\_{sij}-x\_{si1})
+\end{aligned} \end{aligned}
 
-where $\alpha_{1} = \beta_{21}$, $\alpha_{2} = \beta_{22}$, etc.
+where \alpha_1=\beta\_{21}, \alpha_2=\beta\_{22}, etc.
 
 That is, the baseline-category logit model is translated into a
 conditional logit model where the alternative-specific values of the

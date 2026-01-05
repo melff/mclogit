@@ -15,30 +15,30 @@ exploiting the fact that baseline-category logit models can be
 re-expressed as condigional logit models.
 
 Baseline-category logit models are constructed as follows. Suppose a
-categorical dependent variable or response with categories
-$j = 1,\ldots,q$ is observed for individuals $i = 1,\ldots,n$. Let
-$\pi_{ij}$ denote the probability that the value of the dependent
-variable for individual $i$ is equal to $j$, then the baseline-category
-logit model takes the form:
+categorical dependent variable or response with categories j=1,\ldots,q
+is observed for individuals i=1,\ldots,n. Let \pi\_{ij} denote the
+probability that the value of the dependent variable for individual i is
+equal to j, then the baseline-category logit model takes the form:
 
-$$\begin{array}{r}
-{\pi_{ij} = \begin{cases}
-\frac{\exp\left( \alpha_{j0} + \alpha_{j1}x_{1i} + \cdots + \alpha_{jr}x_{ri} \right)}{1 + \sum\limits_{k > 1}\exp\left( \alpha_{k0} + \alpha_{k1}x_{1i} + \cdots + \alpha_{kr}x_{ri} \right)} & {{\text{for}\mspace{6mu}}j > 1} \\
-\frac{1}{1 + \sum\limits_{k > 1}\exp\left( \alpha_{k0} + \alpha_{k1}x_{1i} + \cdots + \alpha_{kr}x_{ri} \right)} & {{\text{for}\mspace{6mu}}j = 1}
-\end{cases}}
-\end{array}$$
+\begin{aligned} \pi\_{ij} = \begin{cases}
+\dfrac{\exp(\alpha\_{j0}+\alpha\_{j1}x\_{1i}+\cdots+\alpha\_{jr}x\_{ri})}
+{1+\sum\_{k\>1}\exp(\alpha\_{k0}+\alpha\_{k1}x\_{1i}+\cdots+\alpha\_{kr}x\_{ri})}
+& \text{for } j\>1\\\[20pt\] \dfrac{1}
+{1+\sum\_{k\>1}\exp(\alpha\_{k0}+\alpha\_{k1}x\_{1i}+\cdots+\alpha\_{kr}x\_{ri})}
+& \text{for } j=1 \end{cases} \end{aligned}
 
-where the first category ($j = 1$) is the baseline category.
+where the first category (j=1) is the baseline category.
 
 Equivalently, the model can be expressed in terms of log-odds, relative
 to the baseline-category:
 
-$$\ln\frac{\pi_{ij}}{\pi_{i1}} = \alpha_{j0} + \alpha_{j1}x_{1i} + \cdots + \alpha_{jr}x_{ri}.$$
+\ln\frac{\pi\_{ij}}{\pi\_{i1}} =
+\alpha\_{j0}+\alpha\_{j1}x\_{1i}+\cdots+\alpha\_{jr}x\_{ri}.
 
 Here the relevant parameters of the model are the coefficients
-$\alpha_{jk}$ which describe how the values of independent variables
-(numbered $k = 1,\ldots,r$) affect the relative chances of the response
-taking a value $j$ versus taking the value $1$. Note that there is one
+\alpha\_{jk} which describe how the values of independent variables
+(numbered k=1,\ldots,r) affect the relative chances of the response
+taking a value j versus taking the value 1. Note that there is one
 coefficient for each independent variable and *each response* other than
 the baseline category.
 

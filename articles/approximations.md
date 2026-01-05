@@ -6,18 +6,28 @@ A crucial problem for inference about non-linear models with random
 effects is that the likelihood function for such models involves
 integrals for which no analytical solution exists.
 
-For given values $\mathbf{b}$ of the random effects the likelihood
+For given values \boldsymbol{b} of the random effects the likelihood
 function of a conditional logit model (and therefore also of a
 baseline-logit model) can be written in the form
 
-$$\mathcal{L}_{\text{cpl}}(\mathbf{y},\mathbf{b}) = \exp\left( \ell_{\text{cpl}}(\mathbf{y},\mathbf{b}) \right) = \exp\left( \ell\left( \mathbf{y}|\mathbf{b};{\mathbf{α}} \right) - \frac{1}{2}\ln\det(\mathbf{\Sigma}) - \frac{1}{2}\mathbf{b}\prime\mathbf{\Sigma}^{- 1}\mathbf{b} \right)$$
+\mathcal{L}\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b}) =
+\exp\left(\ell\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\right) =\exp
+\left( \ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b} \right)
 
 However, this “complete data” likelihood function cannot be used for
 inference, because it depends on the unobserved random effects. To
 arrive at a likelihood function that depends only on observed data, one
 needs to used the following integrated likelihood function:
 
-$$\mathcal{L}_{\text{obs}}(\mathbf{y}) = \int\exp\left( \ell_{\text{cpl}}(\mathbf{y},\mathbf{b}) \right)\partial\mathbf{b} = \int\exp\left( \ell\left( \mathbf{y}|\mathbf{b};{\mathbf{α}} \right) - \frac{1}{2}\ln\det(\mathbf{\Sigma}) - \frac{1}{2}\mathbf{b}\prime\mathbf{\Sigma}^{- 1}\mathbf{b} \right)\partial\mathbf{b}$$
+\mathcal{L}\_{\text{obs}}(\boldsymbol{y}) = \int
+\exp\left(\ell\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\right)
+\partial \boldsymbol{b} = \int \exp \left(
+\ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b} \right)
+\partial \boldsymbol{b}
 
 In general, this integral cannot be “solved”, i.e. eliminated from the
 formula by analytic means (it is “analytically untractable”). Instead,
@@ -47,91 +57,107 @@ The (first-order) Laplace approximation is based on the quadratic
 expansion the logarithm of the integrand, the complete-data
 log-likelihood
 
-$$\ell_{\text{cpl}}(\mathbf{y},\mathbf{b}) \approx \ell\left( \mathbf{y}|\widetilde{\mathbf{b}};{\mathbf{α}} \right) - \frac{1}{2}\left( \mathbf{b} - \widetilde{\mathbf{b}} \right)\prime\widetilde{\mathbf{H}}\left( \mathbf{b} - \widetilde{\mathbf{b}} \right) - \frac{1}{2}\ln\det(\mathbf{\Sigma}) - \frac{1}{2}\left( \mathbf{b} - \widetilde{\mathbf{b}} \right)\prime\mathbf{\Sigma}^{- 1}\left( \mathbf{b} - \widetilde{\mathbf{b}} \right)$$
+\ell\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
+\ell(\boldsymbol{y}\|\tilde{\boldsymbol{b}};\boldsymbol{\alpha}) -
+\frac12 (\boldsymbol{b}-\tilde{\boldsymbol{b}})' \tilde{\boldsymbol{H}}
+(\boldsymbol{b}-\tilde{\boldsymbol{b}})
+-\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12(\boldsymbol{b}-\tilde{\boldsymbol{b}})'\boldsymbol{\Sigma}^{-1}(\boldsymbol{b}-\tilde{\boldsymbol{b}})
 
-where $\widetilde{\mathbf{b}}$ is the solution to
+where \tilde{\boldsymbol{b}} is the solution to
 
-$$\frac{\partial\ell_{\text{cpl}}(\mathbf{y},\mathbf{b})}{\partial\mathbf{b}} = 0$$
+\frac{\partial\ell\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})}{\partial\boldsymbol{b}}
+= 0
 
-and
-$\widetilde{\mathbf{H}} = \mathbf{H}\left( \widetilde{\mathbf{b}} \right)$
-is the value of the negative Hessian with respect to $\mathbf{b}$
+and \tilde{\boldsymbol{H}}=\boldsymbol{H}(\tilde{\boldsymbol{b}}) is the
+value of the negative Hessian with respect to \boldsymbol{b}
 
-$$\mathbf{H}(\mathbf{b}) = - \frac{\partial^{2}\ell\left( \mathbf{y}|\mathbf{b};{\mathbf{α}} \right)}{\partial\mathbf{b}\partial\mathbf{b}\prime}$$
+\boldsymbol{H}(\boldsymbol{b})=-\frac{\partial^2\ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})}{\partial\boldsymbol{b}\partial\boldsymbol{b}'}
 
-for $\mathbf{b} = \widetilde{\mathbf{b}}$.
+for \boldsymbol{b}=\tilde{\boldsymbol{b}}.
 
 Since this quadratic expansion—let us call it
-$\ell_{\text{Lapl}}^{*}(\mathbf{y},\mathbf{b})$—is a (multivariate)
-quadratic function of $\mathbf{b}$, the integral of its exponential does
-have a closed-form solution (the relevant formula can be found in
-Harville (1997)).
+\ell^\*\_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b})—is a
+(multivariate) quadratic function of \boldsymbol{b}, the integral of its
+exponential does have a closed-form solution (the relevant formula can
+be found in Harville (1997)).
 
 For purposes of estimation, the resulting approximate log-likelihood is
 more useful:
 
-$$\ell_{\text{Lapl}}^{*} = \ln\int\exp\left( \ell_{\text{Lapl}}(\mathbf{y},\mathbf{b}) \right)\partial\mathbf{b} = \ell\left( \mathbf{y}|\widetilde{\mathbf{b}};{\mathbf{α}} \right) - \frac{1}{2}\widetilde{\mathbf{b}}\prime\mathbf{\Sigma}^{- 1}\widetilde{\mathbf{b}} - \frac{1}{2}\ln\det(\mathbf{\Sigma}) - \frac{1}{2}\ln\det\left( \widetilde{\mathbf{H}} + \mathbf{\Sigma}^{- 1} \right).$$
+\ell^\*\_{\text{Lapl}} = \ln\int
+\exp(\ell\_{\text{Lapl}}(\boldsymbol{y},\boldsymbol{b}))
+\partial\boldsymbol{b} =
+\ell(\boldsymbol{y}\|\tilde{\boldsymbol{b}};\boldsymbol{\alpha}) -
+\frac12\tilde{\boldsymbol{b}}'\boldsymbol{\Sigma}^{-1}\tilde{\boldsymbol{b}} -
+\frac12\ln\det(\boldsymbol{\Sigma}) -
+\frac12\ln\det\left(\tilde{\boldsymbol{H}}+\boldsymbol{\Sigma}^{-1}\right).
 
 ### Penalized quasi-likelihood (PQL)
 
-If one disregards the dependence of $\widetilde{\mathbf{H}}$ on
-$\mathbf{α}$ and $\mathbf{b}$, then $\widetilde{\mathbf{b}}$ maximizes
-not only $\ell_{\text{cpl}}(\mathbf{y},\mathbf{b})$ but also
-$\ell_{\text{Lapl}}^{*}$. This motivates the following IWLS/Fisher
-scoring equations for $\widehat{\mathbf{α}}$ and
-$\widetilde{\mathbf{b}}$ (see Breslow and Clayton (1993) and [this
+If one disregards the dependence of \tilde{\boldsymbol{H}} on
+\boldsymbol{\alpha} and \boldsymbol{b}, then \tilde{\boldsymbol{b}}
+maximizes not only \ell\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b}) but
+also \ell^\*\_{\text{Lapl}}. This motivates the following IWLS/Fisher
+scoring equations for \hat{\boldsymbol{\alpha}} and
+\tilde{\boldsymbol{b}} (see Breslow and Clayton (1993) and [this
 page](https://melff.github.io/mclogit/articles/fitting-mclogit.md)):
 
-$$\begin{array}{r}
-{\begin{bmatrix}
-{\mathbf{X}\prime\mathbf{W}\mathbf{X}} & {\mathbf{X}\prime\mathbf{W}\mathbf{Z}} \\
-{\mathbf{Z}\prime\mathbf{W}\mathbf{X}} & {\mathbf{Z}\prime\mathbf{W}\mathbf{Z} + \mathbf{\Sigma}^{- 1}} \\
- & 
-\end{bmatrix}\begin{bmatrix}
-\widehat{\mathbf{α}} \\
-\widetilde{\mathbf{b}} \\
-
-\end{bmatrix} = \begin{bmatrix}
-{\mathbf{X}\prime\mathbf{W}\mathbf{y}^{*}} \\
-{\mathbf{Z}\prime\mathbf{W}\mathbf{y}^{*}}
-\end{bmatrix}}
-\end{array}$$
+\begin{aligned} \begin{bmatrix}
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{X} &
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{Z} \\
+\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{X} &
+\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} + \boldsymbol{\Sigma}^{-1}\\
+\end{bmatrix} \begin{bmatrix} \hat{\boldsymbol{\alpha}}\\
+\tilde{\boldsymbol{b}}\\ \end{bmatrix} = \begin{bmatrix}
+\boldsymbol{X}'\boldsymbol{W}\boldsymbol{y}^\*\\
+\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{y}^\* \end{bmatrix}
+\end{aligned}
 
 where
 
-$$\mathbf{y}^{*} = \mathbf{X}{\mathbf{α}} + \mathbf{Z}\mathbf{b} + \mathbf{W}^{-}(\mathbf{y} - {\mathbf{π}})$$
+\boldsymbol{y}^\* = \boldsymbol{X}\boldsymbol{\alpha} +
+\boldsymbol{Z}\boldsymbol{b} +
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})
 
-is the IWLS “working dependend variable” with $\mathbf{α}$,
-$\mathbf{b}$, $\mathbf{W}$, and $\mathbf{π}$ computed in an earlier
-iteration.
+is the IWLS “working dependend variable” with \boldsymbol{\alpha},
+\boldsymbol{b}, \boldsymbol{W}, and \boldsymbol{\pi} computed in an
+earlier iteration.
 
 Substitutions lead to the equations:
 
-$$\left( \mathbf{X}\mathbf{V}^{-}\mathbf{X} \right)\widehat{\mathbf{α}} = \mathbf{X}\mathbf{V}^{-}\mathbf{y}^{*}$$
+(\boldsymbol{X}\boldsymbol{V}^-\boldsymbol{X})\hat{\boldsymbol{\alpha}}
+= \boldsymbol{X}\boldsymbol{V}^-\boldsymbol{y}^\*
 
 and
 
-$$\left( \mathbf{Z}\prime\mathbf{W}\mathbf{Z} + \mathbf{\Sigma}^{- 1} \right)\mathbf{b} = \mathbf{Z}\prime\mathbf{W}\left( \mathbf{y}^{*} - \mathbf{X}{\mathbf{α}} \right)$$
+(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z} +
+\boldsymbol{\Sigma}^{-1})\boldsymbol{b} =
+\boldsymbol{Z}'\boldsymbol{W}(\boldsymbol{y}^\*-\boldsymbol{X}\boldsymbol{\alpha})
 
-which can be solved to compute $\widehat{\mathbf{α}}$ and
-$\widetilde{\mathbf{b}}$ (for given $\mathbf{\Sigma}$)
+which can be solved to compute \hat{\boldsymbol{\alpha}} and
+\tilde{\boldsymbol{b}} (for given \boldsymbol{\Sigma})
 
 Here
 
-$$\mathbf{V} = \mathbf{W}^{-} + \mathbf{Z}\mathbf{\Sigma}\mathbf{Z}\prime$$
+\boldsymbol{V} =
+\boldsymbol{W}^-+\boldsymbol{Z}\boldsymbol{\Sigma}\boldsymbol{Z}'
 
 and
 
-$$\mathbf{V}^{-} = \mathbf{W} - \mathbf{W}\mathbf{Z}\prime\left( \mathbf{Z}\prime\mathbf{W}\mathbf{Z} + \mathbf{\Sigma}^{- 1} \right)^{- 1}\mathbf{Z}\mathbf{W}$$
+\boldsymbol{V}^- = \boldsymbol{W}-
+\boldsymbol{W}\boldsymbol{Z}'\left(\boldsymbol{Z}'\boldsymbol{W}\boldsymbol{Z}+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{Z}\boldsymbol{W}
 
 Following Breslow and Clayton (1993) the variance parameters in
-$\mathbf{\Sigma}$ are estimated by minimizing
+\boldsymbol{\Sigma} are estimated by minimizing
 
-$$q_{1} = \det(\mathbf{V}) + \left( \mathbf{y}^{*} - \mathbf{X}{\mathbf{α}} \right)\mathbf{V}^{-}\left( \mathbf{y}^{*} - \mathbf{X}{\mathbf{α}} \right)$$
+q_1 =
+\det(\boldsymbol{V})+(\boldsymbol{y}^\*-\boldsymbol{X}\boldsymbol{\alpha})\boldsymbol{V}^-(\boldsymbol{y}^\*-\boldsymbol{X}\boldsymbol{\alpha})
 
 or the “REML” variant:
 
-$$q_{2} = \det(\mathbf{V}) + \left( \mathbf{y}^{*} - \mathbf{X}{\mathbf{α}} \right)\mathbf{V}^{-}\left( \mathbf{y}^{*} - \mathbf{X}{\mathbf{α}} \right) + \det\left( \mathbf{X}\prime\mathbf{V}^{-}\mathbf{X} \right)$$
+q_2 =
+\det(\boldsymbol{V})+(\boldsymbol{y}^\*-\boldsymbol{X}\boldsymbol{\alpha})\boldsymbol{V}^-(\boldsymbol{y}^\*-\boldsymbol{X}\boldsymbol{\alpha})+\det(\boldsymbol{X}'\boldsymbol{V}^{-}\boldsymbol{X})
 
 This motivates the following algorithm, which is strongly inspired by
 the [`glmmPQL()`](https://rdrr.io/pkg/MASS/man/glmmPQL.html) function in
@@ -139,20 +165,20 @@ Brian Ripley’s *R* package
 [MASS](https://cran.r-project.org/package=MASS) (Venables and Ripley
 2002):
 
-1.  Create some suitable starting values for $\mathbf{π}$, $\mathbf{W}$,
-    and $\mathbf{y}^{*}$
-2.  Construct the “working dependent variable” $\mathbf{y}^{*}$
-3.  Minimize $q_{1}$ (quasi-ML) or $q_{2}$ (quasi-REML) iteratively
-    (inner loop), to obtain an estimate of $\mathbf{\Sigma}$
-4.  Obtain $hat{\mathbf{α}}$ and $\widetilde{\mathbf{b}}$ based on the
-    current estimate of $\mathbf{\Sigma}$
+1.  Create some suitable starting values for \boldsymbol{\pi},
+    \boldsymbol{W}, and \boldsymbol{y}^\*
+2.  Construct the “working dependent variable” \boldsymbol{y}^\*
+3.  Minimize q_1 (quasi-ML) or q_2 (quasi-REML) iteratively (inner
+    loop), to obtain an estimate of \boldsymbol{\Sigma}
+4.  Obtain hat{\boldsymbol{\alpha}} and \tilde{\boldsymbol{b}} based on
+    the current estimate of \boldsymbol{\Sigma}
 5.  Compute updated
-    ${\mathbf{η}} = \mathbf{X}{\mathbf{α}} + \mathbf{Z}\mathbf{b}$,
-    $\mathbf{π}$, $\mathbf{W}$.
-6.  If the change in $\mathbf{η}$ is smaller than a given tolerance
+    \boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha} +
+    \boldsymbol{Z}\boldsymbol{b}, \boldsymbol{\pi}, \boldsymbol{W}.
+6.  If the change in \boldsymbol{\eta} is smaller than a given tolerance
     criterion stop the algorighm and declare it as converged. Otherwise
-    go back to step 2 with the updated values of $\widehat{\mathbf{α}}$
-    and $\widetilde{\mathbf{b}}$.
+    go back to step 2 with the updated values of
+    \hat{\boldsymbol{\alpha}} and \tilde{\boldsymbol{b}}.
 
 This algorithm is a modification of the
 [IWLS](https://melff.github.io/mclogit/articles/fitting-mclogit.md)
@@ -162,10 +188,10 @@ weighted linear mixed-effects model. In contrast to
 [`glmmPQL()`](https://rdrr.io/pkg/MASS/man/glmmPQL.html) it does not use
 the `lme()` function from package
 [nlme](https://cran.r-project.org/package=nlme) (Pinheiro and Bates
-2000) for this, because the weighting matrix $\mathbf{W}$ is
-non-diagonal. Instead, $q_{1}$ or $q_{2}$ are minimized using the
-function `nlminb` from the standard *R* package “stats” or some other
-optimizer chosen by the user.
+2000) for this, because the weighting matrix \boldsymbol{W} is
+non-diagonal. Instead, q_1 or q_2 are minimized using the function
+`nlminb` from the standard *R* package “stats” or some other optimizer
+chosen by the user.
 
 ## The Solomon-Cox approximation and MQL
 
@@ -174,48 +200,60 @@ optimizer chosen by the user.
 The (first-order) Solomon approximation (Solomon and Cox 1992) is based
 on the quadratic expansion the integrand
 
-$$\ell_{\text{cpl}}(\mathbf{y},\mathbf{b}) \approx \ell\left( \mathbf{y}|\mathbf{0};{\mathbf{α}} \right) + \mathbf{g}_{0}\prime\mathbf{b} - \frac{1}{2}\mathbf{b}\prime\mathbf{H}_{0}\mathbf{b} - \frac{1}{2}\ln\det(\mathbf{\Sigma}) - \frac{1}{2}\mathbf{b}\prime\mathbf{\Sigma}^{- 1}\mathbf{b}$$
+\ell\_{\text{cpl}}(\boldsymbol{y},\boldsymbol{b})\approx
+\ell(\boldsymbol{y}\|\boldsymbol{0};\boldsymbol{\alpha}) +
+\boldsymbol{g}\_0' \boldsymbol{b} - \frac12 \boldsymbol{b}'
+\boldsymbol{H}\_0 \boldsymbol{b} -\frac12\ln\det(\boldsymbol{\Sigma})
+-\frac12\boldsymbol{b}'\boldsymbol{\Sigma}^{-1}\boldsymbol{b}
 
-where $\mathbf{g}\_ 0 = \mathbf{g}(\mathbf{0})$ is the gradient of
-$\ell(\mathbf{y} \parallel \mathbf{b};{\mathbf{α}})$
+where \boldsymbol{g}\\0=\boldsymbol{g}(\boldsymbol{0}) is the gradient
+of \ell(\boldsymbol{y}\\\boldsymbol{b};\boldsymbol{\alpha})
 
-$$\mathbf{g}(\mathbf{b}) = - \frac{\partial\ell\left( \mathbf{y}|\mathbf{b};{\mathbf{α}} \right)}{\partial\mathbf{b}}$$
+\boldsymbol{g}(\boldsymbol{b})=-\frac{\partial\ell(\boldsymbol{y}\|\boldsymbol{b};\boldsymbol{\alpha})}{\partial\boldsymbol{b}}
 
-at $\mathbf{b} = \mathbf{0}$, while
-$\mathbf{H}\_ 0 = \mathbf{H}(\mathbf{0})$ is the negative Hessian at
-$\mathbf{b} = \mathbf{0}$.
+at \boldsymbol{b}=\boldsymbol{0}, while
+\boldsymbol{H}\\0=\boldsymbol{H}(\boldsymbol{0}) is the negative Hessian
+at \boldsymbol{b}=\boldsymbol{0}.
 
 Like before, the integral of the exponential this quadratic expansion
-(which we refer to as $\ell_{\text{SC}}(\mathbf{y},\mathbf{b})$) has a
-closed-form solution, as does its logarithm, which is:
+(which we refer to as \ell\_{\text{SC}}(\boldsymbol{y},\boldsymbol{b}))
+has a closed-form solution, as does its logarithm, which is:
 
-$$\ln\int\exp\left( \ell_{\text{SC}}(\mathbf{y},\mathbf{b}) \right)\partial\mathbf{b} = \ell\left( \mathbf{y}|\mathbf{0};{\mathbf{α}} \right) - \frac{1}{2}\mathbf{g}_{0}\prime\left( \mathbf{H}_{0} + \mathbf{\Sigma}^{- 1} \right)^{- 1}\mathbf{g}_{0} - \frac{1}{2}\ln\det(\mathbf{\Sigma}) - \frac{1}{2}\ln\det\left( \mathbf{H}_{0} + \mathbf{\Sigma}^{- 1} \right).$$
+\ln\int \exp(\ell\_{\text{SC}}(\boldsymbol{y},\boldsymbol{b}))
+\partial\boldsymbol{b} =
+\ell(\boldsymbol{y}\|\boldsymbol{0};\boldsymbol{\alpha}) -
+\frac12\boldsymbol{g}\_0'\left(\boldsymbol{H}\_0+\boldsymbol{\Sigma}^{-1}\right)^{-1}\boldsymbol{g}\_0 -
+\frac12\ln\det(\boldsymbol{\Sigma}) -
+\frac12\ln\det\left(\boldsymbol{H}\_0+\boldsymbol{\Sigma}^{-1}\right).
 
 ### Marginal quasi-likelhood (MQL)
 
 The resulting estimation technique is very similar to PQL (again, see
 Breslow and Clayton 1993 for a discussion). The only difference is the
-construction of the “working dependent” variable $\mathbf{y}^{*}$. With
-PQL it is constructed as
-$$\mathbf{y}^{*} = \mathbf{X}{\mathbf{α}} + \mathbf{Z}\mathbf{b} + \mathbf{W}^{-}(\mathbf{y} - {\mathbf{π}})$$
-while the MQL working dependent variable is just
+construction of the “working dependent” variable \boldsymbol{y}^\*. With
+PQL it is constructed as \boldsymbol{y}^\* =
+\boldsymbol{X}\boldsymbol{\alpha} + \boldsymbol{Z}\boldsymbol{b} +
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi}) while the MQL
+working dependent variable is just
 
-$$\mathbf{y}^{*} = \mathbf{X}{\mathbf{α}} + \mathbf{W}^{-}(\mathbf{y} - {\mathbf{π}})$$
+\boldsymbol{y}^\* = \boldsymbol{X}\boldsymbol{\alpha} +
+\boldsymbol{W}^{-}(\boldsymbol{y}-\boldsymbol{\pi})
 
 so that the algorithm has the following steps:
 
-1.  Create some suitable starting values for $\mathbf{π}$, $\mathbf{W}$,
-    and $\mathbf{y}^{*}$
-2.  Construct the “working dependent variable” $\mathbf{y}^{*}$
-3.  Minimize $q_{1}$ (quasi-ML) or $q_{2}$ (quasi-REML) iteratively
-    (inner loop), to obtain an estimate of $\mathbf{\Sigma}$
-4.  Obtain $\widehat{\mathbf{α}}$ based on the current estimate of
-    $\mathbf{\Sigma}$
-5.  Compute updated ${\mathbf{η}} = \mathbf{X}{\mathbf{α}}$,
-    $\mathbf{π}$, $\mathbf{W}$.
-6.  If the change in $\mathbf{η}$ is smaller than a given tolerance
+1.  Create some suitable starting values for \boldsymbol{\pi},
+    \boldsymbol{W}, and \boldsymbol{y}^\*
+2.  Construct the “working dependent variable” \boldsymbol{y}^\*
+3.  Minimize q_1 (quasi-ML) or q_2 (quasi-REML) iteratively (inner
+    loop), to obtain an estimate of \boldsymbol{\Sigma}
+4.  Obtain \hat{\boldsymbol{\alpha}} based on the current estimate of
+    \boldsymbol{\Sigma}
+5.  Compute updated \boldsymbol{\eta}=\boldsymbol{X}\boldsymbol{\alpha},
+    \boldsymbol{\pi}, \boldsymbol{W}.
+6.  If the change in \boldsymbol{\eta} is smaller than a given tolerance
     criterion stop the algorighm and declare it as converged. Otherwise
-    go back to step 2 with the updated values of $\widehat{\mathbf{α}}$.
+    go back to step 2 with the updated values of
+    \hat{\boldsymbol{\alpha}}.
 
 ## References
 
