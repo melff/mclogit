@@ -16,4 +16,5 @@ articles:
   contents:
     - fitting-mclogit
     - approximations
+    - Firth-bias-reduction
   
