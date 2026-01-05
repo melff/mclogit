@@ -20,7 +20,7 @@ conventional maximum likelihood estimator:
    tends to be less afflicted by the problem of complete separation or
    quasi-complete separation. That is, Firth's penalized likelihood technique
    gives finite coefficient estimates in cases where a (finite) MLE for the
-   coefficients does not exist.,
+   coefficients does not exist.
    
 In case of the models supported by the *mclogit* package, the difference between
 Firth's PML technique and conventional ML estimation is that it solves for each
