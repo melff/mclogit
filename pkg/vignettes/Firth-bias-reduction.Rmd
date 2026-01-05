@@ -8,6 +8,7 @@ vignette: >
 bibliography: mclogit.bib
 ---
 
+
 Firth's penalized likelihood technique [@Firth.1993:Biasreduction] has two advantages in comparison to the
 conventional maximum likelihood estimator:
 
@@ -17,11 +18,15 @@ conventional maximum likelihood estimator:
    sample size.
 
 2. In case of logistic regression and other models for categorical responses, 
-   tends to be less afflicted by the problem of complete separation or
+   it tends to be less afflicted by the problem of complete separation or
    quasi-complete separation. That is, Firth's penalized likelihood technique
    gives finite coefficient estimates in cases where a (finite) MLE for the
    coefficients does not exist.
-   
+
+# Application of the technique to conditional and baseline logit models
+
+In the
+
 In case of the models supported by the *mclogit* package, the difference between
 Firth's PML technique and conventional ML estimation is that it solves for each
 coefficient $\alpha_q$ the modified gradient equation
@@ -95,10 +100,11 @@ $$
 where
 $\Delta_{i,j,\boldsymbol{\pi}_i}a_{ij}=a_{ij} - \sum_k\pi_{ik}a_{ik}.$
 
-## A comparison of results obtained with other packages
+
+# A comparison of results obtained with other packages
 
 For a multinomial baseline logit model for a two-category response,
-`mblogit(...,Firth=TRUE)` gives the identical result as function `brglm()` from
+`mblogit(..., Firth = TRUE)` gives an identical result with function `brglm()` from
 Ioannis Kosmidis' package *brglm* [@kosmidis:brglm]:
 
 ```{r, echo = TRUE}
@@ -117,6 +123,13 @@ if(require("brglm", quietly = TRUE)) {
                                  data = lizards, Firth = TRUE)
     print(summary(lizards.mblogit_F))
 }
+```
+
+With multicategorical responses `mblogit(..., Firth = TRUE)` gives an identical result with function
+`brmultinom()` from Ioannis Kosmidis' package *brglm2* [@kosmidis:brglm2]
+(called with `type = "AS_mean"`):
+
+```{r, echo = TRUE}
 library(MASS) #For the housing data
 print(house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
                           data = housing,
@@ -127,6 +140,11 @@ if(require("brglm2", quietly = TRUE)){
                    type = "AS_mean"))
 }
 ```
+
+It should be noted, however, that the *mclogit* package makes Firth's bias
+correction also available for multinomial conditional logit models, in contrast
+to *brglm2*. For conditional logit models with Firth's bias correction, one can
+use a function call like `mclogit(..., Firth = TRUE)`.
 
 
 # References
