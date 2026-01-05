@@ -8,7 +8,7 @@
 ## Citation
 
 Source:
-[`DESCRIPTION`](https://github.com/melff/mclogit/blob/main/DESCRIPTION)
+[`DESCRIPTION`](https://github.com/melff/mclogit/blob/0.9.17.1/DESCRIPTION)
 
 Elff M (2026). *mclogit: Multinomial Logit Models for Categorical
 Responses and Discrete Choices*. R package version 0.9.17.1,
