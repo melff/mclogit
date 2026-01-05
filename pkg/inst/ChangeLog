@@ -1,3 +1,11 @@
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog,
+	pkg/vignettes/Firth-bias-reduction.Rmd, pkg/vignettes/mclogit.bib: 
+	feat(vignettes): Add vignette on Firth's PML technique Add a new vignette explaining Firth's penalized likelihood technique
+	for bias reduction. The vignette includes a comparison of results
+	obtained with other packages and relevant references.
+
 2025-12-27  Martin Elff <martin@elff.eu>
 
 	* pkg/DESCRIPTION, pkg/vignettes/fitting-mclogit.Rmd: Fix(docs):

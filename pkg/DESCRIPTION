@@ -2,11 +2,12 @@ Package: mclogit
 Type: Package
 Title: Multinomial Logit Models for Categorical Responses and Discrete Choices
 Version: 0.9.17.1
-Date: 2025-12-21
+Date: 2026-01-05
 Authors@R: person(given = "Martin",
                     family = "Elff",
                     role = c("aut", "cre"),
-                    email = "martin@elff.eu")
+                    email = "martin@elff.eu",
+                    comment = c(ORCID = "0000-0001-9032-9739"))
 Maintainer: Martin Elff <martin@elff.eu>
 Description: Provides estimators for multinomial logit models in their
     conditional logit (for discrete choices) and baseline logit variants
