@@ -1,5 +1,6 @@
 *
 !/pkg/*
+!/pkg/*/*
 !/.github/*
 !/README.md
 !/.gitignore
