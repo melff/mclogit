@@ -8,7 +8,7 @@
 
 This packages provides estimators for multinomial logit models in their
 conditional logit (for discrete choices) and baseline logit variants (for
-categorical responses), optionally with overdispersion or random effects. .
+categorical responses), optionally with overdispersion or random effects.
 Random effects models are estimated using the PQL technique (based on a Laplace
 approximation) or the MQL technique (based on a Solomon-Cox approximation).
 Estimates should be treated with caution if the group sizes are small.
