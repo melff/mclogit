@@ -20,12 +20,12 @@ is observed for individuals i=1,\ldots,n. Let \pi\_{ij} denote the
 probability that the value of the dependent variable for individual i is
 equal to j, then the baseline-category logit model takes the form:
 
-\begin{aligned} \pi\_{ij} = \begin{cases}
+\pi\_{ij} = \begin{cases}
 \dfrac{\exp(\alpha\_{j0}+\alpha\_{j1}x\_{1i}+\cdots+\alpha\_{jr}x\_{ri})}
 {1+\sum\_{k\>1}\exp(\alpha\_{k0}+\alpha\_{k1}x\_{1i}+\cdots+\alpha\_{kr}x\_{ri})}
-& \text{for } j\>1\\\[20pt\] \dfrac{1}
+& \text{for } j\>1\\ \dfrac{1}
 {1+\sum\_{k\>1}\exp(\alpha\_{k0}+\alpha\_{k1}x\_{1i}+\cdots+\alpha\_{kr}x\_{ri})}
-& \text{for } j=1 \end{cases} \end{aligned}
+& \text{for } j=1\\ \end{cases}
 
 where the first category (j=1) is the baseline category.
 

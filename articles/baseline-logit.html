@@ -100,17 +100,15 @@ categorical dependent variable or response with categories <span class="math inl
 value of the dependent variable for individual <span class="math inline">i</span> is equal to <span class="math inline">j</span>, then the baseline-category logit model
 takes the form:</p>
 <p><span class="math display">
-\begin{aligned}
 \pi_{ij} =
 \begin{cases}
 \dfrac{\exp(\alpha_{j0}+\alpha_{j1}x_{1i}+\cdots+\alpha_{jr}x_{ri})}
 {1+\sum_{k&gt;1}\exp(\alpha_{k0}+\alpha_{k1}x_{1i}+\cdots+\alpha_{kr}x_{ri})}
-&amp; \text{for } j&gt;1\\[20pt]
+&amp; \text{for } j&gt;1\\
 \dfrac{1}
 {1+\sum_{k&gt;1}\exp(\alpha_{k0}+\alpha_{k1}x_{1i}+\cdots+\alpha_{kr}x_{ri})}
-&amp; \text{for } j=1
+&amp; \text{for } j=1\\
 \end{cases}
-\end{aligned}
 </span></p>
 <p>where the first category (<span class="math inline">j=1</span>) is
 the baseline category.</p>
