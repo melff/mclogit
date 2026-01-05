@@ -32,22 +32,11 @@ first alternative in the choice set:
 
 Conditional logit models appear more parsimonious than baseline-category
 logit models in so far as they have only one coefficient for each
-independent variables.\[^1\] In the “mclogi" package, these models can
-be estimated using the function
+independent variables. In the *mclogit* package, these models can be
+estimated using the function
 [`mclogit()`](https://melff.github.io/mclogit/reference/mclogit.md).
 
-My interest in conditional logit models derives from my research into
-the influence of parties' political positions on the patterns of voting.
-Here, the political positions are the attributes of the alternatives and
-the choice sets are the sets of parties that run candidates in a
-countries at various points in time. For the application of the
-conditional logit models, see Elff (2009).
-
 ## References
-
-Elff, Martin. 2009. “Social Divisions, Party Positions, and Electoral
-Behaviour.” *Electoral Studies* 28 (2): 297–308.
-<https://doi.org/10.1016/j.electstud.2009.02.002>.
 
 McFadden, Daniel. 1974. “Conditional Logit Analysis of Qualitative
 Choice Behaviour.” In *Frontiers in Econometrics*, edited by Paul

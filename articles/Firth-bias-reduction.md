@@ -9,10 +9,14 @@ in comparison to the conventional maximum likelihood estimator:
     O(n^{-1}), where n is the sample size.
 
 2.  In case of logistic regression and other models for categorical
-    responses, tends to be less afflicted by the problem of complete
+    responses, it tends to be less afflicted by the problem of complete
     separation or quasi-complete separation. That is, Firth’s penalized
     likelihood technique gives finite coefficient estimates in cases
     where a (finite) MLE for the coefficients does not exist.
+
+## Application of the technique to conditional and baseline logit models
+
+In the
 
 In case of the models supported by the *mclogit* package, the difference
 between Firth’s PML technique and conventional ML estimation is that it
@@ -46,12 +50,12 @@ y\_{ij}^\* = \boldsymbol{x}\_{ij}'\boldsymbol{\alpha} +
 \Delta\_{i,j,\boldsymbol{\pi}\_i}a\_{ij}=a\_{ij} -
 \sum_k\pi\_{ik}a\_{ik}.
 
-### A comparison of results obtained with other packages
+## A comparison of results obtained with other packages
 
 For a multinomial baseline logit model for a two-category response,
-`mblogit(...,Firth=TRUE)` gives the identical result as function
+`mblogit(..., Firth = TRUE)` gives an identical result with function
 [`brglm()`](https://rdrr.io/pkg/brglm/man/brglm.html) from Ioannis
-Kosmidis’ package *brglm* (Kosmidis 2025):
+Kosmidis’ package *brglm* (Kosmidis 2025a):
 
 ``` r
 if(require("brglm", quietly = TRUE)) {
@@ -124,6 +128,12 @@ if(require("brglm", quietly = TRUE)) {
     ## Number of Fisher scoring iterations:  5 
     ## Number of observations:  23
 
+With multicategorical responses `mblogit(..., Firth = TRUE)` gives an
+identical result with function
+[`brmultinom()`](https://rdrr.io/pkg/brglm2/man/brmultinom.html) from
+Ioannis Kosmidis’ package *brglm2* (Kosmidis 2025b) (called with
+`type = "AS_mean"`):
+
 ``` r
 library(MASS) #For the housing data
 print(house.mblogit <- mblogit(Sat ~ Infl + Type + Cont, weights = Freq,
@@ -176,10 +186,19 @@ if(require("brglm2", quietly = TRUE)){
     ## 
     ## Residual Deviance: 3470.092
 
+It should be noted, however, that the *mclogit* package makes Firth’s
+bias correction also available for multinomial conditional logit models,
+in contrast to *brglm2*. For conditional logit models with Firth’s bias
+correction, one can use a function call like
+`mclogit(..., Firth = TRUE)`.
+
 ## References
 
 Firth, David. 1993. “Bias Reduction of Maximum Likelihood Estimates.”
 *Biometrika* 80 (1): 27–38. <https://doi.org/10.1093/biomet/80.1.27>.
 
-Kosmidis, Ioannis. 2025. *brglm: Bias Reduction in Binary-Response
+Kosmidis, Ioannis. 2025a. *brglm: Bias Reduction in Binary-Response
 Generalized Linear Models*. <https://cran.r-project.org/package=brglm>.
+
+———. 2025b. *brglm2: Bias Reduction in Generalized Linear Models*.
+<https://CRAN.R-project.org/package=brglm2>.
