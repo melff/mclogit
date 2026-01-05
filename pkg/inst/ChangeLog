@@ -1,5 +1,66 @@
 2026-01-05  Martin Elff <martin@elff.eu>
 
+	* pkg/vignettes/conditional-logit.Rmd: docs(vignettes): Update
+	conditional logit vignette Update package name from mclogi to mclogit. Remove unnecessary text
+	about personal research interest
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/vignettes/Firth-bias-reduction.Rmd, pkg/vignettes/mclogit.bib: 
+	feat(docs): update Firth bias reduction vignette Update the Firth bias reduction vignette to include information
+	about the application of the technique to conditional and baseline
+	logit models. Also, add a comparison of results obtained with other
+	packages, specifically the brglm and brglm2 packages.
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* .gitignore: chore: add pkg/vignettes/auto directory to gitignore
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/pkgdown/_pkgdown.yml: docs(pkgdown): add katex for
+	mathematical rendering Add katex (instead of default hardcoded MathML) for mathematical
+	rendering in the documentation
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/pkgdown/index.md: docs: add index page for pkgdown
+	documentation Add an index page to the pkgdown documentation for the mclogit
+	package. The page provides an overview of the package, its features,
+	and links to detailed documentation for the statistical models and
+	technical aspects of model fitting.
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* .gitignore: chore: update gitignore patterns Update patterns to ignore all files except those in the pkg
+	directory and its subdirectories, as well as the README.md and
+	.gitignore files
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* .gitignore: chore: add support for nested pkg directories Add support for nested pkg directories to be included in the
+	repository
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/vignettes/Firth-bias-reduction.Rmd: docs(vignette): Fix
+	punctuation in Firth bias reduction vignette Remove unnecessary comma in the Firth bias reduction vignette
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* README.md: docs: Correct typo in README
+
+2026-01-05  Martin Elff <melff@users.noreply.github.com>
+
+	* pkg/pkgdown/_pkgdown.yml: Add Firth-bias-reduction to pkgdown
+	index
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
+	* pkg/DESCRIPTION, pkg/inst/ChangeLog: Add ORCID to DESCRIPTION
+
+2026-01-05  Martin Elff <martin@elff.eu>
+
 	* pkg/DESCRIPTION, pkg/inst/ChangeLog,
 	pkg/vignettes/Firth-bias-reduction.Rmd, pkg/vignettes/mclogit.bib: 
 	feat(vignettes): Add vignette on Firth's PML technique Add a new vignette explaining Firth's penalized likelihood technique
