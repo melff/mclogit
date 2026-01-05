@@ -3,6 +3,7 @@ template:
   bootstrap: 5
   bootswatch: zephyr
   light-switch: true
+  math-rendering: katex
 articles:
 - title: The statistical models
   navbar: The statistical models
@@ -17,4 +18,3 @@ articles:
     - fitting-mclogit
     - approximations
     - Firth-bias-reduction
-  
